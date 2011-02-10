@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Gestion des modèles de carte de voeux</title>
+	</properties>
+	<body>
+		<section name="Gestion des modèles de carte de voeux">
+			<p>
+				L'interface de gestion des modèles de carte de voeux regroupe l'ensemble des actions
+				que le webmestre peut effectuer au sujet des modèles de carte.
+			</p>
+			<ul>
+				<li>Création d'un modèle de carte de voeux</li>
+				<li>Modification d'un modèle de carte de voeux</li>
+				<li>Suppression d'un modèle de carte de voeux</li>
+			</ul>
+			<center>
+				<img src="../../images/user/manage_greetingscard.png" alt="manage_greetingscard"/>
+			</center>
+
+			<p>
+				La liste des modèles de carte de voeux est triée par date de création
+				du modèle, du plus ancien au plus récent.
+
+			</p>
+			<subsection name="Création d'un modèle de carte de voeux">
+				<p>
+					L'interface de saisie suivante récapitule les
+					informations nécessaires à la création d'un
+					modèle de carte de voeux.
+				</p>
+				<center>
+					<img src="../../images/user/create_greetingscard_template.png" alt="create_greetingscard_template"/>
+				</center>
+				<p>
+					Tous les champs suivis d'un astérisque sont des champs obligatoires.
+				</p>
+				<p>
+					Le champ "<em>Nom</em>" permet de renseigner le nom du modèle de carte de voeux.
+				</p>
+				<p>
+					Les deux champs "<em>Animation d'édition</em>" et "<em>Animation de visualisation</em>"
+					attendent comme paramètre des fichiers Flash (fichiers d'extensions <code>swf</code>)
+					qui serviront à la création et à la visualisation de la carte de voeux sur le Front-Office.
+				</p>
+				<p>
+					Le champ "<em>Image pour le format HTML</em>" attend un fichier de type image qui sera affiché lors de la
+					création et de la visualisation de la carte de voeux sur le Front-Office.
+				</p>
+				<p>
+					Les champs "<em>Largeur des animations et de l'image</em>" et "<em>Hauteur des animations et de l'image</em>"
+					sont des champs numériques uniquement.
+					Ils permettent de définir la taille de l'image ou de l'aniamtion Flash sur le Front-Office.
+				</p>
+				<p>
+					Les trois champs suivants de type fichier attendent des modèles au format HTML qui seront utilisés
+					sur le Front-Office pour la création, la visualisation et l'accès (si protection par mot de passe)
+					aux carte de voeux.
+				</p>
+				<p>
+					Le Champ "<em>Objet de l'email</em>" est également un champ obligatoire. Il sera utilisé lors de la création
+					d'une carte de voeux au moment de l'envoi du mail. Il déterminera l'objet du mail.
+				</p>
+				<p>
+					Le Champ "<em>Mot de passe</em>" n'est pas un champ obligatoire. En revanche si l'on décide de cocher cette 
+					option, il est obligatoire de renseigner un mot de passe.
+					Cette option permet de protéger l'accès à certains modèles lors de la création de cartes de voeux.
+					Dans ce cas, l'utilisateur devra renseigner le mot de passe s'il souhaite utiliser ce modèle.
+				</p>
+				<p>
+					Le Champ "<em>Disponible</em>" permet de définir si le modèle pourra être utilisé pour créer des cartes de voeux.
+					Si cette option n'est pas cochée, le modèle de cartes sera créé mais aucun utilisateur du sîte ne pourra
+					s'en servir pour créer une carte de voeux.
+				</p>
+				<p>
+					Après avoir renseigné au mininum tous les champs obligatoires, il suffit de cliquer sur le bouton "<em>Créer</em>"
+					pour lancer la création de ce modèle de carte.
+				</p>
+			</subsection>
+			<subsection name="Modification d'un modèle de carte de voeux">
+				<p>
+					L'interface de modification permet de modifier les informations renseignées lors de la création du modèle.
+					Pour arriver sur cette interface, il suffit de cliquer sur l'ID du modèle que l'on souhaite modifier depuis
+					l'interface "<strong>Gestion des modèles de cartes de voeux</strong>".
+				</p>
+				<center>
+					<img src="../../images/user/modify_greetingscard_template.png"alt="modify_greetingscard_template"/>
+				</center>
+				<p>
+					Les champs obligatoires sont renseignés avec les valeurs définies durant la création ou la dernière
+					modification.
+					L'ensemble des autres champs n'est pas obligatoire.
+				</p>
+				<p>
+					Pour les champs de type fichier, si vous ne renseignez rien, cela signifie que vous ne voulez pas modifier
+					les fichiers :
+					par conséquent, les anciens fichiers seront conservés.
+				</p>
+				<p>
+					C'est dans cette interface que l'on peut voir et modifier la disponibilité et la protection par mot de passe
+					du modèle de carte.
+				</p>
+				<p>
+					Une fois les modifications réalisées, il suffit de cliquer sur le bouton "<em>Modifier</em>" pour que ces dernières
+					soient prises en compte.
+				</p>
+			</subsection>
+			<subsection name="Suppression d'un modèle de carte de voeux">
+				<p>
+					Pour supprimer un modèle de carte, il suffit de cliquer sur l'icône "<em>Suppression</em>" correspondant au modèle que
+					l'on souhaite supprimer.
+					Cet icône se situe à droite de chaque ligne formant la liste des modèles de carte dans l'interface "<strong>Gestion
+					des modèles de cartes de voeux</strong>".
+				</p>
+				<center>
+					<img src="../../images/user/delete_greetingscard_template.png" alt="delete_greetingscard_template.png"/>
+				</center>
+			</subsection>
+		</section>
+	</body>
+</document>

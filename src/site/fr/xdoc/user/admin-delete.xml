@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Suppression des cartes de voeux envoyées</title>
+	</properties>
+	<body>
+		<section name="Suppression des cartes de voeux envoyées">
+			<p>
+				Depuis l'interface d'administration, il est possible de supprimer des cartes
+				de voeux envoyées.
+			</p>
+			<p>
+				Cette action est accessible depuis l'écran de visualisation des statistiques.
+				Pour y accéder, il suffit de cliquer sur "<strong>Statistiques d'envoi de carte de voeux</strong>"
+				depuis l'interface d'administration des cartes de voeux.
+			</p>
+			<center>
+				<img src="../../images/user/delete_greetingscard.png" alt="delete_greetingscard"/>
+			</center>
+			<p>
+				Deux champs obligatoires sont à renseigner :
+			</p>
+			<ul>
+				<li>Date d'envoi dépassée de</li>
+				<li>Modèle de carte de voeux</li>
+			</ul>
+			<subsection name="Date d'envoi dépassée de">
+				<p>
+					Ce champ permet de renseigner l'ancienneté (en nombre de jour) des cartes que l'on veut conserver.
+					Toutes les cartes envoyées qui sont plus anciennes seront supprimées.
+				</p>
+				<p>
+					Ce champ est obligatoire, et n'accepte que des valeurs numériques.
+				</p>
+				<p>
+					Une valeur inférieure ou égale à <code>0</code> signifiera que l'on souhaite supprimer toutes les 
+					cartes de voeux envoyées sans se soucier de leur date d'envoi.
+				</p>
+			</subsection>
+			<subsection name="Modèle de carte de voeux">
+				<p>
+					Ce champ se présente sous la forme d'une ComboBox.
+					Elle est formée par la liste de tous les modèles de carte existant plus une option supplémentaire :
+					"Tous les modèles".
+				</p>
+				<center>
+					<img src="../../images/user/delete_combobox_greetingscard.png" alt="delete_combobox_greetingscard"/>
+				</center>
+				<p>
+					L'option "Tous les modèles" est l'option par défaut.
+					Si l'on sélectionne cette option, toutes les cartes de voeux seront supprimées sans se soucier
+					du modèle de carte correspondant.
+				</p>
+				<p>
+					En revanche, si l'on sélectionne une autre option, seules les cartes correspondants au modèle
+					sélectionné seront supprimées.
+				</p>
+			</subsection>		
+		</section>
+	</body>
+</document>

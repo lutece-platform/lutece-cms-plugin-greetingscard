@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Visualisation des statistiques</title>
+	</properties>
+	<body>
+		<section name="Visualisation des statistiques">
+			<p>
+				Pour y accéder, il suffit de cliquer sur "<strong>Statistiques d'envoi de carte de
+				voeux</strong>" depuis l'interface d'Administration des cartes de voeux.
+			</p>
+			<p>
+				L'interface de visualisation des statistiques permet de savoir avec
+				précision quels modèles de cartes sont les plus utilisés, mais aussi 
+				d'avoir une idée sur l'identité des destinataires.
+			</p>
+			<center>
+				<img src="../../images/user/stats_greetingscard.png" alt="stats_greetingscard"/>
+			</center>
+			<p>
+				La liste de tous les modèles créés s'affiche sous forme d'un tableau
+				dont les colonnes forment les différentes statistiques :
+			</p>
+			<ul>
+				<li>Nombre total de cartes de voeux envoyées</li>
+				<li>Nombre de cartes envoyées en interne</li>
+				<li>Nombre de cartes envoyées à l'extérieur</li>
+			</ul>			
+			<subsection name="Nombre total de cartes de voeux envoyées">
+				<p>
+					Cette information permet de connaître le total de carte de voeux
+					envoyées suivant le modèle.
+				</p>
+				<p>
+					Il y a également le pourcentage de cartes envoyées par modèle par rapport
+					au nombre total de cartes envoyées.
+					
+				</p>				
+			</subsection>
+			<subsection name="Nombre de cartes envoyées en interne">
+				<p>
+					Cette information permet de connaître le total de carte de voeux
+					envoyées en interne suivant le modèle.
+				</p>
+				<p>
+					Cette notion d'envoi en interne repose sur le nom de domaine des adresses e-mails.
+					Dès que l'on crée une carte de voeux, il faut spécifier l'adresse e-mail du destinataire
+					de la carte pour que ce dernier puisse être averti par mail qu'une carte de voeux lui est destinée.
+				</p>
+				<p>
+					Dans le fichier <code>greetingscard.properties</code>, on spécifie les noms de domaine que l'on
+					considère comme interne. Veuillez-voir <a href="../tech/configuration.html">la page de configuration</a>
+					si vous souhaitez plus de détails.
+				</p>
+				<p>
+					Pour calculer cette statistique, on dénombre parmi toutes les cartes de voeux envoyées, celles dont 
+					l'adresse e-mail du destinataire contient un nom de domaine spécifiée dans le fichier
+					<code>greetingscard.properties</code>.
+				</p>
+			</subsection>
+			<subsection name="Nombre de cartes envoyées à l'extérieur">
+				<p>
+					Le nombre de cartes envoyées à l'extérieur correspond au nombre de cartes de voeux envoyées dont
+					l'adresse e-mail contient des noms de domaine non spécifiés dans le fichier <code>greetingscard.properties</code>.					
+				</p>				
+			</subsection>
+		</section>
+	</body>
+</document>

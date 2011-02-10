@@ -1,0 +1,64 @@
+<div class="content-box" >
+
+<h2>#i18n{greetingscard.greetings_card_templates.pageTitle}</h2>
+
+<table>
+
+	<tr>
+		<th>#i18n{greetingscard.greetings_card_templates.columnLabelFileTitle}</th>
+		<th>#i18n{greetingscard.greetings_card_templates.columnLabelAction}</th>
+	</tr>
+	
+   		           
+<#list greetings_card_template_list as greetings_card  >
+	<tr>
+		<td> ${greetings_card.id} - ${greetings_card.description}</td>
+		<td>
+			<#if permission_modify>
+				<a href="jsp/admin/plugins/greetingscard/ModifyGreetingsCardTemplate.jsp?gct_id=${greetings_card.id}">
+					<img src="images/admin/skin/actions/modify.png" 
+						alt="#i18n{greetingscard.greetings_card_templates.buttonLabelModify}"
+						title="#i18n{greetingscard.greetings_card_templates.buttonLabelModify}"/>
+				</a>
+			</#if>
+			<#if permission_send>
+				<a href="jsp/admin/plugins/greetingscard/SendGreetingsCardMail.jsp?gct_id=${greetings_card.id}">
+					<img src="images/admin/skin/actions/send.png" 
+						alt="#i18n{greetingscard.greetings_card_templates.buttonLabelSend}"
+						title="#i18n{greetingscard.greetings_card_templates.buttonLabelSend}"/>
+				</a>
+			</#if>
+			<#if permission_stats>
+				<a href="jsp/admin/plugins/greetingscard/Statistics.jsp?gct_id=${greetings_card.id}">
+					<img src="images/admin/skin/actions/statistics.png" 
+						alt="#i18n{greetingscard.greetings_card_templates.buttonLabelStatistics}"
+						title="#i18n{greetingscard.greetings_card_templates.buttonLabelStatistics}"/>
+				</a>
+			</#if>
+			<#if permission_delete>
+			  	<a href="jsp/admin/plugins/greetingscard/DoRemoveGreetingsCardTemplate.jsp?gct_id=${greetings_card.id}">
+					<img src="images/admin/skin/actions/delete.png" 
+						alt="#i18n{greetingscard.greetings_card_templates.buttonLabelDelete}"
+						title="#i18n{greetingscard.greetings_card_templates.buttonLabelDelete}"/>
+				</a>
+			</#if>
+		</td>	                  
+	</tr>
+</#list>
+
+</table>
+<br/>
+
+	<form action="jsp/admin/plugins/greetingscard/ChoiceGreetingsCard.jsp">
+	    <input type="hidden" name="plugin_name" value="${plugin_name}"/>
+	    <#if permission_create>
+			<input type="submit" value="#i18n{greetingscard.greetings_card_templates.buttonLabelAdd}" class="button" name="create"/>
+		</#if>
+		<#if permission_stats>
+			<input type="submit" value="#i18n{greetingscard.greetings_card_templates.buttonLabelGlobalStat}" class="button" name="stats"/>
+		</#if>
+	</form>
+	
+</div>
+
+

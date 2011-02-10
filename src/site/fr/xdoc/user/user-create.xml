@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Création d'une carte de voeux</title>
+	</properties>
+	<body>
+		<section name="Création d'une carte de voeux">
+			<p>
+				La création d'une carte de voeux se fait depuis le Front-Office par l'intermédiaire
+				d'une <code>Xpage</code>.			
+			</p>
+			<p>
+				La seule contrainte est qu'il faut connaître l'ID du modèle (<code>modele_id</code>)
+				que l'on souhaite utiliser car c'est un paramètre que l'on doit renseigner dans l'URL.
+				Il faut également renseigner le format que l'on souhaite utiliser (<code>format</code>).
+			</p>                   
+			<div class="source">	
+				http://&lt;<code>base_url</code>&gt;/jsp/site/Portal.jsp?page=greetingscard&amp;action=create&amp;gct_id=&lt;<code>modele_id</code>&gt;&amp;format=&lt;<code>format</code>&gt;
+			</div>
+			<p>
+				Comme il est spécifié dans l'URL, il existe plusieurs formats pour la création : 
+			</p>
+			<ul>
+				<li>Format HTML (<code>format</code>=html)</li>
+				<li>Animation Flash (<code>format</code>=flash)</li>
+			</ul>
+			<p>
+				Chacun de ces formats fait appel à des templates différents qui ont été chargés lors de la création du modèle.
+			</p>
+			<p>
+				Indépendamment du format, certains champs obligatoires devront être renseignés pour que la création se passe correctement.
+				Ces champs seront à définir dans la template.
+			</p>
+			<p>
+				Veuillez vous référer à la section <a href="../tech/templates.html">Templates</a>
+				pour de plus amples informations.
+			</p>
+			<p>
+				Après avoir correctement rempli le formulaire de création de cartes, un e-mail sera envoyé au destinataire de la carte
+				pour l'avertir qu'une carte de voeux lui est destinée.
+			</p>
+			<subsection name="Création sans mot de passe">
+				<p>
+					Si le modèle de carte n'est pas protégé par un mot de passe, l'utilisateur accède directement à la page de création
+					de la carte de voeux.
+				</p>
+			</subsection>
+			<subsection name="Création avec mot de passe">
+				<p>
+					Si le modèle de carte est protégé par un mot de passe, l'utilisateur devra passer par une interface supplémentaire
+					où il devra renseigner le mot de passe.
+					Cela permet de restreindre l'accès à certains modèles de carte de voeux.
+				</p>
+				<center>
+					<img src="../../images/user/user_password.png" alt="user_password"/>
+				</center>
+				<p>
+					Après avoir renseigné le bon mot de passe et validé, l'utilisateur sera directement redirigé vers la page de création.
+				</p>
+			</subsection>			
+		</section>
+	</body>
+</document>

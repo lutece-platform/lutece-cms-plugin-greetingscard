@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Introduction</title>
+	</properties>
+	<body>
+		<section name="Descriptif du plugin">
+			<subsection name="Introduction">
+				<p>	
+					Le plugin GreetingCards vise à permettre de mettre en place sur les sites Lutèce V2 l'envoi de cartes de voeux.
+				</p>
+				<p>
+					Il s’agit de permettre à chaque webmestre de prendre en charge la conception et la gestion des modèles de cartes,
+					ainsi que la visualisation des statistiques pour chacun de ces modèles.
+				</p>
+				<p>
+					Les utilisateurs pourront créer des cartes de voeux à partir de ces modèles et avertir leurs destinataires par mail
+					depuis le Front-Office.
+				</p> 
+			</subsection>
+		</section>
+	</body>
+</document>

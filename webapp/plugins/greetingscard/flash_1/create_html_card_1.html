@@ -1,0 +1,115 @@
+<#include "../../../WEB-INF/templates/admin/util/editor/editor.html" />
+<br><br>
+<center>
+Envoi d'une carte du Maire de Paris<br><br>
+<img src="${picture_card}" height="${height}" width="${width}"/>
+<br>
+<h3>${sended_email}</h3>
+<br>
+</center>
+<form name="html_send_greetings_card" method="post" action="jsp/site/Portal.jsp">
+<table cellpadding="10" cellspacing="0" width="500" align="center" border="0" bordercolor="#000000">
+	<tr>
+		<td align="center">
+			<br>
+			<table width="480" align="center" cellspacing="0" cellpadding="2">
+				<tr>
+					<td width="180">
+						Email du destinataire :
+					</td>
+					<td width="300">
+						<input type="text" name="recipient_email" size="40" maxlength="254">
+					</td>
+				</tr>
+				<tr>
+					<td width="180">
+						Message :
+					</td>
+					<td width="300">
+						<textarea name="message" rows="8" cols="30">${message}</textarea>
+					</td>
+				</tr>
+				<tr>
+					<td width="180">
+						Message complémentaire :
+					</td>
+					<td width="300">
+						<div class="editor" >
+			     			<textarea name="message2" id="message2" rows="20" cols="90"   class="richtext"  style="width:100%">${message2}</textarea>
+				 			<br/>
+				 	 	</div>
+					</td>
+				</tr>
+				<tr>
+					<td width="180">
+						Votre nom (expéditeur) :
+					</td>
+					<td width="300">
+						<input type="text" name="sender_name" size="40" value="${sender_name}" maxlength="80">
+					</td>
+				</tr>
+				<tr>
+					<td width="180">
+						Votre email (expéditeur) :
+					</td>
+					<td width="300">
+						<input type="text" name="sender_email" size="40" value="${sender_email}" maxlength="80">
+					</td>
+				</tr>
+				<tr>
+					<td width="180">
+						&nbsp;
+					</td>
+					<td width="300">
+						Recevoir une copie du mail : <input class="checkbox" type="checkbox" name="mail_copy">
+					</td>
+				</tr>
+				<tr>
+					<td width="180">
+						<br><br>
+					</td>
+					<td width="300" valign="middle">
+						<input type="hidden" name="page" value="greetingscard">
+						<input type="hidden" name="action" value="send">
+						<input type="hidden" name="format" value="html">
+						<input type="hidden" name="gct_id" value="${gct_id}">
+						<input type="submit" value="Envoyer" onClick="submit_greetings_card_sending();return(false);">
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</form>
+<br><br>
+<script language="JavaScript">
+
+function submit_greetings_card_sending()
+{
+	Email = document.html_send_greetings_card.recipient_email.value;
+	if ((document.html_send_greetings_card.recipient_email.value == "") || (Email.indexOf('@') < 1) || (Email.length < 5))
+	{
+		alert("Vous devez saisir une adresse e-mail valide pour le destinataire");
+    		document.html_send_greetings_card.recipient_email.focus();
+		return false;
+	}
+	if (document.html_send_greetings_card.message.value == "")
+	{
+		alert("Vous devez saisir un message");
+    		document.html_send_greetings_card.message.focus();
+		return false;
+	}
+	if (document.html_send_greetings_card.sender_name.value == "")
+	{
+		alert("Vous devez saisir votre nom");
+    		document.html_send_greetings_card.sender_name.focus();
+		return false;
+	}
+	else
+	{
+		document.html_send_greetings_card.submit();
+		return true;
+	}
+}
+</script>
+<@initEditor />

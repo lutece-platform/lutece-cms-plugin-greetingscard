@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Lut&egrave;ce - GreetingCards">
+	<body>
+		<links>
+			<item name="EN" href="../index.html" />
+		</links>
+
+		<menu name="Aper&ccedil;u">
+			<item name="Introduction" href="index.html" />
+			<item name="T&eacute;l&eacute;chargement" href="download.html" />
+			<item name="Configuration" href="tech/configuration.html" />
+			<item name="Utilisation" href="user/menu-Plugin.html" collapse="true">
+				<item name="Gestion des mod&egrave;les de carte de voeux" href="user/admin-manage.html"/>
+				<item name="Visualisation des statistiques" href="user/admin-stats.html"/>
+				<item name="Suppression des cartes de voeux envoy&eacute;es" href="user/admin-delete.html"/>
+				<item name="Cr&eacute;ation d'une carte de voeux" href="user/user-create.html"/>
+				<item name="Visualisation d'une carte de voeux" href="user/user-view.html"/>
+				<item name="Templates" href="tech/templates.html"/>                
+			</item>
+		</menu>
+		
+		<menu name="Téléchargements" inherit="bottom" >
+			     <item name="Versions stables" href="../../../stable_builds/plugins/plugin-greetingscard/"/>
+			     <item name="Nightly builds" href="../../../nightly_builds/plugins/plugin-greetingscard/" />
+		</menu>
+
+		<menu ref="reports" />
+		
+	</body>
+</project>

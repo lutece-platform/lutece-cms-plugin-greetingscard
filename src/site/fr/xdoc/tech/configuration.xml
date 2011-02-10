@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE document PUBLIC "//UNKNOWN/" "http://maven.apache.org/dtd/xdoc_1_0.dtd">
+<document>
+	<properties>
+		<title>Configuration</title>
+	</properties>
+	<body>
+		<section name="Installation">
+			<p>
+				Il existe plusieurs possibilités d'installation en
+				fonction de la distribution employée :
+			</p>
+			<ul>
+				<li>
+					Distribution binaire : Le contenu du fichier zip de
+					la distribution binaire doit être décompressé dans
+					une webapp contenant déjà le coeur de Lutèce.
+				</li>
+				<li>
+					Sources : Dans ce cas il est nécessaire d'ajouter la
+					dépendance sur le coeur afin de pouvoir compiler les
+					sources et de se retrouver avec une distribution
+					binaire.
+				</li>
+			</ul>
+			<p>
+			Pour générer la distribution binaire, il suffit de télécharger les sources du projet 
+			et d'exécuter la commande : <br/>
+			<code>mvn lutece:assembly</code>.
+			</p>
+			<br/><br/>
+			<p>
+			Le module est à installer dans une application contenant au minimum :
+			</p>
+			<ul>
+				<li>le coeur de Lutèce</li>
+			</ul>
+			<p>
+				Pour les détails de l'installation, reportez vous à la
+				rubrique :
+				<a href="http://dev.lutece.paris.fr/fr/tech/howto-create-plugins.html">Installation de plugin</a>
+			</p> 
+			<br/>
+			<br/>
+			<p>
+				<strong>Remarque :</strong>
+				<br />
+				Il est possible d'obtenir un fichier
+				<code>war</code>
+				déployable en utilisant un packaging de type
+				<code>lutece-site.</code>
+				Ce fichier doit être placé dans le répertoire
+				<code>webapps</code>
+				de votre installation de Tomcat. Il sera automatiquement
+				déployé lors du lancement du serveur.
+			</p>
+		</section>
+		<section name="Configuration">
+		
+			<subsection name="Mode Portail">
+				<p>
+					La configuration correspond à la configuration
+					classique d'un portail Lutèce.
+				</p>
+			</subsection>
+			<subsection name="Fichiers paramétrables">
+				<ul>
+					<li><code>db.properties</code> :</li>
+				</ul>
+				<p>
+				Pour utiliser un pool spécifique au plugin GreetingCards (<code>greetingscard</code> par exemple), ajouter le code suivant dans ce fichier :
+				</p>
+				
+				<source>
+					greetingscard.poolservice=fr.paris.lutece.util.pool.service.LuteceConnectionService
+					greetingscard.driver=org.gjt.mm.mysql.Driver
+					greetingscard.url=jdbc:mysql://&lt;mysqlhost&gt;:&lt;mysqlport&gt;/&lt;basename&gt;?
+								autoReconnect=true&amp;useUnicode=yes&amp;characterEncoding=utf8
+					greetingscard.user=
+					greetingscard.password=
+					greetingscard.initconns=2
+					greetingscard.maxconns=5
+					greetingscard.logintimeout=2000
+					greetingscard.checkvalidconnectionsql=SELECT 1
+				</source>
+
+				<br />
+				<ul>
+					<li><code>greetingscard.properties</code> :</li>
+				</ul>
+				<p>
+				Certains réglages sont disponibles au niveau du plugin :
+				</p>
+				<table>
+					<tr>
+						<th>Propriété</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>greetingscard.path.greetingscardtemplatedirname</td>
+						<td>Le préfixe du nom de dossier dans lequel seront chargés les fichiers utiles à un modèle de carte
+							 (/<code>&lt;préfixe&gt;_&lt;modèle_id&gt;</code>).</td>
+					</tr>
+					<tr>
+						<td>greetingscard.path.greetingscardtemplates</td>
+						<td>La sous-arborescence dans laquelle les dossiers ci-dessus seront stockés
+							(à partir de la racine du sîte).</td>
+					</tr>
+					<tr>
+						<td>greetingscard.getPicture.FileName</td>
+						<td>Le préfixe du nom du fichier image correspondant à un modèle de carte.</td>
+					</tr>
+					<tr>
+						<td>greetingscard.isInternal.Email&lt;x&gt;</td>
+						<td>Les noms de domaine qui sont considérés comme des envois internes (<code>@&lt;xxx&gt;.com</code>).</td>
+					</tr>	
+				</table>
+			</subsection>
+		</section>
+	</body>
+</document>

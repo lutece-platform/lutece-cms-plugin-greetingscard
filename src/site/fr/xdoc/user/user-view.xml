@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Visualisation d'une carte de voeux</title>
+	</properties>
+	<body>
+		<section name="Visualisation d'une carte de voeux">
+			<p>
+				La visualisation d'une carte de voeux se fait depuis le Front-Office par l'intermédiaire
+				d'une <code>Xpage</code>.
+			</p>
+			<p>
+				Elle peut également se faire depuis un e-mail dans lequel un lien existe vers une <code>Xpage</code>.
+				C'est cette méthode qui sera la plus souvent utilisée, car c'est la procédure standard :  après avoir créé
+				une carte de voeux, un e-mail est envoyé au destintaire qui pourra visualiser la carte en cliquant directement
+				sur le lien contenu dans le mail.
+			</p>
+			<subsection name="Visualisation depuis un e-mail">
+				<p>
+					Depuis l'e-mail, il suffit de cliquer sur l'un des liens pour visualiser la carte de voeux.
+					Les différents liens correspondent aux différents formats existant (HTML ou Flash).
+				</p>
+			</subsection>
+			<subsection name="Visualisation directment depuis une Xpage">
+				<p>
+					La seule contrainte est qu'il faut connaître l'ID de la carte (<code>carte_id</code>)
+					que l'on souhaite visualiser car c'est un paramètre que l'on doit renseigner dans l'URL.
+					Il faut également renseigner le format que l'on souhaite utiliser (<code>format</code>).
+				</p>                
+				<div class="source">	
+					http://&lt;<code>base_url</code>&gt;/jsp/site/Portal.jsp?page=greetingscard&amp;action=view&amp;gc_id=&lt;<code>carte_id</code>&gt;&amp;format=&lt;<code>format</code>&gt;
+				</div>
+				<p>
+					Comme il est spécifié dans l'URL, il existe plusieurs formats pour la visualisation : 
+				</p>
+				<ul>
+					<li>Format HTML (<code>format</code>=html)</li>
+					<li>Animation Flash (<code>format</code>=flash)</li>
+				</ul>
+				<p>
+					Chacun de ces formats fait appel à des templates différents qui ont été chargés lors de la création du modèle.
+				</p>
+				<p>
+					Indépendamment du format, certains champs obligatoires devront être spécifiés dans la template de visualisation
+					pour que l'affichage se fasse correctement.
+				</p>
+				<p>				
+					Veuillez vous référer à la section <a href="../tech/templates.html">Templates</a>
+					pour de plus amples informations.
+				</p>
+			</subsection>
+		</section>
+	</body>
+</document>

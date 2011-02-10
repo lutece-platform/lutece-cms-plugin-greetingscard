@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <properties>
+        <title>
+            Menu principal du plugin GreetingCards
+        </title>
+    </properties>
+    <body>
+        <section name="Plugin GreetingCards">
+             <p>
+            	 Le menu principal récapitule l'ensemble des fonctionnalités qu'offre ce plugin.
+			 </p>
+			 <strong>Fonctionnalités d'administration</strong>
+			<ul>
+					<li>Gestion des modèles de carte de voeux</li>
+					<li>Visualisation des statistiques </li>
+					<li>Suppression des cartes de voeux envoyées</li>
+			</ul>
+			<strong>Autres fonctionnalités</strong>
+			<ul>
+					<li>Création d'une carte de voeux</li>
+					<li>Visualisation d'une carte de voeux</li>
+			</ul>
+			<strong>Information sur les templates</strong>
+			<ul>
+					<li>Templates</li>
+			</ul>
+			 <p>
+				 Parmi toutes ces fonctionnalités, nous devons distinguer les fonctionnalités d'administration
+				 qui seront accessibles depuis le back-office et les autres.
+				 Il faut également distinguer très clairement les cartes de voeux elles-mêmes et les modèles de cartes
+				 de voeux qui permettent de les créer.
+			</p>
+			<p>
+				 Les modèles sont gérés exclusivement à partir de l'interface d'administration alors que les cartes 
+				 de voeux sont gérés à la fois sur le Front-Office (pour la création et la visualisation) et sur 
+				 le Back-Office pour leur suppression.
+            </p>
+			<subsection name="Fonctionnalités d'administration">
+				<p>
+					L'interface d'administration des cartes de voeux regroupe l'ensemble des actions
+					que le webmestre peut effectuer.
+					Cette interface est découpée en deux sous-menus :
+				</p>
+				<ul>
+					<li>Modèles de carte de voeux</li>
+					<li>Statistiques d'envoi de carte de voeux</li>
+				</ul>
+				<center>
+					<img src="../../images/user/menu_greetingscard.png" alt="menu_greetingscard"/>
+				</center>
+			</subsection>
+			<subsection name="Autres Fonctionnalités">
+				<p>
+					Ces autres fonctionnalités sont des fonctionnalités d'utilisation. Elles seront accessibles
+					directement sur le Front-Office et seront utilisées par les utilisateurs du site : 
+				</p>
+				<ul>
+					<li>Création d'une carte de voeux</li>
+					<li>Visualisation d'une carte de voeux</li>
+				</ul>
+			</subsection>
+        </section>
+   </body>
+</document>       
+             

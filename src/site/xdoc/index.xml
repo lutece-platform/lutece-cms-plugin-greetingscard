@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Introduction</title>
+	</properties>
+	<body>
+		<section name="Plugin's description">
+			<subsection name="Introduction">
+				<p>	
+					The GreetingCards plugin aims to develop the sending of greeting card in Lutece V2 websites.
+				</p>
+				<p>						
+					The goal is to allow each webmaster to create and to manage greeting cards templates,
+					but also to see the statistics for each models.
+				</p>
+				<p>
+					Users can create greeting cards from templates and send a mail to warn the recipient of the
+					greeting card on the Front-Office.
+				</p> 
+			</subsection>
+		</section>
+	</body>
+</document>

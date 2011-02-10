@@ -1,0 +1,195 @@
+<div class="content-box" >
+
+    <h2>#i18n{greetingscard.global_statistics.statisticsTitle}</h2>
+    
+  	<table>
+		<tr>
+			<th>#i18n{greetingscard.statistics.columnLabelFileName}</th>
+			<th>#i18n{greetingscard.statistics.columnLabelSend}</th>
+			<th>#i18n{greetingscard.statistics.columnLabelSendInside}</th>
+			<th>#i18n{greetingscard.statistics.columnLabelSendOutside}</th>
+			<th>#i18n{greetingscard.statistics.columnLabelReadInside}</th>
+			<th>#i18n{greetingscard.statistics.columnLabelReadOutside}</th>
+		</tr>
+   		
+   		<#assign total_card_number = 0 >
+   		<#assign total_read_card_number = 0 >
+   		<#assign total_card_number_inside = 0 >
+   		<#assign total_card_number_outside = 0 >
+   		<#assign total_card_number_inside_ratio = 0 >
+		<#assign total_card_number_outside_ratio = 0 >
+		<#assign total_read_card_number_inside = 0 >
+   		<#assign total_read_card_number_outside = 0 >
+   		<#assign total_read_card_number_inside_ratio = 0 >
+		<#assign total_read_card_number_outside_ratio = 0 >
+
+   	
+   		<#list greetings_card_template_list as greetings_card_template>
+   			<#list greetings_card_template.greetingsCards as greetings_card  >
+   		 		<#if greetings_card.copy == false>
+	   		 		<#assign total_card_number = (total_card_number+1) > 	
+					<#if greetings_card.read>
+						<#assign total_read_card_number = (total_read_card_number+1) >
+					</#if>
+				</#if>
+			</#list>
+		</#list>
+		          
+		<#list greetings_card_template_list as greetings_card_template >
+
+			<#assign card_number = 0 >
+			<#assign inside_card_number = 0 >
+			<#assign outside_card_number = 0 >
+			<#assign inside_read_card_number = 0 >
+			<#assign outside_read_card_number = 0 >
+		
+			<#list greetings_card_template.greetingsCards as greetings_card  >
+				<#if greetings_card.copy == false>
+					<#if greetings_card.internal>
+			 			<#assign inside_card_number = (inside_card_number+1) >
+			 			<#if greetings_card.read >
+			 				<#assign inside_read_card_number = (inside_read_card_number+1) >
+			 			</#if>
+			 		<#else>
+			 			<#if greetings_card.read >
+			 				<#assign outside_read_card_number = (outside_read_card_number+1) >
+			 			</#if>
+			 		</#if>
+					<#assign card_number = (card_number+1) >
+				</#if>
+			</#list>
+			<#assign total_read_card_number_inside = (total_read_card_number_inside+inside_read_card_number)>
+			<#assign total_read_card_number_outside = (total_read_card_number_outside+outside_read_card_number)>
+			<#assign outside_card_number = (card_number-inside_card_number) >
+		
+			<#if total_card_number == 0>
+				<#assign card_number_ratio = 0>
+			<#else>
+				<#assign card_number_ratio = (card_number/total_card_number) >
+			</#if>
+			
+			<#assign total_read_card = (inside_read_card_number+outside_read_card_number) >
+			<#if inside_card_number == 0>
+				<#assign ratio_read_card_inside = 0 >
+			<#else>
+				<#assign ratio_read_card_inside = (inside_read_card_number/inside_card_number) >
+			</#if>
+			
+			<#if outside_card_number == 0>
+				<#assign ratio_read_card_outside = 0 >
+			<#else>
+				<#assign ratio_read_card_outside = (outside_read_card_number/outside_card_number) >
+			</#if>
+			
+			<#if card_number == 0>
+				<#assign inside_card_number_ratio = 0 >
+				<#assign outside_card_number_ratio = 0 >
+			<#else>
+				<#assign inside_card_number_ratio =  (inside_card_number/card_number) >
+				<#assign outside_card_number_ratio = (outside_card_number/card_number) >
+			</#if>
+			
+			<#assign total_card_number_inside = (total_card_number_inside+inside_card_number) >
+			<#assign total_card_number_outside = (total_card_number_outside+outside_card_number) >
+			
+			<#if total_card_number == 0>
+			<#else>
+				<#assign total_card_number_inside_ratio = (total_card_number_inside/total_card_number) >
+				<#assign total_card_number_outside_ratio = (total_card_number_outside/total_card_number) >
+			</#if>
+			
+			<tr>
+					<td>${greetings_card_template.id} - ${greetings_card_template.description}</td>
+					<td>${card_number} (${card_number_ratio?string.percent} #i18n{greetingscard.statistics.totalpercent})</td>
+					<td>${inside_card_number} (${inside_card_number_ratio?string.percent})</td>
+					<td>${outside_card_number} (${outside_card_number_ratio?string.percent})</td>
+					<td>${inside_read_card_number} (${ratio_read_card_inside?string.percent})</td>
+					<td>${outside_read_card_number} (${ratio_read_card_outside?string.percent})</td>
+			</tr>
+		</#list>
+			<tr>
+			
+				<#if total_card_number_inside = 0>
+					<#assign total_read_card_number_inside_ratio = 0 >
+				<#else>
+					<#assign total_read_card_number_inside_ratio = (total_read_card_number_inside/total_card_number_inside) >
+				</#if>
+				
+				<#if total_card_number_outside = 0>
+					<#assign total_read_card_number_outside_ratio = 0 >
+				<#else>
+					<#assign total_read_card_number_outside_ratio = (total_read_card_number_outside/total_card_number_outside) >
+				</#if>
+				<td>
+					<strong>#i18n{greetingscard.statistics.total}</strong>
+				</td>
+				<td>
+					<strong>${total_card_number}</strong>
+				</td>
+				<td>
+					<strong>${total_card_number_inside} (${total_card_number_inside_ratio?string.percent})</strong>
+				</td>
+				<td>
+					<strong>${total_card_number_outside} (${total_card_number_outside_ratio?string.percent})</strong>
+				</td>
+				<td>
+					<strong>${total_read_card_number_inside} (${total_read_card_number_inside_ratio?string.percent})</strong>
+				</td>
+				<td>
+					<strong>${total_read_card_number_outside} (${total_read_card_number_outside_ratio?string.percent})</strong>
+				</td>
+			</tr>
+	</table>
+</div>
+ 
+<div class="content-box"> 
+
+   <h2>#i18n{greetingscard.domain_statistics.statisticsTitle}</h2>
+   
+   <table>
+		<tr>
+			<th>#i18n{greetingscard.domain_statistics.columnLabelDomainName}</th>
+			<th>#i18n{greetingscard.domain_statistics.columnLabelSend}</th>
+			<th>#i18n{greetingscard.domain_statistics.columnLabelRead}</th>
+		</tr>
+		
+		<#list domain_list as domain>
+			<#if domain_total_sent == 0>
+				<#assign total_domain_sent_ratio = 0 >
+			<#else>
+				<#assign total_domain_sent_ratio = (domain.mailSent/domain_total_sent) >
+			</#if>
+			
+			<#if domain.mailSent == 0>
+				<#assign total_domain_read_ratio = 0 >
+			<#else>
+				<#assign total_domain_read_ratio = (domain.mailRead/domain.mailSent) >
+			</#if>
+			
+			<tr>
+				<td>${domain.domainName}</td>
+				<td>${domain.mailSent} (${total_domain_sent_ratio?string.percent})</td>
+				<td>${domain.mailRead} (${total_domain_read_ratio?string.percent})</td>
+			</tr>
+		</#list>
+		
+		<tr>
+			<td>
+				<strong>#i18n{greetingscard.statistics.total}</strong>
+			</td>
+			<td>
+				<strong>${domain_total_sent}</strong>
+			</td>
+			<#if domain_total_sent == 0 >
+				<#assign percent_read_mail = 0>
+			<#else>
+				<#assign percent_read_mail = (domain_total_read/domain_total_sent) >
+			</#if>
+			<td>
+				<strong>${domain_total_read} (${percent_read_mail?string.percent} #i18n{greetingscard.statistics.read_message})</strong>
+			</td>
+		</tr>
+	</table>
+	<br/>
+	<input type="button" onclick="javascript:history.go(-1)" value="#i18n{greetingscard.statistics.labelIdCancel}" class="button" />
+</div>     

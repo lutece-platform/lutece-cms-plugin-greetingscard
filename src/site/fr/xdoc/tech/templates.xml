@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<properties>
+		<title>Templates</title>
+	</properties>
+	<body>
+		<section name="Templates">
+			<p>
+				Dans cette section, nous allons voir ce que doit contenir au minimum chaque template
+				chargé lors de la création d'un modèle.
+			</p>
+			<p>
+				Voci la liste des templates nécessaires :
+			</p>
+			<ul>
+				<li>Template HTML de création de carte de voeux</li>
+				<li>Template HTML de visualisation de carte de voeux</li>
+				<li>Template HTML pour le mail</li>
+				<li>Animation Flash de création de carte de voeux</li>
+				<li>Animation Flash de visualisation de carte de voeux</li>
+			</ul>
+			<p>
+				Tous ces éléments obligatoires sont gérés par
+				<a href="http://freemarker.org/"><code>Freemarker</code>.</a>
+			</p>
+		</section>
+		<section name="Templates HTML">
+			<subsection name="Template HTML de création de carte de voeux">
+				<p>
+					Voici les éléments obligatoires pour cette template de création : 
+				</p>
+				<strong>Paramètres d'entrée :</strong>
+				<table>
+					<tr>
+						<th>Identifiant</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>picture_card</td>
+						<td>Le chemin où se situe l'image à afficher
+							(par ex <code>/plugins/greetingscard/model_1/picture_card.jpg</code>).</td>
+					</tr>
+					<tr>
+						<td>height</td>
+						<td>La hauteur de l'image.</td>
+					</tr>
+					<tr>
+						<td>width</td>
+						<td>La largeur de l'image.</td>
+					</tr>
+				</table>
+				<p>
+					Ils doivent être passés en paramètre lors de l'appel de la template.
+				</p>
+				<strong>Paramètres de sortie :</strong>
+				<table>
+					<tr>
+						<th>Identifiant</th>
+						<th>Description</th>
+						<th>Valeur</th>
+					</tr>					
+					<tr>
+						<td>recipient_email</td>
+						<td>L'adresse e-mail du destinataire de la carte de voeux.</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>message</td>
+						<td>Le corps de l'e-mail.</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>sender_name</td>
+						<td>Le nom de l'expéditeur de la carte.</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>sender_email</td>
+						<td>L'adresse e-mail de l'expéditeur.</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>page</td>
+						<td>Le nom de la <code>XPage</code> sur laquelle on est.</td>
+						<td><code>greetingscard</code></td>
+					</tr>
+					<tr>
+						<td>action</td>
+						<td>L'action que l'on est en train de réaliser : un envoi de mail.</td>
+						<td><code>send</code></td>
+					</tr>
+					<tr>
+						<td>format</td>
+						<td>Le format de création.</td>
+						<td><code>html</code></td>
+					</tr>
+					<tr>
+						<td>gct_id</td>
+						<td>L'ID du modèle de carte utilisé.</td>
+						<td></td>
+					</tr>					
+				</table>
+			</subsection>
+			<subsection name="Template HTML de visualisation de carte de voeux">
+				<p>
+					Voici les éléments obligatoires pour cette template de visualisation : 
+				</p>
+				<strong>Paramètres d'entrée :</strong>
+				<table>
+					<tr>
+						<th>Identifiant</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>picture_card</td>
+						<td>Le chemin où se situe l'image à afficher
+							(par ex <code>/plugins/greetingscard/model_1/picture_card.jpg</code>).</td>
+					</tr>
+					<tr>
+						<td>height</td>
+						<td>La hauteur de l'image.</td>
+					</tr>
+					<tr>
+						<td>width</td>
+						<td>La largeur de l'image.</td>
+					</tr>
+				</table>
+				<p>
+					Ils doivent être passés en paramètre lors de l'appel de la template.
+				</p>
+				<strong>Paramètres de sortie :</strong>
+				<table>
+					<tr>
+						<th>Identifiant</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>message</td>
+						<td>Le corps de l'e-mail.</td>
+					</tr>
+					<tr>
+						<td>sender_name</td>
+						<td>Le nom de l'expéditeur de la carte.</td>
+					</tr>
+					<tr>
+						<td>sender_email</td>
+						<td>L'adresse e-mail de l'expéditeur.</td>
+					</tr>
+				</table>
+			</subsection>
+			<subsection name="Template HTML pour le mail">
+				<p>
+					Voici les éléments obligatoires pour cette template : 
+				</p>
+				<strong>Paramètres d'entrée :</strong>
+				<table>
+					<tr>
+						<th>Identifiant</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>sender_name</td>
+						<td>Le nom de l'expéditeur de la carte.</td>
+					</tr>
+					<tr>
+						<td>view_flash_card_from_internet</td>
+						<td>L'URL de visualisation de la carte au format Flash.</td>
+					</tr>
+					<tr>
+						<td>view_html_card_from_internet</td>
+						<td>L'URL de visualisation de la carte au format HTML.</td>
+					</tr>
+				</table>
+			</subsection>
+		</section>
+		<section name="Animations Flash">
+			<p>
+				Les animations Flash de création et de visualisation doivent avoir les mêmes paramètres de sortie que
+				les templates HTML.
+			</p>
+		</section>
+	</body>
+</document>
