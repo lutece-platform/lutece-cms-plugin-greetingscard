@@ -38,7 +38,8 @@
 	
 	<properties>
 		<componentName>greetingscard</componentName>
-		<jiraProjectName>LUTECE</jiraProjectName>
+		<jiraProjectName>GREETINGSCARD</jiraProjectName>
+		<jiraComponentId>10161</jiraComponentId>
 	</properties>
     <scm>
         <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/cms/plugin-greetingscard</connection>
