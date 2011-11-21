@@ -259,7 +259,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         HashMap<String, Object> model = new HashMap<String, Object>(  );
         model.put( MARK_PLUGIN_NAME, getPlugin(  ).getName(  ) );
         model.put( MARK_GREETINGS_CARD_TEMPLATE_LIST, listGreetingsCardTemplate );
-        ajouterPermissionsDansHashmap( model );
+        addPermissionsToHashmap( model );
 
         HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_GREETINGS_CARD_TEMPLATES, getLocale(  ), model );
 
@@ -486,8 +486,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( getUser(  ), getLocale(  ) ) );
         model.put( MARK_USER_WORKGROUP_SELECTED, greetingsCardTemplate.getWorkgroupKey(  ) );
 
-        if ( greetingsCardTemplate.isEnabled(  ) )
-        {
+        if ( greetingsCardTemplate.isEnabled(  ) ) {
             model.put( MARK_GREETINGS_CARD_TEMPLATE_STATUS, CHECKED );
         }
         else
@@ -574,7 +573,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             int nHeight = Integer.parseInt( strHeight );
             String strWidth = request.getParameter( PARAMETER_WIDTH );
             int nWidth = Integer.parseInt( strWidth );
-            _strWorkGroup = request.getParameter( PARAMETER_WORKGROUP );
+            String strWorkGroup = request.getParameter( PARAMETER_WORKGROUP );
 
             int nStatus = 0;
 
@@ -591,7 +590,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             greetingsCardTemplate.setHeight( nHeight );
             greetingsCardTemplate.setWidth( nWidth );
             greetingsCardTemplate.setStatus( nStatus );
-            greetingsCardTemplate.setWorkgroupKey( _strWorkGroup );
+            greetingsCardTemplate.setWorkgroupKey( strWorkGroup );
 
             if ( request.getParameter( PARAMETER_CHECK_PASSWORD ) != null )
             {
@@ -1344,7 +1343,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
      * Permet de stocker toutes les permissions afin de gérer les profils au niveau des templates
      * @param model le hashmap contenant les parametres qui vont être envoyés au template
      */
-    private void ajouterPermissionsDansHashmap( Map<String, Object> model )
+    private void addPermissionsToHashmap( Map<String, Object> model )
     {
         /*
          * Permission de créer

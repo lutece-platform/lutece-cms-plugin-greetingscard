@@ -42,18 +42,30 @@ Envoi d'une carte du Maire de Paris<br><br>
 				</tr>
 				<tr>
 					<td width="180">
-						Votre nom (expéditeur) :
+					Votre nom (expéditeur) :
 					</td>
 					<td width="300">
-						<input type="text" name="sender_name" size="40" value="${sender_name}" maxlength="80">
+					<input type="text" name="sender_name" id="sender_name" size="40" maxlength="80" 
+					<#if mylutece_user??>
+						value=" ${mylutece_user.getUserInfo( 'user.name.family' )} ${mylutece_user.getUserInfo( 'user.name.given' )}"
+					<#else>
+						value="${sender_name}" 
+					</#if>
+                                        />
 					</td>
 				</tr>
 				<tr>
 					<td width="180">
-						Votre email (expéditeur) :
+					Votre email (expéditeur) :
 					</td>
 					<td width="300">
-						<input type="text" name="sender_email" size="40" value="${sender_email}" maxlength="80">
+					<input type="text" name="sender_email" size="40"  maxlength="80"
+                                        <#if mylutece_user??>
+						value=" ${mylutece_user.getUserInfo( 'user.business-info.online.email' )} "
+					<#else>
+						value="${sender_name}" 
+					</#if>
+                                        >
 					</td>
 				</tr>
 				<tr>
@@ -64,6 +76,12 @@ Envoi d'une carte du Maire de Paris<br><br>
 						Recevoir une copie du mail : <input class="checkbox" type="checkbox" name="mail_copy">
 					</td>
 				</tr>
+                                <tr>
+                                    <td width="180"></td>
+                                    <td width="300" valign="middle"><#if is_active_captcha>
+					<div >${captcha}</div>
+				</#if></td>
+                                </tr>
 				<tr>
 					<td width="180">
 						<br><br>

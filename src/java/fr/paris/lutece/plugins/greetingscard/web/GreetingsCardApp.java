@@ -39,12 +39,16 @@ import fr.paris.lutece.plugins.greetingscard.business.GreetingsCardTemplate;
 import fr.paris.lutece.plugins.greetingscard.business.GreetingsCardTemplateHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
+import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mail.MailService;
 import fr.paris.lutece.portal.service.message.SiteMessage;
 import fr.paris.lutece.portal.service.message.SiteMessageException;
 import fr.paris.lutece.portal.service.message.SiteMessageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.plugin.PluginService;
+import fr.paris.lutece.portal.service.security.LuteceUser;
+import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -62,7 +66,6 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-
 
 /**
  * This class implements the HelpDesk XPage.
@@ -142,7 +145,19 @@ public class GreetingsCardApp implements XPageApplication
     private static final String HTML_BR = "<br>";
     private static final String HTML_SUBSTITUTE_BR = "\r\n";
     private static final String SEPARATOR_MAIL_LIST = AppPropertiesService.getProperty( "mail.list.separator" );
+   
+    private static final String MARK_CAPTCHA = "captcha";
+    private static final String MARK_IS_ACTIVE_CAPTCHA = "is_active_captcha";
+    private static final String MARK_MYLUTECE_USER = "mylutece_user";
+    private static final String PROPERTY_CAPTCHA_ERROR = "contact.message_contact.captchaError";
+    private static final String JCAPTCHA_PLUGIN = "jcaptcha";
+    
+     //Captcha
+    private CaptchaSecurityService _captchaService;
 
+    // private fields
+    private Plugin _plugin;
+    
     /**
      * Creates a new QuizPage object.
      */
@@ -316,7 +331,7 @@ public class GreetingsCardApp implements XPageApplication
         throws DirectoryNotFoundException
     {
         GreetingsCard greetingsCard = GreetingsCardHome.findByPrimaryKey( strIdGC, plugin );
-
+        
         // Load the parameters of the greetings card plugin
         String strPathGreetingsCardTemplateDirName = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATE_DIR_NAME );
         String strPathGreetingsCardTemplatesRelative = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
@@ -331,7 +346,15 @@ public class GreetingsCardApp implements XPageApplication
         String strPathPictureCard = strPathGreetingsCardTemplatesRelative + PATH_SEPARATOR +
             strPathGreetingsCardTemplateDirName + greetingsCard.getIdGCT(  ) + PATH_SEPARATOR + strPicture;
 
+      
+        
         HashMap<String, Object> model = new HashMap<String, Object>(  );
+        
+         // Captcha
+        boolean bIsCaptchaEnabled = PluginService.isPluginEnable( JCAPTCHA_PLUGIN );
+        model.put( MARK_IS_ACTIVE_CAPTCHA, bIsCaptchaEnabled );
+
+        
         model.put( MARK_MESSAGE, greetingsCard.getMessage(  ) );
         model.put( MARK_MESSAGE2, greetingsCard.getMessage2(  ) );
         model.put( MARK_SENDER_NAME, greetingsCard.getSenderName(  ) );
@@ -445,6 +468,9 @@ public class GreetingsCardApp implements XPageApplication
 
         String strMessageSend = EMPTY_STRING;
 
+       
+
+        
         // Load the parameters of the greetings card plugin
         String strPathGreetingsCardTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
         String strPathGreetingsCardTemplateDirName = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATE_DIR_NAME );
@@ -489,6 +515,26 @@ public class GreetingsCardApp implements XPageApplication
         }
 
         HashMap<String, Object> model = new HashMap<String, Object>(  );
+        
+         boolean bIsCaptchaEnabled = PluginService.isPluginEnable( JCAPTCHA_PLUGIN );
+        model.put( MARK_IS_ACTIVE_CAPTCHA, bIsCaptchaEnabled );
+
+        if ( bIsCaptchaEnabled )
+        {
+            _captchaService = new CaptchaSecurityService(  );
+            model.put( MARK_CAPTCHA, _captchaService.getHtmlCode(  ) );
+        }
+        
+       if ( SecurityService.isAuthenticationEnable(  ) )
+        {
+            LuteceUser user = SecurityService.getInstance(  ).getRegisteredUser( request );
+
+            if ( user != null )
+            {
+                model.put( MARK_MYLUTECE_USER, user );
+            }
+        }
+        
         model.put( MARK_GCT_ID, strIdGCT );
         model.put( MARK_HEIGHT, greetingsCardTemplate.getHeight(  ) );
         model.put( MARK_WIDTH, greetingsCardTemplate.getWidth(  ) );
