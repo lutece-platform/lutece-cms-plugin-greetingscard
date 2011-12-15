@@ -1066,10 +1066,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
                 AdminMessage.TYPE_STOP );
         }
 
-        if ( ( ( fileItem != null ) && ( strMimeType != null ) &&
-                ( !strMimeType.equals( CONSTANT_MIME_TYPE_CSV ) &&
-                !strMimeType.equals( CONSTANT_MIME_TYPE_OCTETSTREAM ) ) ) ||
-                !fileItem.getName(  ).toLowerCase(  ).endsWith( CONSTANT_EXTENSION_CSV_FILE ) )
+        if ( !fileItem.getName(  ).toLowerCase(  ).endsWith( CONSTANT_EXTENSION_CSV_FILE ) )
         {
             return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_CSV_FILE_IMPORT, AdminMessage.TYPE_STOP );
         }
