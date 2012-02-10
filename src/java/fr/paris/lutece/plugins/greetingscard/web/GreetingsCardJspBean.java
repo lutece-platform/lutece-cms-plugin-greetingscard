@@ -1337,13 +1337,13 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     }
 
     /**
-     * Permet de stocker toutes les permissions afin de gérer les profils au niveau des templates
-     * @param model le hashmap contenant les parametres qui vont être envoyés au template
+     * Permet de stocker toutes les permissions afin de gÃ©rer les profils au niveau des templates
+     * @param model le hashmap contenant les parametres qui vont Ãªtre envoyÃ©s au template
      */
     private void addPermissionsToHashmap( Map<String, Object> model )
     {
         /*
-         * Permission de créer
+         * Permission de crÃ©er
          */
         boolean bPermissionCreate = true;
 
