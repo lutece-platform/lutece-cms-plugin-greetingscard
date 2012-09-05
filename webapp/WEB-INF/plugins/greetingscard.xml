@@ -1,14 +1,13 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<plug-in>
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?><plug-in>
 
    <!-- Plugin Informations -->
    <name>greetingscard</name>
    <class>fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation</class>
    <version>2.0.4</version>
-   <documentation></documentation>
-   <installation></installation>
-   <changes></changes>
-   <user-guide></user-guide>
+   <documentation/>
+   <installation/>
+   <changes/>
+   <user-guide/>
    <description>greetingscard.plugin.description</description>
    <provider>greetingscard.plugin.provider</provider>
    <provider-url>http://lutece.paris.fr</provider-url>
@@ -16,7 +15,7 @@
    <copyright>Copyright 2001-2009 Mairie de Paris</copyright>
    <core-version-dependency>
 		<min-core-version>2.3.2</min-core-version>
-		<max-core-version></max-core-version>	
+		<max-core-version/>	
     </core-version-dependency>
    <db-pool-required>1</db-pool-required>
 
@@ -49,4 +48,3 @@
 		</rbac-resource-type>
 	</rbac-resource-types>
 </plug-in>
-
