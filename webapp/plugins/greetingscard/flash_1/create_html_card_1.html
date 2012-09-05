@@ -31,7 +31,7 @@ Envoi d'une carte du Maire de Paris<br><br>
 				</tr>
 				<tr>
 					<td width="180">
-						Message complémentaire :
+						Message complÃ©mentaire :
 					</td>
 					<td width="300">
 						<div class="editor" >
@@ -42,30 +42,18 @@ Envoi d'une carte du Maire de Paris<br><br>
 				</tr>
 				<tr>
 					<td width="180">
-					Votre nom (expéditeur) :
+					Votre nom (expÃ©diteur) :
 					</td>
 					<td width="300">
-					<input type="text" name="sender_name" id="sender_name" size="40" maxlength="80" 
-					<#if mylutece_user??>
-						value=" ${mylutece_user.getUserInfo( 'user.name.family' )} ${mylutece_user.getUserInfo( 'user.name.given' )}"
-					<#else>
-						value="${sender_name}" 
-					</#if>
-                                        />
+					<input type="text" name="sender_name" id="sender_name" size="40" maxlength="80" value="${sender_name}" />
 					</td>
 				</tr>
 				<tr>
 					<td width="180">
-					Votre email (expéditeur) :
+					Votre email (expÃ©diteur) :
 					</td>
 					<td width="300">
-					<input type="text" name="sender_email" size="40"  maxlength="80"
-                                        <#if mylutece_user??>
-						value=" ${mylutece_user.getUserInfo( 'user.business-info.online.email' )} "
-					<#else>
-						value="${sender_name}" 
-					</#if>
-                                        >
+					<input type="text" name="sender_email" size="40"  maxlength="80" value="${sender_email}" />
 					</td>
 				</tr>
 				<tr>

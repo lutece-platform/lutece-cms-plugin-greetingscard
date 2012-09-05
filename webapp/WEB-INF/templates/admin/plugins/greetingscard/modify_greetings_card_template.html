@@ -1,65 +1,92 @@
-<div class="content-box" >
-
-    <h2>#i18n{greetingscard.modify_greetings_card_template.pageTitle}</h2>
+<div class="well" >
+    <legend>#i18n{greetingscard.modify_greetings_card_template.pageTitle}</legend>
 		        
-    <form method="post" name="modify_greetings_card_template"  ENCTYPE="multipart/form-data" action="jsp/admin/plugins/greetingscard/DoModifyGreetingsCardTemplate.jsp" >
-        <p>        
-            <label for="description">#i18n{greetingscard.modify_greetings_card_template.labelIdDescription}</label>
-            <input type="text" name="description" id="description" size="30" value="${description}"/>
-        </p>
-        <p>
-        	<label for="create_card">#i18n{greetingscard.modify_greetings_card_template.labelIdEditAnim}</label>
-            <input type="file" name="create_card" id="create_card" size="30"/>
-        </p>        
-        <p>
-        	<label for="view_card">#i18n{greetingscard.modify_greetings_card_template.labelIdVisuAnim}</label>
- 			<input type="file" name="view_card" id="view_card" size="30"/>
-        </p>
-         <p>
-         	<label for="picture_card">#i18n{greetingscard.modify_greetings_card_template.labelIdImage}</label>
-			<input type="file" name="picture_card" id="picture_card" size="30"/>
-        </p>
-     	<p>      
-            <label for="width">#i18n{greetingscard.modify_greetings_card_template.labelIdWidth}</label>
-            <input type="text" name="width" id="width" size="4" value="${width}"/>
-        </p>
-        <p>           
-            <label for="height">#i18n{greetingscard.modify_greetings_card_template.labelIdHeight}</label>
-            <input type="text" name="height" id="height" size="4" value="${height}"/>
-        </p>
-        <p>
-            <label for="create_html_card">#i18n{greetingscard.modify_greetings_card_template.labelIdSendHTML}</label>
-			<input type="file" name="create_html_card" id="create_html_card" size="30"/>
-        </p>
-        <p>
-         	<label for="view_html_card">#i18n{greetingscard.modify_greetings_card_template.labelIdVisuHTML}</label>
-			<input type="file" name="view_html_card" id="view_html_card" size="30"/>
-		</p>
-        <p>
-        	<label for="mail_card">#i18n{greetingscard.modify_greetings_card_template.labelIdMailHTML}</label>
-			<input type="file" name="mail_card" id="mail_card" size="30"/>
-        </p>
-        <p>        
-            <label for="object_email" >#i18n{greetingscard.modify_greetings_card_template.labelIdMailObject}</label>
-            <input type="text" name="object_email" id="object_email" size="30" value="${object_email}"/>
-        </p>
-        <p>
-        	<label for="">#i18n{greetingscard.modify_greetings_card_template.label_workgroup}  : </label>
-			<@combo name="workgroup"  items=user_workgroup_list default_value=user_workgroup_selected />
-        </p>
-        <p> 
-           	<label for="password" >
-           	<input type="checkbox" name="check_password" id="password" ${check_password}>#i18n{greetingscard.modify_greetings_card_template.labelIdPassword}</label>
-            <input type="password" name="password" id="password" size="30" value="${password}"/>
-        </p>
-        <p>        	
-        	<label for="status" > #i18n{greetingscard.modify_greetings_card_template.labelIdEnable}</label>
-        	<input type="checkbox" name="status" id="status" ${status} value="1">
-		</p>     
-		 <p>
+    <form class="form-horizontal" method="post" name="modify_greetings_card_template"  ENCTYPE="multipart/form-data" action="jsp/admin/plugins/greetingscard/DoModifyGreetingsCardTemplate.jsp" >
+        <div class="control-group">        
+            <label class="control-label" for="description">#i18n{greetingscard.modify_greetings_card_template.labelIdDescription}</label>
+            <div class="controls">
+				<input type="text" name="description" id="description" size="30" value="${description}"/>
+			</div>
+        </div>
+        <div class="control-group">
+        	<label class="control-label" for="create_card">#i18n{greetingscard.modify_greetings_card_template.labelIdEditAnim}</label>
+            <div class="controls">
+				<input type="file" name="create_card" id="create_card" size="30"/>
+			</div>
+        </div>        
+        <div class="control-group">
+        	<label class="control-label" for="view_card">#i18n{greetingscard.modify_greetings_card_template.labelIdVisuAnim}</label>
+ 			<div class="controls">
+				<input type="file" name="view_card" id="view_card" size="30"/>
+			</div>
+        </div>
+         <div class="control-group">
+         	<label class="control-label" for="picture_card">#i18n{greetingscard.modify_greetings_card_template.labelIdImage}</label>
+			<div class="controls">
+				<input type="file" name="picture_card" id="picture_card" size="30"/>
+			</div>
+        </div>
+     	<div class="control-group">      
+            <label class="control-label" for="width">#i18n{greetingscard.modify_greetings_card_template.labelIdWidth}</label>
+            <div class="controls">
+				<input type="text" name="width" id="width" size="4" value="${width}"/>
+			</div>
+        </div>
+        <div class="control-group">           
+            <label class="control-label" for="height">#i18n{greetingscard.modify_greetings_card_template.labelIdHeight}</label>
+            <div class="controls">
+				<input type="text" name="height" id="height" size="4" value="${height}"/>
+			</div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="create_html_card">#i18n{greetingscard.modify_greetings_card_template.labelIdSendHTML}</label>
+			<div class="controls">
+				<input type="file" name="create_html_card" id="create_html_card" size="30"/>
+			</div>
+        </div>
+        <div class="control-group">
+         	<label class="control-label" for="view_html_card">#i18n{greetingscard.modify_greetings_card_template.labelIdVisuHTML}</label>
+			<div class="controls">
+				<input type="file" name="view_html_card" id="view_html_card" size="30"/>
+			</div>
+		</div>
+        <div class="control-group">
+        	<label class="control-label" for="mail_card">#i18n{greetingscard.modify_greetings_card_template.labelIdMailHTML}</label>
+			<div class="controls">
+				<input type="file" name="mail_card" id="mail_card" size="30"/>
+			</div>
+        </div>
+        <div class="control-group">        
+            <label class="control-label" for="object_email" >#i18n{greetingscard.modify_greetings_card_template.labelIdMailObject}</label>
+            <div class="controls">
+				<input type="text" name="object_email" id="object_email" size="30" value="${object_email}"/>
+			</div>
+        </div>
+        <div class="control-group">
+        	<label class="control-label" for="">#i18n{greetingscard.modify_greetings_card_template.label_workgroup}  : </label>
+			<div class="controls">
+				<@combo name="workgroup"  items=user_workgroup_list default_value=user_workgroup_selected />
+			</div>
+        </div>
+        <div class="control-group"> 
+           	<label class="control-label" for="password" >#i18n{greetingscard.modify_greetings_card_template.labelIdPassword}</label>
+           	<div class="controls">
+				<input type="checkbox" name="check_password" id="password" ${check_password}>
+				<br />
+            	<input type="password" name="password" id="password" size="30" value="${password}"/>
+			</div>
+        </div>
+        <div class="control-group">
+        	<label class="control-label" for="status" > #i18n{greetingscard.modify_greetings_card_template.labelIdEnable}</label>
+        	<div class="controls">
+				<input type="checkbox" name="status" id="status" ${status} value="1">
+			</div>
+		</div>
+		
+		<div class="form-actions">
 		 	<input type="hidden" name="gct_id" value="${gct_id}">
-            <input type="submit" value="#i18n{greetingscard.modify_greetings_card_template.labelIdModify}" class="button"/>
-            <input type="button" onclick="javascript:history.go(-1)" value="#i18n{greetingscard.modify_greetings_card_template.labelIdCancel}" class="button"/>
-        </p>    
+            <input class="btn btn-primary" type="submit" value="#i18n{greetingscard.modify_greetings_card_template.labelIdModify}" />
+            <input class="btn" type="button" onclick="javascript:history.go(-1)" value="#i18n{greetingscard.modify_greetings_card_template.labelIdCancel}" />
+        </div>
     </form> 
 </div>

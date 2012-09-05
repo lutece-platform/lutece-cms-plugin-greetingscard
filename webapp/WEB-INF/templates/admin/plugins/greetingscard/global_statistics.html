@@ -1,8 +1,7 @@
-<div class="content-box" >
-
-    <h2>#i18n{greetingscard.global_statistics.statisticsTitle}</h2>
+<div class="well" >
+    <legend>#i18n{greetingscard.global_statistics.statisticsTitle}</legend>
     
-  	<table>
+  	<table class="table table-striped table-condensed">
 		<tr>
 			<th>#i18n{greetingscard.statistics.columnLabelFileName}</th>
 			<th>#i18n{greetingscard.statistics.columnLabelSend}</th>
@@ -142,11 +141,10 @@
 	</table>
 </div>
  
-<div class="content-box"> 
-
-   <h2>#i18n{greetingscard.domain_statistics.statisticsTitle}</h2>
+<div class="well" >
+   <legend>#i18n{greetingscard.domain_statistics.statisticsTitle}</legend>
    
-   <table>
+   <table class="table table-striped table-condensed">
 		<tr>
 			<th>#i18n{greetingscard.domain_statistics.columnLabelDomainName}</th>
 			<th>#i18n{greetingscard.domain_statistics.columnLabelSend}</th>
@@ -191,5 +189,5 @@
 		</tr>
 	</table>
 	<br/>
-	<input type="button" onclick="javascript:history.go(-1)" value="#i18n{greetingscard.statistics.labelIdCancel}" class="button" />
-</div>     
+	<input class="btn btn-primary" type="button" onclick="javascript:history.go(-1)" value="#i18n{greetingscard.statistics.labelIdCancel}" />
+</div>
