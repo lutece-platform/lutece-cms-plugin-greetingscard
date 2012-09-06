@@ -47,4 +47,14 @@
 			</rbac-resource-type-class>
 		</rbac-resource-type>
 	</rbac-resource-types>
+	
+	<!-- Daemons -->
+	<daemons>
+		<daemon>
+			<daemon-id>greetingsCardStatusUpdaterDaemon</daemon-id>
+			<daemon-name>greetingscard.statusUpdaterDaemon.name</daemon-name>
+			<daemon-description>greetingscard.statusUpdaterDaemon.description</daemon-description>
+			<daemon-class>fr.paris.lutece.plugins.greetingscard.service.GreetingsCardStatusUpdaterDaemon</daemon-class>
+		</daemon>
+	</daemons>
 </plug-in>

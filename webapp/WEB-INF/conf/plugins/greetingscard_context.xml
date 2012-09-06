@@ -3,8 +3,8 @@
 
 <beans>
     
-   <!-- package sqlquery -->
-  <bean id="greetingscardTemplateDAO"  class="fr.paris.lutece.plugins.greetingscard.business.GreetingsCardTemplateDAO" />  
-  <bean id="greetingscardDAO"  class="fr.paris.lutece.plugins.greetingscard.business.GreetingsCardDAO" />  
-  
+	<!-- package sqlquery -->
+	<bean id="greetingscardTemplateDAO" class="fr.paris.lutece.plugins.greetingscard.business.GreetingsCardTemplateDAO" />
+	<bean id="greetingscardDAO" class="fr.paris.lutece.plugins.greetingscard.business.GreetingsCardDAO" />
+	<bean id="greetingsCardArchiveDAO" class="fr.paris.lutece.plugins.greetingscard.business.GreetingsCardArchiveDAO" />
 </beans>

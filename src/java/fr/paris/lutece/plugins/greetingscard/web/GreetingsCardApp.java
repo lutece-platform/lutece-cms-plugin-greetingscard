@@ -111,6 +111,7 @@ public class GreetingsCardApp implements XPageApplication
 	private static final String PARAM_RECIPIENT_EMAIL = "recipient_email";
 	private static final String PARAM_SENDER_NAME = "sender_name";
 	private static final String PARAM_PASSWORD = "password";
+	private static final String PARAM_NOTIFY_USER = "notify_user";
 	private static final String PARAM_VIEW_HTML_CARD = "view_html_card";
 	private static final String PARAM_MAIL_CARD = "mail_card";
 	private static final String PARAM_CREATE_HTML_CARD = "create_html_card";
@@ -144,8 +145,6 @@ public class GreetingsCardApp implements XPageApplication
 	private static final String ACTION_NAME_SEND = "send";
 	private static final String UNDERSCORE = "_";
 	private static final String SPACE = " ";
-	private static final String PORTAL_JSP = "Portal.jsp";
-	private static final String PARAM_SENDED = "SENDED";
 	private static final String HTML_BR = "<br>";
 	private static final String HTML_SUBSTITUTE_BR = "\r\n";
 	private static final String SEPARATOR_MAIL_LIST = AppPropertiesService.getProperty( "mail.list.separator" );
@@ -153,14 +152,10 @@ public class GreetingsCardApp implements XPageApplication
 	private static final String MARK_CAPTCHA = "captcha";
 	private static final String MARK_IS_ACTIVE_CAPTCHA = "is_active_captcha";
 	private static final String MARK_MYLUTECE_USER = "mylutece_user";
-	private static final String PROPERTY_CAPTCHA_ERROR = "contact.message_contact.captchaError";
 	private static final String JCAPTCHA_PLUGIN = "jcaptcha";
 
 	// Captcha
 	private CaptchaSecurityService _captchaService;
-
-	// private fields
-	private Plugin _plugin;
 
 	/**
 	 * Creates a new QuizPage object.
@@ -205,7 +200,7 @@ public class GreetingsCardApp implements XPageApplication
 
 					if ( !greetingsCard.isCopy( ) )
 					{
-						greetingsCard.setRead( true );
+						greetingsCard.setStatus( GreetingsCard.STATUS_RED );
 					}
 
 					GreetingsCardHome.update( greetingsCard, plugin );
@@ -548,7 +543,6 @@ public class GreetingsCardApp implements XPageApplication
 	 */
 	private String doSendGreetingsCard( HttpServletRequest request, Plugin plugin, String strBaseUrl ) throws DirectoryNotFoundException, AccessDeniedException, SiteMessageException
 	{
-		String strFormat = request.getParameter( PARAM_FORMAT );
 		String strToday = DateUtil.getCurrentDateString( request.getLocale( ) );
 		java.sql.Date dateToday = DateUtil.getDateSql( strToday );
 		String strRecipientEmail = request.getParameter( PARAM_RECIPIENT_EMAIL );
@@ -568,6 +562,7 @@ public class GreetingsCardApp implements XPageApplication
 		String strSenderEmail = request.getParameter( PARAM_SENDER_EMAIL );
 		String strGreetingsCardTemplateId = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
 		String strSenderIp = request.getRemoteAddr( );
+		boolean bNotifyUser = request.getParameter( PARAM_NOTIFY_USER ) != null && request.getParameter( PARAM_NOTIFY_USER ).equals( CHECKBOX_ON );
 
 		int nGreetingsCardTemplateId = Integer.parseInt( strGreetingsCardTemplateId );
 
@@ -605,8 +600,9 @@ public class GreetingsCardApp implements XPageApplication
 			greetingsCard.setDate( dateToday );
 			greetingsCard.setSenderIp( strSenderIp );
 			greetingsCard.setIdGCT( nGreetingsCardTemplateId );
-			greetingsCard.setRead( false );
+			greetingsCard.setStatus( GreetingsCard.STATUS_SENT );
 			greetingsCard.setCopy( false );
+			greetingsCard.setNotifySender( bNotifyUser );
 
 			GreetingsCardHome.create( greetingsCard, plugin );
 

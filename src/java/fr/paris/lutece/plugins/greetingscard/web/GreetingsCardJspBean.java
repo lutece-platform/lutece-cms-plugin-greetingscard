@@ -215,6 +215,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String PARAM_SENDER_NAME = "sender_name";
 	private static final String PARAM_GREETINGS_CARD_TEMPLATE_ID = "gct_id";
 	private static final String PARAM_XSL_EXPORT_ID = "xsl_export_id";
+	private static final String PARAM_NOTIFY_USER = "notify_user";
 
 	private static final String HTML_BR = "<br>";
 	private static final String HTML_SUBSTITUTE_BR = "\r\n";
@@ -1054,6 +1055,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		String strSenderEmail = request.getParameter( PARAM_SENDER_EMAIL );
 		String strGreetingsCardTemplateId = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
 		String strSenderIp = request.getRemoteAddr( );
+		boolean bNotifyUser = request.getParameter( PARAM_NOTIFY_USER ) != null && request.getParameter( PARAM_NOTIFY_USER ).equals( CHECKBOX_ON );
 
 		if ( ( strMessage == null ) || strMessage.equals( EMPTY_STRING ) )
 		{
@@ -1112,9 +1114,26 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 			greetingsCard.setDate( dateToday );
 			greetingsCard.setSenderIp( strSenderIp );
 			greetingsCard.setIdGCT( nGreetingsCardTemplateId );
-			greetingsCard.setRead( false );
+			greetingsCard.setStatus( GreetingsCard.STATUS_SENT );
+			greetingsCard.setNotifySender( bNotifyUser );
 
+			// List<Character> listChar = new ArrayList<Character>( );
+			// listChar.add( 'a' );
+			// listChar.add( 'b' );
+			// listChar.add( 'c' );
+			// listChar.add( 'd' );
+			// listChar.add( 'e' );
+			// for ( int nb = 0; nb < 10000; nb++ )
+			// {
+			// Collections.shuffle( listChar );
+			// String strDomainName = StringUtils.EMPTY;
+			// for ( Character myChar : listChar )
+			// {
+			// strDomainName += myChar;
+			// }
+			// greetingsCard.setRecipientEmail( "vbroussard@" + strDomainName + ".com" );
 			GreetingsCardHome.create( greetingsCard, getPlugin( ) );
+			// }
 
 			String strInternetPortalUrl = AppPropertiesService.getProperty( PROPERTY_LUTECE_PROD_URL );
 			String strPathGreetingsCardTemplateDirName = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATE_DIR_NAME );
@@ -1170,6 +1189,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 				if ( !bCopySended )
 				{
 					greetingsCard.setCopy( true );
+					greetingsCard.setNotifySender( false );
 					GreetingsCardHome.create( greetingsCard, getPlugin( ) );
 
 					String strCopyOf = I18nService.getLocalizedString( PROPERTY_COPY_OF, request.getLocale( ) );

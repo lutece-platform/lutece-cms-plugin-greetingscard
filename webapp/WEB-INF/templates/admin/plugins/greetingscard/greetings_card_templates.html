@@ -26,6 +26,7 @@
 	<table class="table table-striped table-condensed">
 		<tr>
 			<th>#i18n{greetingscard.greetings_card_templates.columnLabelFileTitle}</th>
+			<th>#i18n{greetingscard.greetings_card_templates.columnLabelStatus}</th>
 			<th>#i18n{greetingscard.greetings_card_templates.columnLabelAction}</th>
 		</tr>
 	
@@ -33,6 +34,13 @@
 		<#list greetings_card_template_list as greetings_card >
 			<tr>
 				<td> ${greetings_card.id} - ${greetings_card.description}</td>
+				<td>
+					<#if greetings_card.enabled>
+						<span class="label label-success"><i class="icon-ok-sign icon-white"></i> #i18n{portal.util.labelEnabled}</span>
+					<#else>
+						<span class="label label-important"><i class="icon-remove-sign icon-white"></i> #i18n{portal.util.labelDisabled}</span>
+					</#if>
+				</td>
 				<td>
 					<#if permission_modify>
 						<a class="btn btn-primary btn-mini" href="jsp/admin/plugins/greetingscard/ModifyGreetingsCardTemplate.jsp?gct_id=${greetings_card.id}"

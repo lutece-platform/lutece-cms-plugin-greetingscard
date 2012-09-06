@@ -1,18 +1,17 @@
 <#include "../../../WEB-INF/templates/admin/util/editor/editor.html" />
-<br><br>
+<br /><br />
 <center>
-Envoi d'une carte du Maire de Paris<br><br>
+Envoi d'une carte du Maire de Paris<br /><br />
 <img src="${picture_card}" height="${height}" width="${width}"/>
-<br>
-<h3>${sended_email}</h3>
-<br>
+<br />
+<legend>${sended_email}</legend>
+<br />
 </center>
-<form name="html_send_greetings_card" method="post" action="jsp/site/Portal.jsp">
-<table cellpadding="10" cellspacing="0" width="500" align="center" border="0" bordercolor="#000000">
-	<tr>
-		<td align="center">
-			<br>
-			<table width="480" align="center" cellspacing="0" cellpadding="2">
+<div class="well" >
+	<form class="form-horizontal" name="html_send_greetings_card" method="post" action="jsp/site/Portal.jsp">
+		<center>
+			<br />
+			<table class="table table-striped table-condensed" width="480" align="center" cellspacing="0" cellpadding="2">
 				<tr>
 					<td width="180">
 						Email du destinataire :
@@ -64,30 +63,39 @@ Envoi d'une carte du Maire de Paris<br><br>
 						Recevoir une copie du mail : <input class="checkbox" type="checkbox" name="mail_copy">
 					</td>
 				</tr>
-                                <tr>
-                                    <td width="180"></td>
-                                    <td width="300" valign="middle"><#if is_active_captcha>
-					<div >${captcha}</div>
-				</#if></td>
-                                </tr>
 				<tr>
 					<td width="180">
-						<br><br>
+						&nbsp;
+					</td>
+					<td width="300">
+						Etre notifié lorsque la carte est lue : <input class="checkbox" type="checkbox" name="notify_user">
+					</td>
+				</tr>
+				<#if is_active_captcha>
+					<tr>
+						<td width="180"></td>
+						<td width="300" valign="middle">
+							<div >${captcha}</div>
+						</td>
+					</tr>
+				</#if>
+				<tr>
+					<td width="180">
+						<br /><br />
 					</td>
 					<td width="300" valign="middle">
 						<input type="hidden" name="page" value="greetingscard">
 						<input type="hidden" name="action" value="send">
 						<input type="hidden" name="format" value="html">
 						<input type="hidden" name="gct_id" value="${gct_id}">
-						<input type="submit" value="Envoyer" onClick="submit_greetings_card_sending();return(false);">
+						<input class="btn btn-primary" type="submit" value="Envoyer" onClick="submit_greetings_card_sending();return(false);">
 					</td>
 				</tr>
 			</table>
-		</td>
-	</tr>
-</table>
-</form>
-<br><br>
+		</center>
+	</form>
+</div>
+<br /><br />
 <script language="JavaScript">
 
 function submit_greetings_card_sending()

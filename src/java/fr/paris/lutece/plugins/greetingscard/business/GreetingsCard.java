@@ -43,6 +43,9 @@ import fr.paris.lutece.util.xml.XmlUtil;
  */
 public class GreetingsCard
 {
+	public static final int STATUS_SENT = 0;
+	public static final int STATUS_RED = 1;
+	public static final int STATUS_RED_NOTIFIED = 2;
 	private static final String PROPERTY_SYMBOL_AT_SIGN = "@";
 	private static final String PROPERTY_ADRESS_EMAIL1 = "greetingscard.isInternal.Email1";
 	private static final String PROPERTY_ADRESS_EMAIL2 = "greetingscard.isInternal.Email2";
@@ -54,7 +57,7 @@ public class GreetingsCard
 	private static final String TAG_MESSAGE_2 = "message2";
 	private static final String TAG_GREETTINGSCARD_TEMPLATE_ID = "greetingscard-template-id";
 	private static final String TAG_DATE = "date";
-	private static final String TAG_IS_READ = "is-read";
+	private static final String TAG_STATUS = "status";
 	private static final String TAG_IS_COPY = "is-copy";
 	private String _strIdGC;
 	private String _strSenderName;
@@ -63,8 +66,9 @@ public class GreetingsCard
 	private String _strRecipientEmail;
 	private String _strMessage;
 	private String _strMessage2;
-	private boolean _bRead;
+	private int _nStatus;
 	private boolean _bCopy;
+	private boolean _bNotifySender;
 	private java.sql.Date _date;
 	private int _nIdGCT;
 
@@ -244,16 +248,26 @@ public class GreetingsCard
 	 */
 	public boolean isRead( )
 	{
-		return _bRead;
+		return _nStatus >= STATUS_RED;
 	}
 
 	/**
-	 * Sets the read state
-	 * @param read 1 if read, 0 if not read
+	 * Get the status of the card.
+	 * @return The status of the card. Status are STATUS_SENT if the card is send, STATUS_RED if it has been red or STATUS_RED_NOTIFIED if it has been red and the sender has been notified.
 	 */
-	public void setRead( boolean read )
+	public int getStatus( )
 	{
-		_bRead = read;
+		return _nStatus;
+	}
+
+	/**
+	 * Set the status of the card.
+	 * @param nStatus The status of the card. Valid status are STATUS_SENT if the card is send, STATUS_RED if it has been red or STATUS_RED_NOTIFIED if it has been red and the sender has been
+	 * notified.
+	 */
+	public void setStatus( int nStatus )
+	{
+		_nStatus = nStatus;
 	}
 
 	/**
@@ -272,6 +286,24 @@ public class GreetingsCard
 	public void setCopy( boolean copy )
 	{
 		_bCopy = copy;
+	}
+
+	/**
+	 * Check if the sender should be notified when the card is red.
+	 * @return True if the sender should be notified when the status of the greetings card change, false otherwise.
+	 */
+	public boolean getNotifySender( )
+	{
+		return _bNotifySender;
+	}
+
+	/**
+	 * Set the notify sender boolean
+	 * @param bNotifySender True if the sender should be notified when the card is red, false otherwise
+	 */
+	public void setNotifySender( boolean bNotifySender )
+	{
+		_bNotifySender = bNotifySender;
 	}
 
 	/**
@@ -330,7 +362,7 @@ public class GreetingsCard
 		// XmlUtil.addElement( strXml, TAG_MESSAGE_1, getMessage( ) );
 		// XmlUtil.addElement( strXml, TAG_MESSAGE_2, getMessage2( ) );
 		XmlUtil.addElement( strXml, TAG_GREETTINGSCARD_TEMPLATE_ID, getIdGCT( ) );
-		XmlUtil.addElement( strXml, TAG_IS_READ, String.valueOf( isRead( ) ) );
+		XmlUtil.addElement( strXml, TAG_STATUS, getStatus( ) );
 		XmlUtil.addElement( strXml, TAG_IS_COPY, String.valueOf( isCopy( ) ) );
 		XmlUtil.endElement( strXml, TAG_GREETINGS_CARD_DATA );
 

@@ -1,8 +1,8 @@
 /*==============================================================*/
 /* Table : greetings_card_template                              */
 /*==============================================================*/
-drop table if exists greetings_card_template;
-create table greetings_card_template
+DROP TABLE IF EXISTS greetings_card_template;
+CREATE TABLE greetings_card_template
 (
     id_gct TINYINT NOT NULL,
 	description VARCHAR(255),
@@ -18,8 +18,8 @@ create table greetings_card_template
 /*==============================================================*/
 /* Table : greetings_card                                          */
 /*==============================================================*/
-drop table if exists greetings_card;
-create table greetings_card
+DROP TABLE IF EXISTS greetings_card;
+CREATE TABLE greetings_card
 (
 	id_gc VARCHAR(32) NOT NULL,
 	sender_name VARCHAR(80) DEFAULT '' NOT NULL,
@@ -30,7 +30,20 @@ create table greetings_card
 	date Date,
 	sender_ip VARCHAR(20),
 	id_gct TINYINT NOT NULL,
-	is_read SMALLINT DEFAULT 0,
+	status SMALLINT DEFAULT 0,
 	is_copy SMALLINT DEFAULT 0,
+	notify_user SMALLINT DEFAULT 0,
 	PRIMARY KEY (id_gc)
+);
+
+DROP TABLE IF EXISTS greetings_card_archive;
+CREATE TABLE greetings_card_archive
+(
+	id_archive INT NOT NULL,
+	id_gct TINYINT NOT NULL,
+	domain_name VARCHAR(80) NOT NULL,
+	nb_card INT NOT NULL,
+	nb_card_red INT NOT NULL,
+	year_archive INT NOT NULL,
+	PRIMARY KEY (id_archive)
 );

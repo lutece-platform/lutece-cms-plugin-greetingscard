@@ -40,83 +40,92 @@ import java.util.List;
 
 
 /**
- *
+ * 
  * Interface for GreetingsCardDAO
- *
+ * 
  */
 public interface IGreetingsCardDAO
 {
-    /**
-    * Insert a new record in the table.
-    *
-    * @param greetingsCard The Instance of the GreetingsCard object
-    * @param plugin The plugin
-    */
-    void insert( GreetingsCard greetingsCard, Plugin plugin );
+	/**
+	 * Insert a new record in the table.
+	 * 
+	 * @param greetingsCard The Instance of the GreetingsCard object
+	 * @param plugin The plugin
+	 */
+	void insert( GreetingsCard greetingsCard, Plugin plugin );
 
-    /**
-     * Delete a record from the table
-     *
-     * @param strIdGC The indentifier of the object GreetingsCard
-     * @param plugin The plugin
-     */
-    void delete( String strIdGC, Plugin plugin );
+	/**
+	 * Delete a record from the table
+	 * 
+	 * @param strIdGC The indentifier of the object GreetingsCard
+	 * @param plugin The plugin
+	 */
+	void delete( String strIdGC, Plugin plugin );
 
-    /**
-     * load the data of GreetingsCard from the table
-     *
-     * @param strIdGC The identifier of the object GreetingsCard
-     * @param plugin The plugin
-     * @return The Instance of the object GreetingsCard
-     */
-    GreetingsCard load( String strIdGC, Plugin plugin );
+	/**
+	 * load the data of GreetingsCard from the table
+	 * 
+	 * @param strIdGC The identifier of the object GreetingsCard
+	 * @param plugin The plugin
+	 * @return The Instance of the object GreetingsCard
+	 */
+	GreetingsCard load( String strIdGC, Plugin plugin );
 
-    /**
-     * Update the record in the table
-     *
-     * @param greetingsCard The instance of the GreetingsCard to update
-     * @param plugin The plugin
-     */
-    void store( GreetingsCard greetingsCard, Plugin plugin );
+	/**
+	 * Update the record in the table
+	 * 
+	 * @param greetingsCard The instance of the GreetingsCard to update
+	 * @param plugin The plugin
+	 */
+	void store( GreetingsCard greetingsCard, Plugin plugin );
 
-    /**
-     * Finds all objects of this type
-     * @param plugin The plugin
-     * @return A collection of objects
-     */
-    Collection<GreetingsCard> findAll( Plugin plugin );
+	/**
+	 * Finds all objects of this type
+	 * @param plugin The plugin
+	 * @return A collection of objects
+	 */
+	Collection<GreetingsCard> findAll( Plugin plugin );
 
-    /**
-     * Returns the list of greetings cards of a greetings card template
-     * @param nIdGreetingsCardTemplate The greetings card template identifier
-     * @param plugin The plugin
-     * @return A Collection of greetings cards
-     */
-    Collection<GreetingsCard> findByGreetingsCardTemplateId( int nIdGreetingsCardTemplate, Plugin plugin );
+	/**
+	 * Returns the list of greetings cards of a greetings card template
+	 * @param nIdGreetingsCardTemplate The greetings card template identifier
+	 * @param plugin The plugin
+	 * @return A Collection of greetings cards
+	 */
+	Collection<GreetingsCard> findByGreetingsCardTemplateId( int nIdGreetingsCardTemplate, Plugin plugin );
 
-    /**
-     * Returns the list of domain name of mail sent
-     * @param greetingsCardFilter The greetings card filter
-     * @param plugin The plugin
-     * @return A list of domain
-     */
-    List<String> findDomainNameOfMailSent( GreetingsCardFilter greetingsCardFilter, Plugin plugin );
+	/**
+	 * Returns the list of domain name of mail sent
+	 * @param greetingsCardFilter The greetings card filter
+	 * @param plugin The plugin
+	 * @return A list of domain
+	 */
+	List<String> findDomainNameOfMailSent( GreetingsCardFilter greetingsCardFilter, Plugin plugin );
 
-    /**
-     * Return number of mail sent by domain
-     * @param strDomain Name of domain
-     * @param greetingsCardFilter The greetings card filter
-     * @param plugin The plugin
-     * @return number of mail sent by domain
-     */
-    int findNumberOfMailSentByDomain( String strDomain, GreetingsCardFilter greetingsCardFilter, Plugin plugin );
+	/**
+	 * Return number of mail sent by domain
+	 * @param strDomain Name of domain
+	 * @param greetingsCardFilter The greetings card filter
+	 * @param plugin The plugin
+	 * @return number of mail sent by domain
+	 */
+	int findNumberOfMailSentByDomain( String strDomain, GreetingsCardFilter greetingsCardFilter, Plugin plugin );
 
-    /**
-     * Return number of mail read by domain
-     * @param strDomain Name of domain
-     * @param greetingsCardFilter The greetings card filter
-     * @param plugin The plugin
-     * @return number of mail sent by domain
-     */
-    int findNumberOfMailReadByDomain( String strDomain, GreetingsCardFilter greetingsCardFilter, Plugin plugin );
+	/**
+	 * Return number of mail read by domain
+	 * @param strDomain Name of domain
+	 * @param greetingsCardFilter The greetings card filter
+	 * @param plugin The plugin
+	 * @return number of mail sent by domain
+	 */
+	int findNumberOfMailReadByDomain( String strDomain, GreetingsCardFilter greetingsCardFilter, Plugin plugin );
+
+	/**
+	 * Get the collection of greetings cards that has been red and that has the notify sender flag set.
+	 * @param nStatus Status
+	 * @param plugin The plugin
+	 * @return The collection of greetings cards that has been red and that has the notify sender flag set. The collection may be empty.
+	 */
+	Collection<GreetingsCard> findCardsToSendNotification( Plugin plugin );
+
 }
