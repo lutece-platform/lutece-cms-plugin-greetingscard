@@ -86,7 +86,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1444,24 +1443,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 			greetingsCard.setStatus( GreetingsCard.STATUS_SENT );
 			greetingsCard.setNotifySender( bNotifyUser );
 
-			List<Character> listChar = new ArrayList<Character>( );
-			listChar.add( 'a' );
-			listChar.add( 'a' );
-			listChar.add( 'b' );
-			listChar.add( 'c' );
-			listChar.add( 'd' );
-			listChar.add( 'e' );
-			for ( int nb = 0; nb < 100000; nb++ )
-			{
-				Collections.shuffle( listChar );
-				String strDomainName = StringUtils.EMPTY;
-				for ( Character myChar : listChar )
-				{
-					strDomainName += myChar;
-				}
-				greetingsCard.setRecipientEmail( "vbroussard@" + strDomainName + ".com" );
-				GreetingsCardHome.create( greetingsCard, getPlugin( ) );
-			}
+			GreetingsCardHome.create( greetingsCard, getPlugin( ) );
 
 			String strInternetPortalUrl = AppPropertiesService.getProperty( PROPERTY_LUTECE_PROD_URL );
 			String strPathGreetingsCardTemplateDirName = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATE_DIR_NAME );
