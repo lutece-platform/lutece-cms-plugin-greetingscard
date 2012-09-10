@@ -12,3 +12,6 @@ INSERT INTO core_xsl_export VALUES (123,'Greetingscard - Export CSV','Greetingsc
 INSERT INTO core_xsl_export VALUES (124,'Greetingscard - Export XML','Greetingscard - Export XML','xml',124);
 
 INSERT INTO core_template VALUES ('greetingscard_card_red_mail',Bonjour,<br />La carte que vous avez envoyé à ${recipient_email} vient d''être lue.);
+
+INSERT INTO core_datastore VALUES ('greetingscard.nextAutoArchiving', '');
+INSERT INTO core_datastore VALUES ('greetingscard.yearNextAutoArchiving', '');

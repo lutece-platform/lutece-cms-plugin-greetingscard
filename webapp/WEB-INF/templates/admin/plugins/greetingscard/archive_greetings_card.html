@@ -1,0 +1,36 @@
+<script type="text/javascript" src="js/jquery/plugins/ui/datepicker/ui.datepicker.js" ></script>
+<script type="text/javascript" src="js/jquery/plugins/ui/datepicker/ui.datepicker-${locale.language}.js" ></script>
+<div class="well" >
+	<legend>#i18n{greetingscard.archive_greetings_card.pageTitle}</legend>
+
+	<form class="form-horizontal" method="post" name="export_greetings_card" action="jsp/admin/plugins/greetingscard/DoArchiveGreetingsCard.jsp" >
+		<fieldset>
+			<div class="control-group">
+				<label class="control-label" for="date_min" >#i18n{greetingscard.archive_greetings_card.labelDateSentMin} : </label>
+				<div class="controls">
+					<input type="text" name="date_min" id="date_min" value="${date_min!}" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="date_max" >#i18n{greetingscard.archive_greetings_card.labelDateSentMax} : </label>
+				<div class="controls">
+					<input type="text" name="date_max" id="date_max" value="${date_max!}" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="year" >#i18n{greetingscard.archive_greetings_card.labelYear} * : </label>
+				<div class="controls">
+					<input type="text" name="year" id="year" value="${year!}" />
+				</div>
+			</div>
+			
+			<div class="form-actions">
+				<input type="hidden" name="gct_id" id="gct_id" value="${gct_id!}" />
+				<input class="btn btn-primary" type="submit" value="#i18n{greetingscard.archive_greetings_card.labelArchive}" />
+				<input class="btn" type="button" onclick="javascript:history.go(-1)" value="#i18n{greetingscard.create_greetings_card_template.labelIdCancel}" />
+			</div>
+		</fieldset>
+		<@getDatePicker idField="date_min" language=locale.language />
+		<@getDatePicker idField="date_max" language=locale.language />
+	</form>
+</div>

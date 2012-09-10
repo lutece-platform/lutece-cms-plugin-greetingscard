@@ -35,204 +35,184 @@ package fr.paris.lutece.plugins.greetingscard.business;
 
 import fr.paris.lutece.portal.service.workgroup.AdminWorkgroupResource;
 
-import java.util.Collection;
-
 
 /**
  * This class represents a GreetingsCardTemplate object.
  */
 public class GreetingsCardTemplate implements AdminWorkgroupResource
 {
-    private int _nIdGCT;
-    private String _strDescription;
-    private String _strPassword;
-    private int _nHeight;
-    private int _nWidth;
-    private boolean _bIsEnabled;
-    private String _strObjectEmail;
-    private Collection<GreetingsCard> _greetingsCards;
-    private String _strWorkgroupKey;
+	private int _nIdGCT;
+	private String _strDescription;
+	private String _strPassword;
+	private int _nHeight;
+	private int _nWidth;
+	private boolean _bIsEnabled;
+	private String _strObjectEmail;
+	// private Collection<GreetingsCard> _greetingsCards;
+	private String _strWorkgroupKey;
 
-    /**
-     * Creates a new GreetingsCardTemplate object.
-     */
-    public GreetingsCardTemplate(  )
-    {
-    }
+	/**
+	 * Creates a new GreetingsCardTemplate object.
+	 */
+	public GreetingsCardTemplate( )
+	{
+	}
 
-    /**
-     * Returns the identifier of the greetings card template
-     * @return The identifier of the greetings card template
-     */
-    public int getId(  )
-    {
-        return _nIdGCT;
-    }
+	/**
+	 * Returns the identifier of the greetings card template
+	 * @return The identifier of the greetings card template
+	 */
+	public int getId( )
+	{
+		return _nIdGCT;
+	}
 
-    /**
-     * Sets the identifier of the greetings card template to the specified value
-     * @param nIdGCT The new value
-     */
-    public void setId( int nIdGCT )
-    {
-        _nIdGCT = nIdGCT;
-    }
+	/**
+	 * Sets the identifier of the greetings card template to the specified value
+	 * @param nIdGCT The new value
+	 */
+	public void setId( int nIdGCT )
+	{
+		_nIdGCT = nIdGCT;
+	}
 
-    /**
-     * Returns the description string
-     * @return The description string
-     */
-    public String getDescription(  )
-    {
-        return _strDescription;
-    }
+	/**
+	 * Returns the description string
+	 * @return The description string
+	 */
+	public String getDescription( )
+	{
+		return _strDescription;
+	}
 
-    /**
-     * Sets the description string to the specified value
-     * @param strDescription The new value
-     */
-    public void setDescription( String strDescription )
-    {
-        _strDescription = strDescription;
-    }
+	/**
+	 * Sets the description string to the specified value
+	 * @param strDescription The new value
+	 */
+	public void setDescription( String strDescription )
+	{
+		_strDescription = strDescription;
+	}
 
-    /**
-     * Returns the password string
-     * @return The password string
-     */
-    public String getPassword(  )
-    {
-        return _strPassword;
-    }
+	/**
+	 * Returns the password string
+	 * @return The password string
+	 */
+	public String getPassword( )
+	{
+		return _strPassword;
+	}
 
-    /**
-     * Sets the password string to the specified value
-     * @param strPassword The new value
-     */
-    public void setPassword( String strPassword )
-    {
-        _strPassword = strPassword;
-    }
+	/**
+	 * Sets the password string to the specified value
+	 * @param strPassword The new value
+	 */
+	public void setPassword( String strPassword )
+	{
+		_strPassword = strPassword;
+	}
 
-    /**
-     * Returns the greetings cards associated with the greetings card template
-     * @return A Collection of GreetingsCard objects.
-     */
-    public Collection<GreetingsCard> getGreetingsCards(  )
-    {
-        return _greetingsCards;
-    }
+	/**
+	 * Returns the height int
+	 * @return The height int
+	 */
+	public int getHeight( )
+	{
+		return _nHeight;
+	}
 
-    /**
-     * Assigns the specified set of greetings cards to the greetings card template
-     * @param greetingsCards The new Collection
-     */
-    public void setGreetingsCards( Collection<GreetingsCard> greetingsCards )
-    {
-        _greetingsCards = greetingsCards;
-    }
+	/**
+	 * Sets the height int to the specified value
+	 * @param nHeight The new value
+	 */
+	public void setHeight( int nHeight )
+	{
+		_nHeight = nHeight;
+	}
 
-    /**
-     * Returns the height int
-     * @return The height int
-     */
-    public int getHeight(  )
-    {
-        return _nHeight;
-    }
+	/**
+	 * Returns the width int
+	 * @return The width int
+	 */
+	public int getWidth( )
+	{
+		return _nWidth;
+	}
 
-    /**
-     * Sets the height int to the specified value
-     * @param nHeight The new value
-     */
-    public void setHeight( int nHeight )
-    {
-        _nHeight = nHeight;
-    }
+	/**
+	 * Sets the width int to the specified value
+	 * @param nWidth The new value
+	 */
+	public void setWidth( int nWidth )
+	{
+		_nWidth = nWidth;
+	}
 
-    /**
-     * Returns the width int
-     * @return The width int
-     */
-    public int getWidth(  )
-    {
-        return _nWidth;
-    }
+	/**
+	 * Returns the status of the object
+	 * @return true if the object is enabled
+	 */
+	public boolean isEnabled( )
+	{
+		return _bIsEnabled;
+	}
 
-    /**
-     * Sets the width int to the specified value
-     * @param nWidth The new value
-     */
-    public void setWidth( int nWidth )
-    {
-        _nWidth = nWidth;
-    }
+	/**
+	 * Sets the status of the object
+	 * @param nStatus 1 to enable the object, any other value to disable it
+	 */
+	public void setStatus( int nStatus )
+	{
+		if ( nStatus == 1 )
+		{
+			_bIsEnabled = true;
+		}
+		else
+		{
+			_bIsEnabled = false;
+		}
+	}
 
-    /**
-     * Returns the status of the object
-     * @return true if the object is enabled
-     */
-    public boolean isEnabled(  )
-    {
-        return _bIsEnabled;
-    }
+	/**
+	 * Returns the object email string
+	 * @return The object email string
+	 */
+	public String getObjectEmail( )
+	{
+		return _strObjectEmail;
+	}
 
-    /**
-     * Sets the status of the object
-     * @param nStatus 1 to enable the object, any other value to disable it
-     */
-    public void setStatus( int nStatus )
-    {
-        if ( nStatus == 1 )
-        {
-            _bIsEnabled = true;
-        }
-        else
-        {
-            _bIsEnabled = false;
-        }
-    }
+	/**
+	 * Sets the object email string to the specified value
+	 * @param strObjectEmail The new value
+	 */
+	public void setObjectEmail( String strObjectEmail )
+	{
+		_strObjectEmail = strObjectEmail;
+	}
 
-    /**
-            * Returns the object email string
-            * @return The object email string
-            */
-    public String getObjectEmail(  )
-    {
-        return _strObjectEmail;
-    }
+	/**
+	 * @param strWorkgroupKey the WorkgroupKey to set
+	 */
+	public void setWorkgroupKey( String strWorkgroupKey )
+	{
+		_strWorkgroupKey = strWorkgroupKey;
+	}
 
-    /**
-         * Sets the object email string to the specified value
-         * @param strObjectEmail The new value
-         */
-    public void setObjectEmail( String strObjectEmail )
-    {
-        _strObjectEmail = strObjectEmail;
-    }
+	/**
+	 * @return the _strWorkgroupKey
+	 */
+	public String getWorkgroupKey( )
+	{
+		return _strWorkgroupKey;
+	}
 
-    /**
-     * @param strWorkgroupKey the WorkgroupKey to set
-     */
-    public void setWorkgroupKey( String strWorkgroupKey )
-    {
-        _strWorkgroupKey = strWorkgroupKey;
-    }
-
-    /**
-     * @return the _strWorkgroupKey
-     */
-    public String getWorkgroupKey(  )
-    {
-        return _strWorkgroupKey;
-    }
-
-    /**
-    * Get Workgroup
-    * @return the workgroup of notice
-    */
-    public String getWorkgroup(  )
-    {
-        return _strWorkgroupKey;
-    }
+	/**
+	 * Get Workgroup
+	 * @return the workgroup of notice
+	 */
+	public String getWorkgroup( )
+	{
+		return _strWorkgroupKey;
+	}
 }

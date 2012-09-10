@@ -307,7 +307,7 @@ public class GreetingsCard
 	}
 
 	/**
-	 * Test if the greeting card was sent to an internal people.
+	 * Test if the greeting card was sent to an internal person.
 	 * @return the value of the test.
 	 */
 	public boolean isInternal( )
@@ -325,6 +325,15 @@ public class GreetingsCard
 		}
 
 		return false;
+	}
+
+	public String getDomainName( )
+	{
+		if ( _strRecipientEmail != null && !_strRecipientEmail.equals( "" ) && StringUtil.checkEmail( _strRecipientEmail ) )
+		{
+			return _strRecipientEmail.substring( _strRecipientEmail.lastIndexOf( PROPERTY_SYMBOL_AT_SIGN ) );
+		}
+		return null;
 	}
 
 	/**

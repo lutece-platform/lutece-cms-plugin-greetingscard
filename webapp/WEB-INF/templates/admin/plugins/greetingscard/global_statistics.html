@@ -1,3 +1,18 @@
+<div class="row">
+	<div class="btn-group pull-right">
+		<form class="form-horizontal" method="post" name="modify_year" action="jsp/admin/plugins/greetingscard/ChoiceGreetingsCard.jsp?plugin_name=greetingscard&stats=" >
+			<fieldset>
+				<div class="control-group">        
+					<label class="control-label" for="description"><strong>#i18n{greetingscard.global_statistics.labelYear} :</strong></label>
+					<div class="controls">
+						<@combo name="year" items=list_years default_value=year />
+						<input class="btn btn-primary" type="submit" value="#i18n{portal.util.labelOk}" />
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>
 <div class="well" >
     <legend>#i18n{greetingscard.global_statistics.statisticsTitle}</legend>
     
@@ -11,7 +26,6 @@
 			<th>#i18n{greetingscard.statistics.columnLabelReadOutside}</th>
 		</tr>
    		
-   		<#assign total_card_number = 0 >
    		<#assign total_read_card_number = 0 >
    		<#assign total_card_number_inside = 0 >
    		<#assign total_card_number_outside = 0 >
@@ -22,92 +36,61 @@
    		<#assign total_read_card_number_inside_ratio = 0 >
 		<#assign total_read_card_number_outside_ratio = 0 >
 
-   	
-   		<#list greetings_card_template_list as greetings_card_template>
-   			<#list greetings_card_template.greetingsCards as greetings_card  >
-   		 		<#if greetings_card.copy == false>
-	   		 		<#assign total_card_number = (total_card_number+1) > 	
-					<#if greetings_card.read>
-						<#assign total_read_card_number = (total_read_card_number+1) >
-					</#if>
-				</#if>
-			</#list>
-		</#list>
-		          
-		<#list greetings_card_template_list as greetings_card_template >
+		<#list greetings_card_statistic_list as greetings_card_statistic >
 
-			<#assign card_number = 0 >
-			<#assign inside_card_number = 0 >
-			<#assign outside_card_number = 0 >
-			<#assign inside_read_card_number = 0 >
-			<#assign outside_read_card_number = 0 >
-		
-			<#list greetings_card_template.greetingsCards as greetings_card  >
-				<#if greetings_card.copy == false>
-					<#if greetings_card.internal>
-			 			<#assign inside_card_number = (inside_card_number+1) >
-			 			<#if greetings_card.read >
-			 				<#assign inside_read_card_number = (inside_read_card_number+1) >
-			 			</#if>
-			 		<#else>
-			 			<#if greetings_card.read >
-			 				<#assign outside_read_card_number = (outside_read_card_number+1) >
-			 			</#if>
-			 		</#if>
-					<#assign card_number = (card_number+1) >
-				</#if>
-			</#list>
-			<#assign total_read_card_number_inside = (total_read_card_number_inside+inside_read_card_number)>
-			<#assign total_read_card_number_outside = (total_read_card_number_outside+outside_read_card_number)>
-			<#assign outside_card_number = (card_number-inside_card_number) >
-		
-			<#if total_card_number == 0>
+			<#if total_cards_sent == 0>
 				<#assign card_number_ratio = 0>
 			<#else>
-				<#assign card_number_ratio = (card_number/total_card_number) >
+				<#assign card_number_ratio = (greetings_card_statistic.nbCardSent/total_cards_sent) >
 			</#if>
 			
-			<#assign total_read_card = (inside_read_card_number+outside_read_card_number) >
-			<#if inside_card_number == 0>
+			<#if greetings_card_statistic.nbCardSentInternal == 0>
 				<#assign ratio_read_card_inside = 0 >
 			<#else>
-				<#assign ratio_read_card_inside = (inside_read_card_number/inside_card_number) >
+				<#assign ratio_read_card_inside = (greetings_card_statistic.nbCardRedInternal/greetings_card_statistic.nbCardSentInternal) >
 			</#if>
 			
-			<#if outside_card_number == 0>
+			<#if greetings_card_statistic.nbCardSentExternal == 0>
 				<#assign ratio_read_card_outside = 0 >
 			<#else>
-				<#assign ratio_read_card_outside = (outside_read_card_number/outside_card_number) >
+				<#assign ratio_read_card_outside = (greetings_card_statistic.nbCardRedExternal/greetings_card_statistic.nbCardSentExternal) >
 			</#if>
 			
-			<#if card_number == 0>
+			<#if greetings_card_statistic.nbCardSent == 0>
 				<#assign inside_card_number_ratio = 0 >
 				<#assign outside_card_number_ratio = 0 >
 			<#else>
-				<#assign inside_card_number_ratio =  (inside_card_number/card_number) >
-				<#assign outside_card_number_ratio = (outside_card_number/card_number) >
+				<#assign inside_card_number_ratio =  (greetings_card_statistic.nbCardSentInternal/greetings_card_statistic.nbCardSent) >
+				<#assign outside_card_number_ratio = (greetings_card_statistic.nbCardSentExternal/greetings_card_statistic.nbCardSent) >
 			</#if>
-			
-			<#assign total_card_number_inside = (total_card_number_inside+inside_card_number) >
-			<#assign total_card_number_outside = (total_card_number_outside+outside_card_number) >
-			
-			<#if total_card_number == 0>
-			<#else>
-				<#assign total_card_number_inside_ratio = (total_card_number_inside/total_card_number) >
-				<#assign total_card_number_outside_ratio = (total_card_number_outside/total_card_number) >
-			</#if>
+			<#assign total_card_number_inside = total_card_number_inside + greetings_card_statistic.nbCardSentInternal >
+			<#assign total_card_number_outside = total_card_number_outside + greetings_card_statistic.nbCardSentExternal >
+			<#assign total_read_card_number_inside = total_read_card_number_inside + greetings_card_statistic.nbCardRedInternal >
+			<#assign total_read_card_number_outside = total_read_card_number_outside + greetings_card_statistic.nbCardRedExternal >
 			
 			<tr>
-					<td>${greetings_card_template.id} - ${greetings_card_template.description}</td>
-					<td>${card_number} (${card_number_ratio?string.percent} #i18n{greetingscard.statistics.totalpercent})</td>
-					<td>${inside_card_number} (${inside_card_number_ratio?string.percent})</td>
-					<td>${outside_card_number} (${outside_card_number_ratio?string.percent})</td>
-					<td>${inside_read_card_number} (${ratio_read_card_inside?string.percent})</td>
-					<td>${outside_read_card_number} (${ratio_read_card_outside?string.percent})</td>
+				<td>${greetings_card_statistic.idGCT} - ${greetings_card_statistic.description}</td>	
+				<td>${greetings_card_statistic.nbCardSent} (${card_number_ratio?string.percent} #i18n{greetingscard.statistics.totalpercent})</td>
+				<td>${greetings_card_statistic.nbCardSentInternal} (${inside_card_number_ratio?string.percent})</td>
+				<td>${greetings_card_statistic.nbCardSentExternal} (${outside_card_number_ratio?string.percent})</td>
+				<td>${greetings_card_statistic.nbCardRedInternal} (${ratio_read_card_inside?string.percent})</td>
+				<td>${greetings_card_statistic.nbCardRedExternal} (${ratio_read_card_outside?string.percent})</td>
 			</tr>
 		</#list>
 			<tr>
 			
+				<#if total_cards_sent = 0>
+					<#assign total_card_number_inside_ratio = 0 >
+				<#else>
+					<#assign total_card_number_inside_ratio = (total_card_number_inside/total_cards_sent) >
+				</#if>
+				
+				<#if total_cards_sent = 0>
+					<#assign total_card_number_outside_ratio = 0 >
+				<#else>
+					<#assign total_card_number_outside_ratio = (total_card_number_outside/total_cards_sent) >
+				</#if>
+				
 				<#if total_card_number_inside = 0>
 					<#assign total_read_card_number_inside_ratio = 0 >
 				<#else>
@@ -119,11 +102,12 @@
 				<#else>
 					<#assign total_read_card_number_outside_ratio = (total_read_card_number_outside/total_card_number_outside) >
 				</#if>
+				
 				<td>
 					<strong>#i18n{greetingscard.statistics.total}</strong>
 				</td>
 				<td>
-					<strong>${total_card_number}</strong>
+					<strong>${total_cards_sent}</strong>
 				</td>
 				<td>
 					<strong>${total_card_number_inside} (${total_card_number_inside_ratio?string.percent})</strong>
@@ -189,5 +173,7 @@
 		</tr>
 	</table>
 	<br/>
-	<input class="btn btn-primary" type="button" onclick="javascript:history.go(-1)" value="#i18n{greetingscard.statistics.labelIdCancel}" />
+	<form action="jsp/admin/plugins/greetingscard/ChoiceGreetingsCard.jsp">
+		<input class="btn btn-primary" type="submit" value="#i18n{greetingscard.statistics.labelIdCancel}" />
+	</form>
 </div>

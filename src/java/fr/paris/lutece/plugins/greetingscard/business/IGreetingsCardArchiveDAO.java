@@ -25,10 +25,11 @@ public interface IGreetingsCardArchiveDAO
 	/**
 	 * Returns the list of greetings cards archives of a greetings card template
 	 * @param nIdGreetingsCardTemplate The greetings card template identifier
+	 * @param nYear Year of the archives. If the year is 0, then it is ignored
 	 * @param plugin The plugin
 	 * @return A Collection of greetings cards archives
 	 */
-	Collection<GreetingsCardArchive> findByGreetingsCardTemplateId( int nIdGreetingsCardTemplate, Plugin plugin );
+	Collection<GreetingsCardArchive> findByTemplateIdAndYear( int nIdGreetingsCardTemplate, int nYear, Plugin plugin );
 
 	/**
 	 * Returns the list of greetings cards archives of a given year

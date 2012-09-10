@@ -36,12 +36,13 @@ public class GreetingsCardArchiveHome
 	/**
 	 * Returns the list of greetings cards archives of a greetings card template
 	 * @param nIdGreetingsCardTemplate The greetings card template identifier
+	 * @param nYear Year of the archives. If the year is 0, then it is ignored
 	 * @param plugin The plugin
 	 * @return A Collection of greetings cards archives
 	 */
-	public static Collection<GreetingsCardArchive> findByGreetingsCardTemplateId( int nIdGreetingsCardTemplate, Plugin plugin )
+	public static Collection<GreetingsCardArchive> findByTemplateIdAndYear( int nIdGreetingsCardTemplate, int nYear, Plugin plugin )
 	{
-		return _dao.findByGreetingsCardTemplateId( nIdGreetingsCardTemplate, plugin );
+		return _dao.findByTemplateIdAndYear( nIdGreetingsCardTemplate, nYear, plugin );
 	}
 
 	/**

@@ -19,7 +19,9 @@ public class GreetingsCardArchiveDAO implements IGreetingsCardArchiveDAO
 	private static final String SQL_QUERY_REMOVE_ALL = " DELETE FROM greetings_card_archive ";
 	private static final String SQL_QUERY_UPDATE = " UPDATE greetings_card_archive SET id_gct = ?, domain_name = ?, nb_card = ?, nb_card_red = ?, year_archive = ? WHERE id_archive = ? ";
 	private static final String SQL_QUERY_REMOVE_BY_ID_TEMPLATE = " DELETE FROM greetings_card_archive WHERE id_gct = ? ";
-	private static final String SQL_QUERY_GET_YEARS = " SELECT DISTINCT year_archive FROM greetings_card_archive ";
+	private static final String SQL_QUERY_GET_YEARS = " SELECT DISTINCT year_archive FROM greetings_card_archive ORDER BY year_archive desc ";
+	private static final String SQL_QUERY_FILTER_YEAR = " year_archive = ? ";
+	private static final String SQL_QUERY_FILTER_AND = " AND ";
 
 	/**
 	 * Calculate a new primary key to add a new GreetingsCardArchive
@@ -75,11 +77,21 @@ public class GreetingsCardArchiveDAO implements IGreetingsCardArchiveDAO
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<GreetingsCardArchive> findByGreetingsCardTemplateId( int nIdGreetingsCardTemplate, Plugin plugin )
+	public Collection<GreetingsCardArchive> findByTemplateIdAndYear( int nIdGreetingsCardTemplate, int nYear, Plugin plugin )
 	{
-		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_ID_TEMPLATE, plugin );
+		StringBuilder sbSql = new StringBuilder( SQL_QUERY_FIND_BY_ID_TEMPLATE );
+		if ( nYear > 0 )
+		{
+			sbSql.append( SQL_QUERY_FILTER_AND );
+			sbSql.append( SQL_QUERY_FILTER_YEAR );
+		}
+		DAOUtil daoUtil = new DAOUtil( sbSql.toString( ), plugin );
 		daoUtil.setInt( 1, nIdGreetingsCardTemplate );
-
+		if ( nYear > 0 )
+		{
+			daoUtil.setInt( 2, nYear );
+		}
+		daoUtil.executeQuery( );
 		List<GreetingsCardArchive> listArchive = new ArrayList<GreetingsCardArchive>( );
 		while ( daoUtil.next( ) )
 		{

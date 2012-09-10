@@ -35,16 +35,21 @@ package fr.paris.lutece.plugins.greetingscard.web;
 
 import fr.paris.lutece.plugins.greetingscard.business.Domain;
 import fr.paris.lutece.plugins.greetingscard.business.GreetingsCard;
+import fr.paris.lutece.plugins.greetingscard.business.GreetingsCardArchive;
+import fr.paris.lutece.plugins.greetingscard.business.GreetingsCardArchiveHome;
 import fr.paris.lutece.plugins.greetingscard.business.GreetingsCardFilter;
 import fr.paris.lutece.plugins.greetingscard.business.GreetingsCardHome;
+import fr.paris.lutece.plugins.greetingscard.business.GreetingsCardStatistic;
 import fr.paris.lutece.plugins.greetingscard.business.GreetingsCardTemplate;
 import fr.paris.lutece.plugins.greetingscard.business.GreetingsCardTemplateHome;
 import fr.paris.lutece.plugins.greetingscard.service.GreetingsCardResourceIdService;
+import fr.paris.lutece.plugins.greetingscard.service.GreetingsCardService;
 import fr.paris.lutece.portal.business.rbac.RBAC;
 import fr.paris.lutece.portal.business.xsl.XslExport;
 import fr.paris.lutece.portal.business.xsl.XslExportHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminUserService;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mail.MailService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
@@ -52,6 +57,7 @@ import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
+import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -75,12 +81,18 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -107,6 +119,8 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String MARK_GREETINGS_CARD_TEMPLATE_STATUS = "status";
 	private static final String MARK_GREETINGS_CARD_TEMPLATE_PASSWORD = "password";
 	private static final String MARK_GREETINGS_CARD_ALL_MODEL_COMBO = "all_model";
+	private static final String MARK_GREETINGS_CARD_STATISTIC = "greetings_card_statistic";
+	private static final String MARK_GREETINGS_CARD_STATISTIC_LIST = "greetings_card_statistic_list";
 	private static final String MARK_PLUGIN_NAME = "plugin_name";
 	private static final String MARK_GREETINGS_CARD_TEMPLATE_HEIGHT = "height";
 	private static final String MARK_GREETINGS_CARD_TEMPLATE_WIDTH = "width";
@@ -114,16 +128,20 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String MARK_USER_WORKGROUP_SELECTED = "user_workgroup_selected";
 	private static final String MARK_WEBAPP_URL = "webapp_url";
 	private static final String MARK_LOCALE = "locale";
+	private static final String MARK_DATE_NEXT_ARCHIVE = "date_next_archive";
+	private static final String MARK_YEAR_NEXT_ARCHIVE = "year_next_archive";
 	private static final String MARK_TEMPLATE_LIST = "template_list";
 	private static final String MARK_GREETINGS_CARD_LIST_DOMAIN = "domain_list";
 	private static final String MARK_DOMAIN_TOTAL_READ = "domain_total_read";
 	private static final String MARK_DOMAIN_TOTAL_SENT = "domain_total_sent";
+	private static final String MARK_DOMAIN_TOTAL_CARDS = "total_cards_sent";
 	private static final String MARK_PERMISSION_CREATE = "permission_create";
 	private static final String MARK_PERMISSION_MODIFY = "permission_modify";
 	private static final String MARK_PERMISSION_DELETE = "permission_delete";
 	private static final String MARK_PERMISSION_SEND = "permission_send";
 	private static final String MARK_PERMISSION_STATS = "permission_stats";
 	private static final String MARK_PERMISSION_EXPORT = "permission_export";
+	private static final String MARK_PERMISSION_ARCHIVE = "permission_archive";
 	private static final String MARK_VIEW_HTML_CARD_FROM_INTRANET = "view_html_card_from_intranet";
 	private static final String MARK_VIEW_HTML_CARD_FROM_INTERNET = "view_html_card_from_internet";
 	private static final String MARK_VIEW_FLASH_CARD_FROM_INTRANET = "view_flash_card_from_intranet";
@@ -132,6 +150,8 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String MARK_GC_ID = "gc_id";
 	private static final String MARK_PORTAL_URL = "portal_url";
 	private static final String MARK_LIST_XSL_EXPORT = "list_xsl_export";
+	private static final String MARK_LIST_YEARS = "list_years";
+	private static final String MARK_YEAR = "year";
 
 	// Parameters
 	private static final String PARAMETER_DESCRIPTION = "description";
@@ -155,6 +175,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String PARAMETER_WORKGROUP = "workgroup";
 	private static final String PARAMETER_STATS = "stats";
 	private static final String PARAMETER_CREATE = "create";
+	private static final String PARAMETER_ARCHIVE = "archive";
+	private static final String PARAMETER_NEXT_AUTO_ARCHIVING = "greetingscard.nextAutoArchiving";
+	private static final String PARAMETER_YEAR_NEXT_AUTO_ARCHIVING = "greetingscard.yearNextAutoArchiving";
 
 	// JSP
 	private static final String JSP_URL_GREETINGS_CARD_TEMPLATES_LIST = "GreetingsCardTemplatesList.jsp";
@@ -170,6 +193,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String TEMPLATE_GLOBAL_STATISTICS = "admin/plugins/greetingscard/global_statistics.html";
 	private static final String TEMPLATE_GREETINGS_CARD_MAIL = "admin/plugins/greetingscard/greetings_card_mail.html";
 	private static final String TEMPLATE_EXPORT_GREETINGS_CARD = "admin/plugins/greetingscard/export_greetings_card.html";
+	private static final String TEMPLATE_ARCHIVE_GREETINGS_CARD = "admin/plugins/greetingscard/archive_greetings_card.html";
 
 	// Properties
 	private static final String PROPERTY_PATH_GREETINGS_CARD_TEMPLATE_DIR_NAME = "greetingscard.path.greetingscardtemplatedirname";
@@ -193,14 +217,22 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String MESSAGE_MAIL_SEND = "greetingscard.message.mail.send";
 	private static final String MESSAGE_ERROR_CSV_FILE_IMPORT = "greetingscard.message.error_csv_file_import";
 	private static final String MESSAGE_ERROR_CSV_MAIL = "greetingscard.message.error_csv_mail";
+	private static final String MESSAGE_FORBIDEN = "greetingscard.message.forbiden";
+	private static final String MESSAGE_ERROR_PARSE_DATE = "greetingscard.message.error.errorParseDate";
+	private static final String MESSAGE_DATE_AUTO_ARCHIVE_UPDATED = "greetingscard.message.dateNextArchiveUpdated";
+	private static final String MESSAGE_ARCHIVED_OK = "greetingscard.message.greetingscards_archived";
+	private static final String MESSAGE_ERROR_PARSE_NUMBER = "greetingscard.message.error.parseNumberFailed";
 	private static final String MANDATORY_MESSAGE = "greetingscard.mandatory_field.message";
 	private static final String MANDATORY_SENDER_NAME = "greetingscard.mandatory_field.sender_name";
 	private static final String MANDATORY_SENDER_EMAIL = "greetingscard.mandatory_field.sender_mail";
+	private static final String MANDATORY_YEAR = "greetingscard.mandatory_field.year";
 	/** The message error for the number format in properties files */
 	private static final String NUMBER_FORMAT_GREETINGS_CARD = "greetingscard.message_error.numberFormat";
 	private static final String NUMBER_FORMAT_DAYS = "greetingscard.message_error.numberFormatDays";
 	private static final String DIFFERENT_FILES_SWF = "greetingscard.message_error.differentFilesSWF";
 	private static final String DIFFERENT_FILES_HTML = "greetingscard.message_error.differentFilesHTML";
+	private static final String LABEL_CURRENT_YEAR = "greetingscard.global_statistics.labelCurrentYear";
+	private static final String LABEL_YEAR = "greetingscard.greetings_card_templates.labelYearAuto";
 
 	// Param
 	private static final String PARAM_PAGE = "page";
@@ -216,6 +248,13 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String PARAM_GREETINGS_CARD_TEMPLATE_ID = "gct_id";
 	private static final String PARAM_XSL_EXPORT_ID = "xsl_export_id";
 	private static final String PARAM_NOTIFY_USER = "notify_user";
+	private static final String PARAM_DATE_MIN = "date_min";
+	private static final String PARAM_DATE_MAX = "date_max";
+	private static final String PARAM_YEAR = "year";
+	private static final String PARAM_NEXT_AUTO_ARCHIVING = "date_next_archive";
+	private static final String PARAM_YEAR_NEXT_AUTO_ARCHIVING = "year_next_archive";
+
+	private static final String URL_JSP_LIST_TEMPLATES = "jsp/admin/plugins/greetingscard/ManageGreetingsCard.jsp";
 
 	private static final String HTML_BR = "<br>";
 	private static final String HTML_SUBSTITUTE_BR = "\r\n";
@@ -246,6 +285,8 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static String CONSTANT_MIME_TYPE_XML = "application/xml";
 	private static String CONSTANT_MIME_TYPE_OCTETSTREAM = "application/octet-stream";
 	private static String _strWorkGroup = AdminWorkgroupService.ALL_GROUPS;
+
+	private GreetingsCardService _greetingsCardService = SpringContextService.getBean( GreetingsCardService.beanName );
 
 	/**
 	 * Creates a new GreetingsCardJspBean object.
@@ -280,9 +321,18 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		Collection<GreetingsCardTemplate> listGreetingsCardTemplate = GreetingsCardTemplateHome.findAll( getPlugin( ) );
 		listGreetingsCardTemplate = AdminWorkgroupService.getAuthorizedCollection( listGreetingsCardTemplate, getUser( ) );
 
+		// We use a specific locale so that the daemon will have the same.
+		Locale locale = Locale.FRANCE;
+
+		String strDateNextArchiveAuto = DatastoreService.getDataValue( PARAMETER_NEXT_AUTO_ARCHIVING, StringUtils.EMPTY );
+		String strYearNextArchiveAuto = DatastoreService.getDataValue( PARAMETER_YEAR_NEXT_AUTO_ARCHIVING, StringUtils.EMPTY );
+
 		HashMap<String, Object> model = new HashMap<String, Object>( );
 		model.put( MARK_PLUGIN_NAME, getPlugin( ).getName( ) );
 		model.put( MARK_GREETINGS_CARD_TEMPLATE_LIST, listGreetingsCardTemplate );
+		model.put( MARK_LOCALE, locale );
+		model.put( MARK_DATE_NEXT_ARCHIVE, strDateNextArchiveAuto );
+		model.put( MARK_YEAR_NEXT_ARCHIVE, strYearNextArchiveAuto );
 		addPermissionsToHashmap( model );
 
 		HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_GREETINGS_CARD_TEMPLATES, getLocale( ), model );
@@ -306,8 +356,12 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		{
 			return getGlobalStatistics( request );
 		}
+		else if ( request.getParameter( PARAMETER_ARCHIVE ) != null )
+		{
+			return getArchiveGreetingsCard( request );
+		}
 
-		return getJspManageGreetingsCard( request );
+		return getGreetingsCardTemplatesList( request );
 	}
 
 	/**
@@ -322,7 +376,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
 		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_CREATE, getUser( ) ) )
 		{
-			throw new AccessDeniedException( );
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
 		}
 
 		HashMap<String, Object> model = new HashMap<String, Object>( );
@@ -349,7 +403,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
 		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_CREATE, getUser( ) ) )
 		{
-			throw new AccessDeniedException( );
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
 		}
 
 		try
@@ -475,7 +529,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
 		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_MODIFY, getUser( ) ) )
 		{
-			throw new AccessDeniedException( );
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
 		}
 
 		String strGreetingsCardTemplateId = request.getParameter( PARAMETER_GREETINGS_CARD_TEMPLATE_ID );
@@ -532,7 +586,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
 		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_MODIFY, getUser( ) ) )
 		{
-			throw new AccessDeniedException( );
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
 		}
 
 		try
@@ -679,7 +733,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	{
 		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_DELETE, getUser( ) ) )
 		{
-			throw new AccessDeniedException( );
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
 		}
 
 		// Constructs the url to the greetings card templates list
@@ -690,7 +744,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
 		GreetingsCardTemplate greetingsCardTemplate = GreetingsCardTemplateHome.findByPrimaryKey( nIdGreetingsCardTemplate, getPlugin( ) );
 
-		Collection<GreetingsCard> listGreetingsCards = greetingsCardTemplate.getGreetingsCards( );
+		Collection<GreetingsCard> listGreetingsCards = GreetingsCardHome.findByGreetingsCardTemplateId( greetingsCardTemplate.getId( ), getPlugin( ) );
 
 		for ( GreetingsCard greetingsCard : listGreetingsCards )
 		{
@@ -787,49 +841,115 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	{
 		setPageTitleProperty( PROPERTY_PAGE_TITLE_STATS );
 
+		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_SEE_STATS, getUser( ) ) )
+		{
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
+		}
+
+		String strYear = request.getParameter( PARAM_YEAR );
+		int nYear = 0;
+		if ( strYear == null )
+		{
+			strYear = StringUtils.EMPTY;
+		}
+		else
+		{
+			try
+			{
+				nYear = Integer.parseInt( strYear );
+			}
+			catch ( NumberFormatException e )
+			{
+				nYear = 0;
+			}
+		}
+		if ( nYear > 0 )
+		{
+			return getAdminPage( getArchiveStatistics( request, TEMPLATE_STATISTICS, nYear ) );
+		}
+
 		String strIdGCT = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
 		int nIdGCT = Integer.parseInt( strIdGCT );
 
-		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_SEE_STATS, getUser( ) ) )
-		{
-			throw new AccessDeniedException( );
-		}
-
-		String strAllModelCombo = I18nService.getLocalizedString( PROPERTY_GREETINGSCARD_ALL_MODEL_COMBO, getLocale( ) );
 		GreetingsCardTemplate gct = GreetingsCardTemplateHome.findByPrimaryKey( nIdGCT, getPlugin( ) );
-		Collection<GreetingsCardTemplate> listGreetingsCardTemplate = new ArrayList<GreetingsCardTemplate>( );
-		listGreetingsCardTemplate.add( gct );
 
 		GreetingsCardFilter greetingsCardFilter = new GreetingsCardFilter( );
 		greetingsCardFilter.setIdGCT( nIdGCT );
 
 		List<Domain> listDomain = new ArrayList<Domain>( );
-		List<String> listStrDomain = GreetingsCardHome.findDomainNameOfMailSent( greetingsCardFilter, getPlugin( ) );
-		int nTotalRead = 0;
-		int nTotalSent = 0;
+		int nTotalCardsSent = GreetingsCardHome.findNumberTotalOfMailSentWithoutCopy( getPlugin( ) );
+		int nTotalReadDomain = 0;
+		int nTotalSentDomain = 0;
 
-		for ( String strDomain : listStrDomain )
+		int nNbCardSentInternal = 0;
+		int nNbCardSentExternal = 0;
+		int nNbCardRedInternal = 0;
+		int nNbCardRedExternal = 0;
+
+		Map<String, Integer> cardsSentByDomain = GreetingsCardHome.findNumberOfMailSentByDomain( greetingsCardFilter, getPlugin( ) );
+		Map<String, Integer> cardsRedByDomain = GreetingsCardHome.findNumberOfMailReadByDomain( greetingsCardFilter, getPlugin( ) );
+
+		String[] strArrayDomain = new String[cardsSentByDomain.keySet( ).size( )];
+		strArrayDomain = cardsSentByDomain.keySet( ).toArray( strArrayDomain );
+		java.util.Arrays.sort( strArrayDomain );
+		for ( String strDomain : strArrayDomain )
 		{
 			Domain domain = new Domain( );
 			domain.setDomainName( strDomain );
 
-			int nMailSent = GreetingsCardHome.findNumberOfMailSentByDomain( strDomain, greetingsCardFilter, getPlugin( ) );
+			Integer nMailSent = cardsSentByDomain.get( strDomain );
+			if ( nMailSent == null )
+			{
+				nMailSent = 0;
+			}
 			domain.setMailSent( nMailSent );
 
-			int nMailRead = GreetingsCardHome.findNumberOfMailReadByDomain( strDomain, greetingsCardFilter, getPlugin( ) );
+			Integer nMailRead = cardsRedByDomain.get( strDomain );
+			if ( nMailRead == null )
+			{
+				nMailRead = 0;
+			}
 			domain.setMailRead( nMailRead );
 			listDomain.add( domain );
 
-			nTotalRead += nMailRead;
-			nTotalSent += nMailSent;
+			if ( _greetingsCardService.isInternal( strDomain ) )
+			{
+				nNbCardSentInternal += nMailSent;
+				nNbCardRedInternal += nMailRead;
+			}
+			else
+			{
+				nNbCardSentExternal += nMailSent;
+				nNbCardRedExternal += nMailRead;
+			}
+
+			nTotalReadDomain += nMailRead;
+			nTotalSentDomain += nMailSent;
 		}
 
+		GreetingsCardStatistic greetingsCardStatistic = new GreetingsCardStatistic( );
+		greetingsCardStatistic.setDescription( gct.getDescription( ) );
+		greetingsCardStatistic.setIdGCT( gct.getId( ) );
+		greetingsCardStatistic.setNbCardSentInternal( nNbCardSentInternal );
+		greetingsCardStatistic.setNbCardRedInternal( nNbCardRedInternal );
+		greetingsCardStatistic.setNbCardSentExternal( nNbCardSentExternal );
+		greetingsCardStatistic.setNbCardRedExternal( nNbCardRedExternal );
+
+		ReferenceList refListYears = GreetingsCardArchiveHome.getYearList( getPlugin( ) );
+		ReferenceItem refItem = new ReferenceItem( );
+		refItem.setName( I18nService.getLocalizedString( LABEL_CURRENT_YEAR, request.getLocale( ) ) );
+		refItem.setCode( StringUtils.EMPTY );
+		refListYears.add( 0, refItem );
+
 		HashMap<String, Object> model = new HashMap<String, Object>( );
-		model.put( MARK_GREETINGS_CARD_ALL_MODEL_COMBO, strAllModelCombo );
-		model.put( MARK_GREETINGS_CARD_TEMPLATE_LIST, listGreetingsCardTemplate );
+		model.put( MARK_GREETINGS_CARD_STATISTIC, greetingsCardStatistic );
 		model.put( MARK_GREETINGS_CARD_LIST_DOMAIN, listDomain );
-		model.put( MARK_DOMAIN_TOTAL_READ, nTotalRead );
-		model.put( MARK_DOMAIN_TOTAL_SENT, nTotalSent );
+		model.put( MARK_DOMAIN_TOTAL_READ, nTotalReadDomain );
+		model.put( MARK_DOMAIN_TOTAL_SENT, nTotalSentDomain );
+		model.put( MARK_DOMAIN_TOTAL_CARDS, nTotalCardsSent );
+		model.put( MARK_LIST_YEARS, refListYears );
+		model.put( MARK_YEAR, strYear );
+		model.put( MARK_GREETINGS_CARD_TEMPLATE_ID, strIdGCT );
 
 		HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_STATISTICS, getLocale( ), model );
 
@@ -848,74 +968,281 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
 		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_SEE_STATS, getUser( ) ) )
 		{
-			throw new AccessDeniedException( );
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
 		}
 
-		String strAllModelCombo = I18nService.getLocalizedString( PROPERTY_GREETINGSCARD_ALL_MODEL_COMBO, getLocale( ) );
+		String strYear = request.getParameter( PARAM_YEAR );
+		int nYear = 0;
+		if ( strYear == null )
+		{
+			strYear = StringUtils.EMPTY;
+		}
+		else
+		{
+			try
+			{
+				nYear = Integer.parseInt( strYear );
+			}
+			catch ( NumberFormatException e )
+			{
+				nYear = 0;
+			}
+		}
+		if ( nYear > 0 )
+		{
+			return getAdminPage( getArchiveStatistics( request, TEMPLATE_GLOBAL_STATISTICS, nYear ) );
+		}
+
 		Collection<GreetingsCardTemplate> listGreetingsCardTemplate = GreetingsCardTemplateHome.findAll( getPlugin( ) );
 		listGreetingsCardTemplate = AdminWorkgroupService.getAuthorizedCollection( listGreetingsCardTemplate, getUser( ) );
 
 		GreetingsCardFilter greetingsCardFilter = new GreetingsCardFilter( );
 
 		List<Domain> listDomain = new ArrayList<Domain>( );
-		List<String> listStrDomain = new ArrayList<String>( );
 
+		List<GreetingsCardStatistic> listGreetingsCardStatistic = new ArrayList<GreetingsCardStatistic>( );
+		Map<String, Integer> totCardsSentByDomain = new HashMap<String, Integer>( );
+		Map<String, Integer> totCardsRedByDomain = new HashMap<String, Integer>( );
 		for ( GreetingsCardTemplate gct : listGreetingsCardTemplate )
 		{
+			Integer nMailSent = 0;
+			Integer nMailRead = 0;
+			int nNbCardSentInternal = 0;
+			int nNbCardSentExternal = 0;
+			int nNbCardRedInternal = 0;
+			int nNbCardRedExternal = 0;
 			greetingsCardFilter.setIdGCT( gct.getId( ) );
+			Map<String, Integer> cardsSentByDomain = GreetingsCardHome.findNumberOfMailSentByDomain( greetingsCardFilter, getPlugin( ) );
+			Map<String, Integer> cardsRedByDomain = GreetingsCardHome.findNumberOfMailReadByDomain( greetingsCardFilter, getPlugin( ) );
 
-			List<String> strDomainTmp = GreetingsCardHome.findDomainNameOfMailSent( greetingsCardFilter, getPlugin( ) );
-
-			if ( !listStrDomain.containsAll( strDomainTmp ) )
+			Set<String> setStrDomain = cardsSentByDomain.keySet( );
+			for ( String strDomain : setStrDomain )
 			{
-				for ( String strDom : strDomainTmp )
+
+				nMailSent = cardsSentByDomain.get( strDomain );
+				if ( nMailSent == null )
 				{
-					if ( !listStrDomain.contains( strDom ) )
-					{
-						listStrDomain.add( strDom );
-					}
+					nMailSent = 0;
 				}
+				nMailRead = cardsRedByDomain.get( strDomain );
+				if ( nMailRead == null )
+				{
+					nMailRead = 0;
+				}
+
+				if ( _greetingsCardService.isInternal( strDomain ) )
+				{
+					nNbCardSentInternal += nMailSent;
+					nNbCardRedInternal += nMailRead;
+				}
+				else
+				{
+					nNbCardSentExternal += nMailSent;
+					nNbCardRedExternal += nMailRead;
+				}
+
+				Integer nTotCardSent = totCardsSentByDomain.get( strDomain );
+				if ( nTotCardSent == null )
+				{
+					nTotCardSent = 0;
+				}
+				totCardsSentByDomain.put( strDomain, nTotCardSent + nMailSent );
+
+				Integer nTotCardRed = totCardsRedByDomain.get( strDomain );
+				if ( nTotCardRed == null )
+				{
+					nTotCardRed = 0;
+				}
+				totCardsRedByDomain.put( strDomain, nTotCardRed + nMailRead );
 			}
+
+			GreetingsCardStatistic greetingsCardStatistic = new GreetingsCardStatistic( );
+			greetingsCardStatistic.setDescription( gct.getDescription( ) );
+			greetingsCardStatistic.setIdGCT( gct.getId( ) );
+			greetingsCardStatistic.setNbCardSentInternal( nNbCardSentInternal );
+			greetingsCardStatistic.setNbCardRedInternal( nNbCardRedInternal );
+			greetingsCardStatistic.setNbCardSentExternal( nNbCardSentExternal );
+			greetingsCardStatistic.setNbCardRedExternal( nNbCardRedExternal );
+			listGreetingsCardStatistic.add( greetingsCardStatistic );
 		}
 
+		String[] strArrayDomain = new String[totCardsSentByDomain.keySet( ).size( )];
+		strArrayDomain = totCardsSentByDomain.keySet( ).toArray( strArrayDomain );
+		java.util.Arrays.sort( strArrayDomain );
 		int nTotalRead = 0;
 		int nTotalSent = 0;
-		int nMailSent = 0;
-		int nMailRead = 0;
-
-		for ( String strDomain : listStrDomain )
+		Integer nMailSent = 0;
+		Integer nMailRead = 0;
+		for ( String strDomain : strArrayDomain )
 		{
+			nMailSent = totCardsSentByDomain.get( strDomain );
+			if ( nMailSent == null )
+			{
+				nMailSent = 0;
+			}
+			nMailRead = totCardsRedByDomain.get( strDomain );
+			if ( nMailRead == null )
+			{
+				nMailRead = 0;
+			}
 			Domain domain = new Domain( );
 			domain.setDomainName( strDomain );
-
-			for ( GreetingsCardTemplate gct : listGreetingsCardTemplate )
-			{
-				greetingsCardFilter.setIdGCT( gct.getId( ) );
-				nMailSent += GreetingsCardHome.findNumberOfMailSentByDomain( strDomain, greetingsCardFilter, getPlugin( ) );
-				nMailRead += GreetingsCardHome.findNumberOfMailReadByDomain( strDomain, greetingsCardFilter, getPlugin( ) );
-			}
-
 			domain.setMailSent( nMailSent );
 			domain.setMailRead( nMailRead );
 			listDomain.add( domain );
 
-			nTotalRead += nMailRead;
 			nTotalSent += nMailSent;
-
-			nMailRead = 0;
-			nMailSent = 0;
+			nTotalRead += nMailRead;
 		}
 
+		ReferenceList refListYears = GreetingsCardArchiveHome.getYearList( getPlugin( ) );
+		ReferenceItem refItem = new ReferenceItem( );
+		refItem.setName( I18nService.getLocalizedString( LABEL_CURRENT_YEAR, request.getLocale( ) ) );
+		refItem.setCode( StringUtils.EMPTY );
+		refListYears.add( 0, refItem );
+
 		HashMap<String, Object> model = new HashMap<String, Object>( );
-		model.put( MARK_GREETINGS_CARD_ALL_MODEL_COMBO, strAllModelCombo );
-		model.put( MARK_GREETINGS_CARD_TEMPLATE_LIST, listGreetingsCardTemplate );
+		model.put( MARK_GREETINGS_CARD_STATISTIC_LIST, listGreetingsCardStatistic );
 		model.put( MARK_GREETINGS_CARD_LIST_DOMAIN, listDomain );
 		model.put( MARK_DOMAIN_TOTAL_READ, nTotalRead );
 		model.put( MARK_DOMAIN_TOTAL_SENT, nTotalSent );
+		model.put( MARK_DOMAIN_TOTAL_CARDS, nTotalSent );
+		model.put( MARK_LIST_YEARS, refListYears );
+		model.put( MARK_YEAR, strYear );
 
 		HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_GLOBAL_STATISTICS, getLocale( ), model );
 
 		return getAdminPage( t.getHtml( ) );
+	}
+
+	/**
+	 * Get statistics of an archived year
+	 * @param request the request. If the parameter "gct_id" exists, and contains a numeral value, then only data of the template with the given id are displayed
+	 * @param strTemplate The template to use
+	 * @param nYear Year to consider
+	 * @return The HTML code generated from the template
+	 */
+	private String getArchiveStatistics( HttpServletRequest request, String strTemplate, int nYear )
+	{
+		String strIdGCT = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
+		int nIdGCT = 0;
+		try
+		{
+			nIdGCT = Integer.parseInt( strIdGCT );
+		}
+		catch ( NumberFormatException e )
+		{
+			nIdGCT = 0;
+		}
+		Collection<GreetingsCardTemplate> listGreetingsCardTemplate;
+
+		if ( nIdGCT > 0 )
+		{
+			listGreetingsCardTemplate = new ArrayList<GreetingsCardTemplate>( );
+			listGreetingsCardTemplate.add( GreetingsCardTemplateHome.findByPrimaryKey( nIdGCT, getPlugin( ) ) );
+		}
+		else
+		{
+			listGreetingsCardTemplate = GreetingsCardTemplateHome.findAll( getPlugin( ) );
+		}
+
+		List<Domain> listDomain = new ArrayList<Domain>( );
+		List<GreetingsCardStatistic> listGreetingsCardStatistic = new ArrayList<GreetingsCardStatistic>( );
+
+		Map<String, Integer> totCardsSentByDomain = new HashMap<String, Integer>( );
+		Map<String, Integer> totCardsRedByDomain = new HashMap<String, Integer>( );
+
+		for ( GreetingsCardTemplate gct : listGreetingsCardTemplate )
+		{
+			Collection<GreetingsCardArchive> listGreetingsCardArchive = GreetingsCardArchiveHome.findByTemplateIdAndYear( gct.getId( ), nYear, getPlugin( ) );
+			GreetingsCardStatistic greetingsCardStatistic = new GreetingsCardStatistic( );
+			greetingsCardStatistic.setIdGCT( gct.getId( ) );
+			greetingsCardStatistic.setDescription( gct.getDescription( ) );
+			for ( GreetingsCardArchive archive : listGreetingsCardArchive )
+			{
+				if ( _greetingsCardService.isInternal( archive.getDomainName( ) ) )
+				{
+					greetingsCardStatistic.setNbCardSentInternal( greetingsCardStatistic.getNbCardSentInternal( ) + archive.getNbCard( ) );
+					greetingsCardStatistic.setNbCardRedInternal( greetingsCardStatistic.getNbCardRedInternal( ) + archive.getNbCardRed( ) );
+				}
+				else
+				{
+					greetingsCardStatistic.setNbCardSentExternal( greetingsCardStatistic.getNbCardSentExternal( ) + archive.getNbCard( ) );
+					greetingsCardStatistic.setNbCardRedExternal( greetingsCardStatistic.getNbCardRedExternal( ) + archive.getNbCardRed( ) );
+				}
+
+				Integer nTotCardSent = totCardsSentByDomain.get( archive.getDomainName( ) );
+				if ( nTotCardSent == null )
+				{
+					nTotCardSent = 0;
+				}
+				totCardsSentByDomain.put( archive.getDomainName( ), nTotCardSent + archive.getNbCard( ) );
+
+				Integer nTotCardRed = totCardsRedByDomain.get( archive.getDomainName( ) );
+				if ( nTotCardRed == null )
+				{
+					nTotCardRed = 0;
+				}
+				totCardsRedByDomain.put( archive.getDomainName( ), nTotCardRed + archive.getNbCardRed( ) );
+			}
+			listGreetingsCardStatistic.add( greetingsCardStatistic );
+		}
+
+		String[] strArrayDomain = new String[totCardsSentByDomain.keySet( ).size( )];
+		strArrayDomain = totCardsSentByDomain.keySet( ).toArray( strArrayDomain );
+		java.util.Arrays.sort( strArrayDomain );
+		int nTotalRead = 0;
+		int nTotalSent = 0;
+		Integer nMailSent = 0;
+		Integer nMailRead = 0;
+		for ( String strDomain : strArrayDomain )
+		{
+			nMailSent = totCardsSentByDomain.get( strDomain );
+			if ( nMailSent == null )
+			{
+				nMailSent = 0;
+			}
+			nMailRead = totCardsRedByDomain.get( strDomain );
+			if ( nMailRead == null )
+			{
+				nMailRead = 0;
+			}
+			Domain domain = new Domain( );
+			domain.setDomainName( strDomain );
+			domain.setMailSent( nMailSent );
+			domain.setMailRead( nMailRead );
+			listDomain.add( domain );
+
+			nTotalSent += nMailSent;
+			nTotalRead += nMailRead;
+		}
+
+		ReferenceList refListYears = GreetingsCardArchiveHome.getYearList( getPlugin( ) );
+		ReferenceItem refItem = new ReferenceItem( );
+		refItem.setName( I18nService.getLocalizedString( LABEL_CURRENT_YEAR, request.getLocale( ) ) );
+		refItem.setCode( StringUtils.EMPTY );
+		refListYears.add( 0, refItem );
+
+		HashMap<String, Object> model = new HashMap<String, Object>( );
+		if ( nIdGCT > 0 )
+		{
+			model.put( MARK_GREETINGS_CARD_STATISTIC, listGreetingsCardStatistic.get( 0 ) );
+			model.put( MARK_GREETINGS_CARD_TEMPLATE_ID, strIdGCT );
+		}
+		else
+		{
+			model.put( MARK_GREETINGS_CARD_STATISTIC_LIST, listGreetingsCardStatistic );
+		}
+		model.put( MARK_GREETINGS_CARD_LIST_DOMAIN, listDomain );
+		model.put( MARK_DOMAIN_TOTAL_READ, nTotalRead );
+		model.put( MARK_DOMAIN_TOTAL_SENT, nTotalSent );
+		model.put( MARK_DOMAIN_TOTAL_CARDS, nTotalSent );
+		model.put( MARK_LIST_YEARS, refListYears );
+		model.put( MARK_YEAR, String.valueOf( nYear ) );
+
+		HtmlTemplate t = AppTemplateService.getTemplate( strTemplate, getLocale( ), model );
+
+		return t.getHtml( );
 	}
 
 	/**
@@ -993,7 +1320,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
 		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_SEND, getUser( ) ) )
 		{
-			throw new AccessDeniedException( );
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
 		}
 
 		HashMap<String, Object> model = new HashMap<String, Object>( );
@@ -1117,23 +1444,24 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 			greetingsCard.setStatus( GreetingsCard.STATUS_SENT );
 			greetingsCard.setNotifySender( bNotifyUser );
 
-			// List<Character> listChar = new ArrayList<Character>( );
-			// listChar.add( 'a' );
-			// listChar.add( 'b' );
-			// listChar.add( 'c' );
-			// listChar.add( 'd' );
-			// listChar.add( 'e' );
-			// for ( int nb = 0; nb < 10000; nb++ )
-			// {
-			// Collections.shuffle( listChar );
-			// String strDomainName = StringUtils.EMPTY;
-			// for ( Character myChar : listChar )
-			// {
-			// strDomainName += myChar;
-			// }
-			// greetingsCard.setRecipientEmail( "vbroussard@" + strDomainName + ".com" );
-			GreetingsCardHome.create( greetingsCard, getPlugin( ) );
-			// }
+			List<Character> listChar = new ArrayList<Character>( );
+			listChar.add( 'a' );
+			listChar.add( 'a' );
+			listChar.add( 'b' );
+			listChar.add( 'c' );
+			listChar.add( 'd' );
+			listChar.add( 'e' );
+			for ( int nb = 0; nb < 100000; nb++ )
+			{
+				Collections.shuffle( listChar );
+				String strDomainName = StringUtils.EMPTY;
+				for ( Character myChar : listChar )
+				{
+					strDomainName += myChar;
+				}
+				greetingsCard.setRecipientEmail( "vbroussard@" + strDomainName + ".com" );
+				GreetingsCardHome.create( greetingsCard, getPlugin( ) );
+			}
 
 			String strInternetPortalUrl = AppPropertiesService.getProperty( PROPERTY_LUTECE_PROD_URL );
 			String strPathGreetingsCardTemplateDirName = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATE_DIR_NAME );
@@ -1217,9 +1545,14 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	 * Get the export greetings card page
 	 * @param request The request
 	 * @return The HTML content of the page
+	 * @throws AccessDeniedException the exception for AccessDeniedException
 	 */
-	public String getExportGreetingsCard( HttpServletRequest request )
+	public String getExportGreetingsCard( HttpServletRequest request ) throws AccessDeniedException
 	{
+		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_EXPORT, getUser( ) ) )
+		{
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
+		}
 		String strGreetingsCardTemplateId = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
 
 		HashMap<String, Object> model = new HashMap<String, Object>( );
@@ -1237,9 +1570,14 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	 * @param request The request
 	 * @param response The response
 	 * @throws IOException Throw an exception if the outputstream has error.
+	 * @throws AccessDeniedException the exception for AccessDeniedException
 	 */
-	public void doExportGreetingsCard( HttpServletRequest request, HttpServletResponse response ) throws IOException
+	public void doExportGreetingsCard( HttpServletRequest request, HttpServletResponse response ) throws IOException, AccessDeniedException
 	{
+		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_EXPORT, getUser( ) ) )
+		{
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
+		}
 		String strGreetingsCardTemplateId = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
 		String strXslExportId = request.getParameter( PARAM_XSL_EXPORT_ID );
 		String strExportedGreetingsCard = StringUtils.EMPTY;
@@ -1285,13 +1623,152 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	}
 
 	/**
-	 * return url of the jsp manage directory
-	 * @param request The HTTP request
-	 * @return url of the jsp manage directory
+	 * Get the archive greetings cards page
+	 * @param request The request
+	 * @return The HTML content
+	 * @throws AccessDeniedException the exception for AccessDeniedException
 	 */
-	private String getJspManageGreetingsCard( HttpServletRequest request )
+	public String getArchiveGreetingsCard( HttpServletRequest request ) throws AccessDeniedException
 	{
-		return AppPathService.getBaseUrl( request ) + JSP_MANAGE_GREETINGS_CARD;
+		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_ARCHIVE, getUser( ) ) )
+		{
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
+		}
+		String strIdGreetingsCardTemplate = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
+		HashMap<String, Object> model = new HashMap<String, Object>( );
+		model.put( MARK_GREETINGS_CARD_TEMPLATE_ID, strIdGreetingsCardTemplate );
+		Locale locale = request.getLocale( );
+		if ( locale == null )
+		{
+			locale = I18nService.getDefaultLocale( );
+		}
+		model.put( MARK_LOCALE, locale );
+		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ARCHIVE_GREETINGS_CARD, request.getLocale( ), model );
+
+		return getAdminPage( template.getHtml( ) );
+	}
+
+	/**
+	 * Archive greetings cards
+	 * @param request The request
+	 * @return The URL describing the result of the action
+	 * @throws AccessDeniedException the exception for AccessDeniedException
+	 */
+	public String doArchiveGreetingsCard( HttpServletRequest request ) throws AccessDeniedException
+	{
+		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_ARCHIVE, getUser( ) ) )
+		{
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
+		}
+		String strIdGreetingsCardTemplate = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
+		String strDateMin = request.getParameter( PARAM_DATE_MIN );
+		String strDateMax = request.getParameter( PARAM_DATE_MAX );
+		String strYear = request.getParameter( PARAM_YEAR );
+
+		int nIdGCT = 0;
+		if ( StringUtils.isNotBlank( strIdGreetingsCardTemplate ) )
+		{
+			try
+			{
+				nIdGCT = Integer.parseInt( strIdGreetingsCardTemplate );
+			}
+			catch ( NumberFormatException e )
+			{
+				nIdGCT = 0;
+			}
+		}
+
+		int nYear = 0;
+		try
+		{
+			nYear = Integer.parseInt( strYear );
+		}
+		catch ( NumberFormatException e )
+		{
+			Object[] tabRequiredFields =
+			{ I18nService.getLocalizedString( MANDATORY_YEAR, request.getLocale( ) ) };
+
+			return AdminMessageService.getMessageUrl( request, MESSAGE_MANDATORY_FIELD, tabRequiredFields, AdminMessage.TYPE_STOP );
+		}
+
+		DateFormat dateFormat = DateFormat.getDateInstance( DateFormat.SHORT, request.getLocale( ) );
+		dateFormat.setLenient( false );
+		Date dateMin = null;
+		Date dateMax = null;
+		try
+		{
+			if ( StringUtils.isNotBlank( strDateMin ) )
+			{
+				dateMin = dateFormat.parse( strDateMin );
+			}
+			if ( StringUtils.isNotBlank( strDateMax ) )
+			{
+				dateMax = dateFormat.parse( strDateMax );
+			}
+		}
+		catch ( ParseException e )
+		{
+			AppLogService.error( e.getMessage( ), e );
+			Object[] messageArgs =
+			{ ( ( SimpleDateFormat ) dateFormat ).toPattern( ) };
+			return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_PARSE_DATE, messageArgs, AdminMessage.TYPE_ERROR );
+		}
+		int nNbArchivedCards = _greetingsCardService.archiveGreetingsCards( nIdGCT, nYear, dateMin, dateMax, getPlugin( ) );
+
+		Object[] messageArgs =
+		{ nNbArchivedCards };
+		return AdminMessageService.getMessageUrl( request, MESSAGE_ARCHIVED_OK, messageArgs, URL_JSP_LIST_TEMPLATES, AdminMessage.TYPE_INFO );
+	}
+
+	/**
+	 * Update the date of next automatic archiving of greetings cards
+	 * @param request The request
+	 * @return The URL describing the result of the action
+	 * @throws AccessDeniedException the exception for AccessDeniedException
+	 */
+	public String doUpdateArchiveAutoGreetingsCard( HttpServletRequest request ) throws AccessDeniedException
+	{
+		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_ARCHIVE, getUser( ) ) )
+		{
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
+		}
+
+		String strYearNextAutoArchiving = request.getParameter( PARAM_YEAR_NEXT_AUTO_ARCHIVING );
+		String strDateNextAutoArchiving = request.getParameter( PARAM_NEXT_AUTO_ARCHIVING );
+		try
+		{
+			Integer.parseInt( strYearNextAutoArchiving );
+		}
+		catch ( NumberFormatException e )
+		{
+			Object[] messageArgs =
+			{ I18nService.getLocalizedString( LABEL_YEAR, request.getLocale( ) ) };
+			return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_PARSE_NUMBER, messageArgs, AdminMessage.TYPE_STOP );
+		}
+		if ( StringUtils.isNotBlank( strDateNextAutoArchiving ) )
+		{
+			DateFormat dateFormat = DateFormat.getDateInstance( DateFormat.SHORT, Locale.FRANCE );
+			dateFormat.setLenient( false );
+			try
+			{
+				dateFormat.parse( strDateNextAutoArchiving );
+			}
+			catch ( ParseException e )
+			{
+				AppLogService.error( e.getMessage( ), e );
+				Object[] messageArgs =
+				{ ( ( SimpleDateFormat ) dateFormat ).toPattern( ) };
+				return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_PARSE_DATE, messageArgs, AdminMessage.TYPE_ERROR );
+			}
+		}
+		else
+		{
+			strDateNextAutoArchiving = StringUtils.EMPTY;
+		}
+		DatastoreService.setDataValue( PARAMETER_NEXT_AUTO_ARCHIVING, strDateNextAutoArchiving );
+		DatastoreService.setDataValue( PARAMETER_YEAR_NEXT_AUTO_ARCHIVING, strYearNextAutoArchiving );
+
+		return AdminMessageService.getMessageUrl( request, MESSAGE_DATE_AUTO_ARCHIVE_UPDATED, URL_JSP_LIST_TEMPLATES, AdminMessage.TYPE_INFO );
 	}
 
 	/**
@@ -1452,6 +1929,12 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		 */
 		boolean bPermissionExport = RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_EXPORT, getUser( ) );
 		model.put( MARK_PERMISSION_EXPORT, bPermissionExport );
+
+		/*
+		 * Permission to export data
+		 */
+		boolean bPermissionArchive = RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_ARCHIVE, getUser( ) );
+		model.put( MARK_PERMISSION_ARCHIVE, bPermissionArchive );
 	}
 
 	/**

@@ -11,7 +11,7 @@ CREATE TABLE greetings_card_template
 	width int,
 	status TINYINT DEFAULT '0' NOT NULL,
 	object_email VARCHAR(30),
-	workgroup_key varchar(50) default NULL,
+	workgroup_key VARCHAR(50) DEFAULT NULL,
 	PRIMARY KEY (id_gct)
 );
 
@@ -33,6 +33,7 @@ CREATE TABLE greetings_card
 	status SMALLINT DEFAULT 0,
 	is_copy SMALLINT DEFAULT 0,
 	notify_user SMALLINT DEFAULT 0,
+	domain_name VARCHAR(80),
 	PRIMARY KEY (id_gc)
 );
 

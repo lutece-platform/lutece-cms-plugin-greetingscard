@@ -38,7 +38,10 @@ import fr.paris.lutece.util.sql.DAOUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -49,21 +52,30 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 {
 	// Constants
 	private static final String SQL_QUERY_SELECT = "SELECT id_gc, sender_name, sender_email, recipient_email, message, message2, date, id_gct, status, is_copy, notify_user FROM greetings_card WHERE id_gc = ?";
-	private static final String SQL_QUERY_INSERT = "INSERT INTO greetings_card ( id_gc, sender_name, sender_email, recipient_email, message, message2, date, sender_ip, id_gct, status, is_copy, notify_user ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+	private static final String SQL_QUERY_INSERT = "INSERT INTO greetings_card ( id_gc, sender_name, sender_email, recipient_email, message, message2, date, sender_ip, id_gct, status, is_copy, notify_user, domain_name ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM greetings_card WHERE id_gc = ?";
-	private static final String SQL_QUERY_UPDATE = "UPDATE greetings_card SET id_gc = ?, sender_name = ?, sender_email = ?, recipient_email = ?, message = ?, message2 = ?, date = ?, id_gct = ?, sender_ip = ?, status = ?, is_copy = ?, notify_user = ? WHERE id_gc = ?";
+	private static final String SQL_QUERY_DELETE_LIST = "DELETE FROM greetings_card WHERE id_gc in ( ";
+	private static final String SQL_QUERY_UPDATE = "UPDATE greetings_card SET id_gc = ?, sender_name = ?, sender_email = ?, recipient_email = ?, message = ?, message2 = ?, date = ?, id_gct = ?, sender_ip = ?, status = ?, is_copy = ?, notify_user = ?, domain_name = ? WHERE id_gc = ?";
 	private static final String SQL_QUERY_NEW_PRIMARY_KEY = "SELECT id_gc FROM greetings_card WHERE id_gc = ?";
-	private static final String SQL_QUERY_FIND_BY_ID = "SELECT id_gc, sender_name, sender_email, recipient_email, message, message2, date, id_gct, status, is_copy, notify_user FROM greetings_card WHERE id_gct = ?";
+	private static final String SQL_QUERY_FIND_BY_ID = "SELECT id_gc, sender_name, sender_email, recipient_email, date, id_gct, status, is_copy, notify_user FROM greetings_card WHERE id_gct = ?";
 	private static final String SQL_QUERY_FIND_ALL = "SELECT id_gc, sender_name, sender_email, recipient_email, message, message2, date, id_gct, status, is_copy, notify_user FROM greetings_card ";
 	private static final String SQL_QUERY_FIND_RED_CARD_FOR_NOTIFICATION = "SELECT id_gc, sender_name, sender_email, recipient_email, message, message2, date, id_gct, status, is_copy, notify_user FROM greetings_card WHERE status = ? AND notify_user = 1";
 	private static final String SQL_QUERY_FIND_FROM_FILTER = "SELECT gc.recipient_email, gc.status FROM greetings_card as gc LEFT JOIN greetings_card_template as gct ON ( gc.id_gct = gct.id_gct ) ";
+	private static final String SQL_QUERY_COUNT_CARDS = "SELECT COUNT(id_gc) FROM greetings_card as gc ";
+	private static final String SQL_QUERY_COUNT_CARDS_DOMAIN_NAME = "SELECT COUNT(id_gc), domain_name FROM greetings_card as gc ";
 	private static final String SQL_QUERY_FILTER_WORKGROUP = " gct.workgroup_key = ? ";
 	private static final String SQL_QUERY_FILTER_BY_ID = " gc.id_gct = ? ";
 	private static final String SQL_QUERY_FILTER_COPY = " gc.is_copy = 0 ";
 	private static final String SQL_QUERY_FILTER_COPY_SPEC = " is_copy = 0 ";
-	private static final String SQL_QUERY_FILTER_STATUS = " status = ? ";
+	private static final String SQL_QUERY_FILTER_IS_RED = " status > 0 ";
+	private static final String SQL_QUERY_FILTER_DATE_MIN = " date > ? ";
+	private static final String SQL_QUERY_FILTER_DATE_MAX = " date < ? ";
+	private static final String SQL_QUERY_LIMIT = " LIMIT ? ";
+	private static final String SQL_QUERY_GROUP_BY_DOMAIN_NAME = " GROUP BY domain_name ";
+	private static final String SQL_QUERY_ORDER_BY_DOMAIN_NAME = " ORDER BY domain_name ASC ";
 	private static final String CONSTANT_WHERE = " WHERE ";
 	private static final String CONSTANT_AND = " AND ";
+	private static final String CONSTANT_PARENTHESIS = " ) ";
 	private static final String ARROBASE = "@";
 
 	/**
@@ -77,11 +89,9 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 	// Access methods to data
 
 	/**
-	 * Insert a new record in the table.
-	 * 
-	 * @param greetingsCard The Instance of the GreetingsCard object
-	 * @param plugin The plugin
+	 * {@inheritDoc}
 	 */
+	@Override
 	public void insert( GreetingsCard greetingsCard, Plugin plugin )
 	{
 		greetingsCard.setId( newPrimaryKey( plugin ) );
@@ -100,17 +110,16 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 		daoUtil.setInt( 10, greetingsCard.getStatus( ) );
 		daoUtil.setBoolean( 11, greetingsCard.isCopy( ) );
 		daoUtil.setBoolean( 12, greetingsCard.getNotifySender( ) );
+		daoUtil.setString( 13, greetingsCard.getDomainName( ) );
 
 		daoUtil.executeUpdate( );
 		daoUtil.free( );
 	}
 
 	/**
-	 * Delete a record from the table
-	 * 
-	 * @param strIdGC The identifier of the object GreetingsCard
-	 * @param plugin The plugin
+	 * {@inheritDoc}
 	 */
+	@Override
 	public void delete( String strIdGC, Plugin plugin )
 	{
 		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
@@ -122,12 +131,24 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 	}
 
 	/**
-	 * load the data of GreetingsCard from the table
-	 * 
-	 * @param strIdGC The identifier of the object GreetingsCard
-	 * @param plugin The plugin
-	 * @return The Instance of the object GreetingsCard
+	 * {@inheritDoc}
 	 */
+	@Override
+	public void deleteList( String strIdGC, Plugin plugin )
+	{
+		StringBuilder sbSql = new StringBuilder( SQL_QUERY_DELETE_LIST );
+		sbSql.append( strIdGC );
+		sbSql.append( CONSTANT_PARENTHESIS );
+
+		DAOUtil daoUtil = new DAOUtil( sbSql.toString( ), plugin );
+		daoUtil.executeUpdate( );
+		daoUtil.free( );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public GreetingsCard load( String strIdGC, Plugin plugin )
 	{
 		GreetingsCard greetingsCard = new GreetingsCard( );
@@ -163,11 +184,9 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 	}
 
 	/**
-	 * Update the record in the table
-	 * 
-	 * @param greetingsCard The instance of the GreetingsCard to update
-	 * @param plugin The plugin
+	 * {@inheritDoc}
 	 */
+	@Override
 	public void store( GreetingsCard greetingsCard, Plugin plugin )
 	{
 		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
@@ -184,7 +203,8 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 		daoUtil.setInt( 10, greetingsCard.getStatus( ) );
 		daoUtil.setBoolean( 11, greetingsCard.isCopy( ) );
 		daoUtil.setBoolean( 12, greetingsCard.getNotifySender( ) );
-		daoUtil.setString( 13, greetingsCard.getId( ) );
+		daoUtil.setString( 13, greetingsCard.getDomainName( ) );
+		daoUtil.setString( 14, greetingsCard.getId( ) );
 
 		daoUtil.executeUpdate( );
 		daoUtil.free( );
@@ -241,10 +261,9 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 	}
 
 	/**
-	 * Finds all objects of this type
-	 * @param plugin The plugin
-	 * @return A collection of objects
+	 * {@inheritDoc}
 	 */
+	@Override
 	public Collection<GreetingsCard> findAll( Plugin plugin )
 	{
 		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_ALL + CONSTANT_WHERE + SQL_QUERY_FILTER_COPY_SPEC, plugin );
@@ -276,11 +295,9 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 	}
 
 	/**
-	 * Returns the list of greetings cards of a greetings card template
-	 * @param nIdGreetingsCardTemplate The greetings card template identifier
-	 * @param plugin The plugin
-	 * @return A Collection of greetings cards
+	 * {@inheritDoc}
 	 */
+	@Override
 	public Collection<GreetingsCard> findByGreetingsCardTemplateId( int nIdGreetingsCardTemplate, Plugin plugin )
 	{
 		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_FIND_BY_ID, plugin );
@@ -297,13 +314,11 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 			greetingsCard.setSenderName( daoUtil.getString( 2 ) );
 			greetingsCard.setSenderEmail( daoUtil.getString( 3 ) );
 			greetingsCard.setRecipientEmail( daoUtil.getString( 4 ) );
-			greetingsCard.setMessage( daoUtil.getString( 5 ) );
-			greetingsCard.setMessage2( daoUtil.getString( 6 ) );
-			greetingsCard.setDate( daoUtil.getDate( 7 ) );
-			greetingsCard.setIdGCT( daoUtil.getInt( 8 ) );
-			greetingsCard.setStatus( daoUtil.getInt( 9 ) );
-			greetingsCard.setCopy( daoUtil.getBoolean( 10 ) );
-			greetingsCard.setNotifySender( daoUtil.getBoolean( 11 ) );
+			greetingsCard.setDate( daoUtil.getDate( 5 ) );
+			greetingsCard.setIdGCT( daoUtil.getInt( 6 ) );
+			greetingsCard.setStatus( daoUtil.getInt( 7 ) );
+			greetingsCard.setCopy( daoUtil.getBoolean( 8 ) );
+			greetingsCard.setNotifySender( daoUtil.getBoolean( 9 ) );
 			list.add( greetingsCard );
 		}
 
@@ -313,11 +328,9 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 	}
 
 	/**
-	 * Returns the list of domain name of mail sent
-	 * @param greetingsCardFilter The greetings card template filter
-	 * @param plugin The plugin
-	 * @return A list of domain
+	 * {@inheritDoc}
 	 */
+	@Override
 	public List<String> findDomainNameOfMailSent( GreetingsCardFilter greetingsCardFilter, Plugin plugin )
 	{
 		List<String> listStrFilter = new ArrayList<String>( );
@@ -372,13 +385,10 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 	}
 
 	/**
-	 * Return number of mail sent by domain
-	 * @param strDomain Name of domain
-	 * @param greetingsCardFilter The greetings card filter
-	 * @param plugin The plugin
-	 * @return number of mail sent by domain
+	 * {@inheritDoc}
 	 */
-	public int findNumberOfMailSentByDomain( String strDomain, GreetingsCardFilter greetingsCardFilter, Plugin plugin )
+	@Override
+	public Map<String, Integer> findNumberOfMailSentByDomain( GreetingsCardFilter greetingsCardFilter, Plugin plugin )
 	{
 		List<String> listStrFilter = new ArrayList<String>( );
 
@@ -393,8 +403,8 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 		}
 
 		listStrFilter.add( SQL_QUERY_FILTER_COPY );
-
-		String strQuery = buildRequetteWithFilter( SQL_QUERY_FIND_FROM_FILTER, listStrFilter );
+		String strQuery = buildRequetteWithFilter( SQL_QUERY_COUNT_CARDS_DOMAIN_NAME, listStrFilter );
+		strQuery = strQuery + SQL_QUERY_GROUP_BY_DOMAIN_NAME + SQL_QUERY_ORDER_BY_DOMAIN_NAME;
 
 		DAOUtil daoUtil = new DAOUtil( strQuery, plugin );
 		int nIndex = 1;
@@ -411,19 +421,38 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 			nIndex++;
 		}
 
+		HashMap<String, Integer> domainNameSentCards = new HashMap<String, Integer>( );
+
+		daoUtil.executeQuery( );
+		while ( daoUtil.next( ) )
+		{
+			domainNameSentCards.put( daoUtil.getString( 2 ), daoUtil.getInt( 1 ) );
+		}
+
+		daoUtil.free( );
+
+		return domainNameSentCards;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int findNumberTotalOfMailSentWithoutCopy( Plugin plugin )
+	{
+		List<String> listStrFilter = new ArrayList<String>( );
+
+		listStrFilter.add( SQL_QUERY_FILTER_COPY );
+		String strQuery = buildRequetteWithFilter( SQL_QUERY_COUNT_CARDS, listStrFilter );
+
+		DAOUtil daoUtil = new DAOUtil( strQuery, plugin );
+
 		int nCountDomain = 0;
 
 		daoUtil.executeQuery( );
-
-		while ( daoUtil.next( ) )
+		if ( daoUtil.next( ) )
 		{
-			String strMail = daoUtil.getString( 1 );
-			strMail = strMail.substring( strMail.indexOf( ARROBASE ) + 1, strMail.length( ) );
-
-			if ( strDomain.equals( strMail ) )
-			{
-				nCountDomain++;
-			}
+			nCountDomain = daoUtil.getInt( 1 );
 		}
 
 		daoUtil.free( );
@@ -432,13 +461,10 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 	}
 
 	/**
-	 * Return number of mail read by domain
-	 * @param strDomain Name of domain
-	 * @param greetingsCardFilter The greetings card filter
-	 * @param plugin The plugin
-	 * @return number of mail read by domain
+	 * {@inheritDoc}
 	 */
-	public int findNumberOfMailReadByDomain( String strDomain, GreetingsCardFilter greetingsCardFilter, Plugin plugin )
+	@Override
+	public Map<String, Integer> findNumberOfMailReadByDomain( GreetingsCardFilter greetingsCardFilter, Plugin plugin )
 	{
 		List<String> listStrFilter = new ArrayList<String>( );
 
@@ -453,8 +479,10 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 		}
 
 		listStrFilter.add( SQL_QUERY_FILTER_COPY );
+		listStrFilter.add( SQL_QUERY_FILTER_IS_RED );
 
-		String strQuery = buildRequetteWithFilter( SQL_QUERY_FIND_FROM_FILTER, listStrFilter );
+		String strQuery = buildRequetteWithFilter( SQL_QUERY_COUNT_CARDS_DOMAIN_NAME, listStrFilter );
+		strQuery = strQuery + SQL_QUERY_GROUP_BY_DOMAIN_NAME + SQL_QUERY_ORDER_BY_DOMAIN_NAME;
 
 		DAOUtil daoUtil = new DAOUtil( strQuery, plugin );
 		int nIndex = 1;
@@ -471,25 +499,17 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 			nIndex++;
 		}
 
-		int nCountDomain = 0;
+		HashMap<String, Integer> domainNameReadCards = new HashMap<String, Integer>( );
 
 		daoUtil.executeQuery( );
-
 		while ( daoUtil.next( ) )
 		{
-			String strMail = daoUtil.getString( 1 );
-			boolean isRead = daoUtil.getBoolean( 2 );
-			strMail = strMail.substring( strMail.indexOf( ARROBASE ) + 1, strMail.length( ) );
-
-			if ( strDomain.equals( strMail ) && isRead )
-			{
-				nCountDomain++;
-			}
+			domainNameReadCards.put( daoUtil.getString( 2 ), daoUtil.getInt( 1 ) );
 		}
 
 		daoUtil.free( );
 
-		return nCountDomain;
+		return domainNameReadCards;
 	}
 
 	/**
@@ -531,7 +551,7 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 	 * @param listStrFilter the list of filter to add in the query
 	 * @return a query
 	 */
-	public String buildRequetteWithFilter( String strSelect, List<String> listStrFilter )
+	private String buildRequetteWithFilter( String strSelect, List<String> listStrFilter )
 	{
 		StringBuffer strBuffer = new StringBuffer( );
 		strBuffer.append( strSelect );
@@ -555,4 +575,66 @@ public final class GreetingsCardDAO implements IGreetingsCardDAO
 
 		return strBuffer.toString( );
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Collection<GreetingsCard> findByTemplateAndDate( int nIdGreetingsCardTemplate, Date dateMin, Date dateMax, int nResultsLimit, Plugin plugin )
+	{
+		StringBuilder sbSql = new StringBuilder( SQL_QUERY_FIND_BY_ID );
+
+		if ( dateMin != null )
+		{
+			sbSql.append( CONSTANT_AND );
+			sbSql.append( SQL_QUERY_FILTER_DATE_MIN );
+		}
+		if ( dateMax != null )
+		{
+			sbSql.append( CONSTANT_AND );
+			sbSql.append( SQL_QUERY_FILTER_DATE_MAX );
+		}
+		if ( nResultsLimit > 0 )
+		{
+			sbSql.append( SQL_QUERY_LIMIT );
+		}
+		DAOUtil daoUtil = new DAOUtil( sbSql.toString( ), plugin );
+		int nArgs = 1;
+		daoUtil.setInt( nArgs++, nIdGreetingsCardTemplate );
+		if ( dateMin != null )
+		{
+			daoUtil.setDate( nArgs++, new java.sql.Date( dateMin.getTime( ) ) );
+		}
+		if ( dateMax != null )
+		{
+			daoUtil.setDate( nArgs++, new java.sql.Date( dateMax.getTime( ) ) );
+		}
+		if ( nResultsLimit > 0 )
+		{
+			daoUtil.setInt( nArgs++, nResultsLimit );
+		}
+
+		ArrayList<GreetingsCard> list = new ArrayList<GreetingsCard>( );
+		daoUtil.executeQuery( );
+
+		while ( daoUtil.next( ) )
+		{
+			GreetingsCard greetingsCard = new GreetingsCard( );
+			greetingsCard.setId( daoUtil.getString( 1 ) );
+			greetingsCard.setSenderName( daoUtil.getString( 2 ) );
+			greetingsCard.setSenderEmail( daoUtil.getString( 3 ) );
+			greetingsCard.setRecipientEmail( daoUtil.getString( 4 ) );
+			greetingsCard.setDate( daoUtil.getDate( 5 ) );
+			greetingsCard.setIdGCT( daoUtil.getInt( 6 ) );
+			greetingsCard.setStatus( daoUtil.getInt( 7 ) );
+			greetingsCard.setCopy( daoUtil.getBoolean( 8 ) );
+			greetingsCard.setNotifySender( daoUtil.getBoolean( 9 ) );
+			list.add( greetingsCard );
+		}
+
+		daoUtil.free( );
+
+		return list;
+	}
+
 }

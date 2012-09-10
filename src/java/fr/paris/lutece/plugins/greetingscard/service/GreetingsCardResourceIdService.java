@@ -58,6 +58,7 @@ public class GreetingsCardResourceIdService extends ResourceIdService
 	public static final String PERMISSION_DELETE = "DELETE_CARD";
 	public static final String PERMISSION_SEE_STATS = "SEE_STATS";
 	public static final String PERMISSION_EXPORT = "EXPORT";
+	public static final String PERMISSION_ARCHIVE = "ARCHIVE";
 	private static final String PROPERTY_LABEL_CREATE = "greetingscard.permission.label.create_greetingscard";
 	private static final String PROPERTY_LABEL_MODIFY = "greetingscard.permission.label.modify_greetingscard";
 	private static final String PROPERTY_LABEL_SEND = "greetingscard.permission.label.send_greetingscard";
@@ -65,6 +66,7 @@ public class GreetingsCardResourceIdService extends ResourceIdService
 	private static final String PROPERTY_LABEL_DELETE = "greetingscard.permission.label.delete_greetingscard";
 	private static final String PROPERTY_LABEL_RESOURCE_TYPE = "greetingscard.permission.label.resource_type_greetingscard";
 	private static final String PROPERTY_LABEL_EXPORT = "greetingscard.permission.label.export_greetingscard";
+	private static final String PROPERTY_LABEL_ARCHIVE = "greetingscard.permission.label.archive_greetingscard";
 
 	/**
 	 * Return the ResourceIdList
@@ -132,6 +134,11 @@ public class GreetingsCardResourceIdService extends ResourceIdService
 		p = new Permission( );
 		p.setPermissionKey( PERMISSION_EXPORT );
 		p.setPermissionTitleKey( PROPERTY_LABEL_EXPORT );
+		rt.registerPermission( p );
+
+		p = new Permission( );
+		p.setPermissionKey( PERMISSION_ARCHIVE );
+		p.setPermissionTitleKey( PROPERTY_LABEL_ARCHIVE );
 		rt.registerPermission( p );
 
 		ResourceTypeManager.registerResourceType( rt );

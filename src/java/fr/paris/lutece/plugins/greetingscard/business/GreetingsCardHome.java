@@ -37,7 +37,9 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -91,6 +93,16 @@ public final class GreetingsCardHome
 		_dao.delete( strIdGC, plugin );
 	}
 
+	/**
+	 * Remove a list of greetings card
+	 * @param strIdGC The comma separated list of greetings cards ids
+	 * @param plugin The plugin
+	 */
+	public static void removeList( String strIdGC, Plugin plugin )
+	{
+		_dao.deleteList( strIdGC, plugin );
+	}
+
 	// /////////////////////////////////////////////////////////////////////////
 	// Finders
 
@@ -140,27 +152,35 @@ public final class GreetingsCardHome
 	}
 
 	/**
-	 * Return number of mail sent by domain
-	 * @param strDomain Name of domain
+	 * Return the number of mail sent for each domains
 	 * @param greetingsCardFilter The greetings card filter
 	 * @param plugin The plugin
-	 * @return number of mail sent by domain
+	 * @return A map containing associations of domain names and numbers of email sent. Only cards matching the filter are considered.
 	 */
-	public static int findNumberOfMailSentByDomain( String strDomain, GreetingsCardFilter greetingsCardFilter, Plugin plugin )
+	public static Map<String, Integer> findNumberOfMailSentByDomain( GreetingsCardFilter greetingsCardFilter, Plugin plugin )
 	{
-		return _dao.findNumberOfMailSentByDomain( strDomain, greetingsCardFilter, plugin );
+		return _dao.findNumberOfMailSentByDomain( greetingsCardFilter, plugin );
 	}
 
 	/**
-	 * Return number of mail read by domain
-	 * @param strDomain Name of domain
+	 * Get the total number of cards sent without archives. Copies are ignored
+	 * @param plugin The plugin
+	 * @return The number of cards sent without copies and archives.
+	 */
+	public static int findNumberTotalOfMailSentWithoutCopy( Plugin plugin )
+	{
+		return _dao.findNumberTotalOfMailSentWithoutCopy( plugin );
+	}
+
+	/**
+	 * Return the number of mail red for each domains
 	 * @param greetingsCardFilter The greetings card filter
 	 * @param plugin The plugin
-	 * @return number of mail sent by domain
+	 * @return A map containing associations of domain names and numbers of email red. Only cards matching the filter are considered.
 	 */
-	public static int findNumberOfMailReadByDomain( String strDomain, GreetingsCardFilter greetingsCardFilter, Plugin plugin )
+	public static Map<String, Integer> findNumberOfMailReadByDomain( GreetingsCardFilter greetingsCardFilter, Plugin plugin )
 	{
-		return _dao.findNumberOfMailReadByDomain( strDomain, greetingsCardFilter, plugin );
+		return _dao.findNumberOfMailReadByDomain( greetingsCardFilter, plugin );
 	}
 
 	/**
@@ -172,5 +192,19 @@ public final class GreetingsCardHome
 	public static Collection<GreetingsCard> findCardsToSendNotification( Plugin plugin )
 	{
 		return _dao.findCardsToSendNotification( plugin );
+	}
+
+	/**
+	 * Get greetings card with a given template and sent between two given dates
+	 * @param nIdGreetingsCardTemplate Id of the template of greetings cards
+	 * @param dateMin Minimum sent date. If the date is null, then it is ignored
+	 * @param dateMax Maximum sent date. If the date is null, then it is ignored
+	 * @param nResultsLimit Maximum number of results returned. If the number is 0, then every object is considered
+	 * @param plugin The plugin
+	 * @return The collection of greetings cards. Messages and messages 2 of greetings cards are not loaded.
+	 */
+	public static Collection<GreetingsCard> findByTemplateAndDate( int nIdGreetingsCardTemplate, Date dateMin, Date dateMax, int nResultsLimit, Plugin plugin )
+	{
+		return _dao.findByTemplateAndDate( nIdGreetingsCardTemplate, dateMin, dateMax, nResultsLimit, plugin );
 	}
 }
