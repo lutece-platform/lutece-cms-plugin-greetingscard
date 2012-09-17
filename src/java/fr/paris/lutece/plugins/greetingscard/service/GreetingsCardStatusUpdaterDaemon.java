@@ -50,7 +50,7 @@ public class GreetingsCardStatusUpdaterDaemon extends Daemon
 		StringBuilder sbResult = new StringBuilder( );
 
 		// read status of greetings card and notifications
-		String strDatabaseTemplateKey = AppPropertiesService.getProperty( PROPERTY_DATABASE_TEMPLATE_CARD_RED ); // TODO : ajouter init de l'id du template
+		String strDatabaseTemplateKey = AppPropertiesService.getProperty( PROPERTY_DATABASE_TEMPLATE_CARD_RED );
 		Collection<GreetingsCard> listGreetingsCardRed = GreetingsCardHome.findCardsToSendNotification( plugin );
 		for ( GreetingsCard greetingsCard : listGreetingsCardRed )
 		{

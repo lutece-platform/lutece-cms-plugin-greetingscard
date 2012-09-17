@@ -69,6 +69,7 @@ import fr.paris.lutece.portal.web.constants.Messages;
 import fr.paris.lutece.portal.web.upload.MultipartHttpServletRequest;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
+import fr.paris.lutece.util.datatable.DataTableManager;
 import fr.paris.lutece.util.date.DateUtil;
 import fr.paris.lutece.util.filesystem.DirectoryNotFoundException;
 import fr.paris.lutece.util.filesystem.UploadUtil;
@@ -117,7 +118,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String MARK_GREETINGS_CARD_TEMPLATE_CHECK_PASSWORD = "check_password";
 	private static final String MARK_GREETINGS_CARD_TEMPLATE_STATUS = "status";
 	private static final String MARK_GREETINGS_CARD_TEMPLATE_PASSWORD = "password";
-	private static final String MARK_GREETINGS_CARD_ALL_MODEL_COMBO = "all_model";
 	private static final String MARK_GREETINGS_CARD_STATISTIC = "greetings_card_statistic";
 	private static final String MARK_GREETINGS_CARD_STATISTIC_LIST = "greetings_card_statistic_list";
 	private static final String MARK_PLUGIN_NAME = "plugin_name";
@@ -151,6 +151,10 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String MARK_LIST_XSL_EXPORT = "list_xsl_export";
 	private static final String MARK_LIST_YEARS = "list_years";
 	private static final String MARK_YEAR = "year";
+	private static final String MARK_STAT_TABLE_MANAGER = "statTableManager";
+	private static final String MARK_DOMAIN_NAME = "domainName";
+	private static final String MARK_MAIL_SENT = "mailSent";
+	private static final String MARK_MAIL_READ = "mailRead";
 
 	// Parameters
 	private static final String PARAMETER_DESCRIPTION = "description";
@@ -181,7 +185,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	// JSP
 	private static final String JSP_URL_GREETINGS_CARD_TEMPLATES_LIST = "GreetingsCardTemplatesList.jsp";
 	private static final String JSP_URL_GREETINGS_CARDS_STATISTICS = "Statistics.jsp";
-	private static final String JSP_MANAGE_GREETINGS_CARD = "jsp/admin/plugins/greetingscard/GreetingsCardTemplatesList.jsp";
 
 	// Templates
 	private static final String TEMPLATE_GREETINGS_CARD_MENU = "admin/plugins/greetingscard/greetings_card_menu.html";
@@ -201,7 +204,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String PROPERTY_PAGE_TITLE_GREETINGSCARD_MODEL = "greetingscard.manage_greetingscard.model.labelTitle";
 	private static final String PROPERTY_PAGE_TITLE_GREETINGSCARD_MODIFY = "greetingscard.modify_greetings_card_template.pageTitle";
 	private static final String PROPERTY_PAGE_TITLE_GREETINGSCARD_CREATE = "greetingscard.create_greetings_card_template.pageTitle";
-	private static final String PROPERTY_GREETINGSCARD_ALL_MODEL_COMBO = "greetingscard.statistics.allModelCombo";
 	private static final String PROPERTY_FORMAT_HTML = "html";
 	private static final String PROPERTY_FORMAT_FLASH = "flash";
 	private static final String PROPERTY_ACTION_VIEW = "view";
@@ -209,6 +211,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FLASH = "path.lutece.plugins";
 	private static final String PROPERTY_COPY_OF = "greetingscard.label.copyof";
 	private static final String PROPERTY_IMPORT_CSV_DELIMITER = "greetingscard.import.csv.delimiter";
+	private static final String PROPERTY_DEFAULT_ITEM_PER_PAGE = "greetingscard.itemPerPage";
 
 	// Messages
 	private static final String FIELD_FILE_IMPORT = "greetingscard.import_csv.label_file";
@@ -232,6 +235,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String DIFFERENT_FILES_HTML = "greetingscard.message_error.differentFilesHTML";
 	private static final String LABEL_CURRENT_YEAR = "greetingscard.global_statistics.labelCurrentYear";
 	private static final String LABEL_YEAR = "greetingscard.greetings_card_templates.labelYearAuto";
+	private static final String LABEL_DOMAIN_NAME = "greetingscard.domain_statistics.columnLabelDomainName";
+	private static final String LABEL_MAIL_SEND = "greetingscard.domain_statistics.columnLabelSend";
+	private static final String LABEL_MAIL_READ = "greetingscard.domain_statistics.columnLabelRead";
 
 	// Param
 	private static final String PARAM_PAGE = "page";
@@ -252,8 +258,12 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String PARAM_YEAR = "year";
 	private static final String PARAM_NEXT_AUTO_ARCHIVING = "date_next_archive";
 	private static final String PARAM_YEAR_NEXT_AUTO_ARCHIVING = "year_next_archive";
+	private static final String PARAM_STATS_TABLE_MANAGER = "statsTableManager";
+	private static final String PARAM_GLOBAL_STATS_TABLE_MANAGER = "globalStatsTableManager";
 
 	private static final String URL_JSP_LIST_TEMPLATES = "jsp/admin/plugins/greetingscard/ManageGreetingsCard.jsp";
+	private static final String URL_JSP_CHOICE_GREETINGS_CARD = "jsp/admin/plugins/greetingscard/ChoiceGreetingsCard.jsp";
+	private static final String URL_JSP_STATISTICS = "jsp/admin/plugins/greetingscard/Statistics.jsp";
 
 	private static final String HTML_BR = "<br>";
 	private static final String HTML_SUBSTITUTE_BR = "\r\n";
@@ -278,11 +288,12 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String PLUGIN_NAME = "greetingscard";
 
 	// Misc
-	private static String CONSTANT_EXTENSION_CSV_FILE = ".csv";
-	private static String CONSTANT_EXTENSION_XML_FILE = ".xml";
-	private static String CONSTANT_MIME_TYPE_CSV = "application/csv";
-	private static String CONSTANT_MIME_TYPE_XML = "application/xml";
-	private static String CONSTANT_MIME_TYPE_OCTETSTREAM = "application/octet-stream";
+	private static final String CONSTANT_EXTENSION_CSV_FILE = ".csv";
+	private static final String CONSTANT_EXTENSION_XML_FILE = ".xml";
+	private static final String CONSTANT_MIME_TYPE_CSV = "application/csv";
+	private static final String CONSTANT_MIME_TYPE_XML = "application/xml";
+	private static final String CONSTANT_MIME_TYPE_OCTETSTREAM = "application/octet-stream";
+	private static final int CONSTANT_DEFAULT_ITEM_PER_PAGE = 50;
 	private static String _strWorkGroup = AdminWorkgroupService.ALL_GROUPS;
 
 	private GreetingsCardService _greetingsCardService = SpringContextService.getBean( GreetingsCardService.beanName );
@@ -925,7 +936,26 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 			nTotalReadDomain += nMailRead;
 			nTotalSentDomain += nMailSent;
 		}
+		for ( Domain domain : listDomain )
+		{
+			domain.setTotalSent( nTotalSentDomain );
+		}
+		UrlItem url = new UrlItem( URL_JSP_STATISTICS );
+		url.addParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID, strIdGCT );
+		DataTableManager<Domain> tableManager = ( DataTableManager<Domain> ) request.getSession( ).getAttribute( PARAM_STATS_TABLE_MANAGER );
+		if ( tableManager == null )
+		{
+			tableManager = new DataTableManager<Domain>( url.getUrl( ), url.getUrl( ), AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_ITEM_PER_PAGE, CONSTANT_DEFAULT_ITEM_PER_PAGE ), true );
+			tableManager.addColumn( LABEL_DOMAIN_NAME, MARK_DOMAIN_NAME, true );
+			tableManager.addColumn( LABEL_MAIL_SEND, MARK_MAIL_SENT, true );
+			tableManager.addColumn( LABEL_MAIL_READ, MARK_MAIL_READ, true );
+		}
+		else
+		{
+			tableManager.setSortUrl( url.getUrl( ) );
+		}
 
+		tableManager.filterSortAndPaginate( request, listDomain );
 		GreetingsCardStatistic greetingsCardStatistic = new GreetingsCardStatistic( );
 		greetingsCardStatistic.setDescription( gct.getDescription( ) );
 		greetingsCardStatistic.setIdGCT( gct.getId( ) );
@@ -941,6 +971,8 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		refListYears.add( 0, refItem );
 
 		HashMap<String, Object> model = new HashMap<String, Object>( );
+
+		model.put( MARK_STAT_TABLE_MANAGER, tableManager );
 		model.put( MARK_GREETINGS_CARD_STATISTIC, greetingsCardStatistic );
 		model.put( MARK_GREETINGS_CARD_LIST_DOMAIN, listDomain );
 		model.put( MARK_DOMAIN_TOTAL_READ, nTotalReadDomain );
@@ -951,7 +983,8 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		model.put( MARK_GREETINGS_CARD_TEMPLATE_ID, strIdGCT );
 
 		HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_STATISTICS, getLocale( ), model );
-
+		tableManager.clearItems( );
+		request.getSession( ).setAttribute( PARAM_STATS_TABLE_MANAGER, tableManager );
 		return getAdminPage( t.getHtml( ) );
 	}
 
@@ -1093,6 +1126,27 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 			nTotalSent += nMailSent;
 			nTotalRead += nMailRead;
 		}
+		for ( Domain domain : listDomain )
+		{
+			domain.setTotalSent( nTotalSent );
+		}
+
+		UrlItem url = new UrlItem( URL_JSP_CHOICE_GREETINGS_CARD );
+		url.addParameter( PARAMETER_STATS, StringUtils.EMPTY );
+		DataTableManager<Domain> tableManager = ( DataTableManager<Domain> ) request.getSession( ).getAttribute( PARAM_GLOBAL_STATS_TABLE_MANAGER );
+		if ( tableManager == null )
+		{
+			tableManager = new DataTableManager<Domain>( url.getUrl( ), url.getUrl( ), AppPropertiesService.getPropertyInt( PROPERTY_DEFAULT_ITEM_PER_PAGE, CONSTANT_DEFAULT_ITEM_PER_PAGE ), true );
+			tableManager.addColumn( LABEL_DOMAIN_NAME, MARK_DOMAIN_NAME, true );
+			tableManager.addColumn( LABEL_MAIL_SEND, MARK_MAIL_SENT, true );
+			tableManager.addColumn( LABEL_MAIL_READ, MARK_MAIL_READ, true );
+		}
+		else
+		{
+			tableManager.setSortUrl( url.getUrl( ) );
+		}
+
+		tableManager.filterSortAndPaginate( request, listDomain );
 
 		ReferenceList refListYears = GreetingsCardArchiveHome.getYearList( getPlugin( ) );
 		ReferenceItem refItem = new ReferenceItem( );
@@ -1101,16 +1155,18 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		refListYears.add( 0, refItem );
 
 		HashMap<String, Object> model = new HashMap<String, Object>( );
+
+		model.put( MARK_STAT_TABLE_MANAGER, tableManager );
 		model.put( MARK_GREETINGS_CARD_STATISTIC_LIST, listGreetingsCardStatistic );
 		model.put( MARK_GREETINGS_CARD_LIST_DOMAIN, listDomain );
 		model.put( MARK_DOMAIN_TOTAL_READ, nTotalRead );
-		model.put( MARK_DOMAIN_TOTAL_SENT, nTotalSent );
 		model.put( MARK_DOMAIN_TOTAL_CARDS, nTotalSent );
 		model.put( MARK_LIST_YEARS, refListYears );
 		model.put( MARK_YEAR, strYear );
 
 		HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_GLOBAL_STATISTICS, getLocale( ), model );
-
+		tableManager.clearItems( );
+		request.getSession( ).setAttribute( PARAM_GLOBAL_STATS_TABLE_MANAGER, tableManager );
 		return getAdminPage( t.getHtml( ) );
 	}
 
@@ -1215,12 +1271,35 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 			nTotalSent += nMailSent;
 			nTotalRead += nMailRead;
 		}
+		for ( Domain domain : listDomain )
+		{
+			domain.setTotalSent( nTotalSent );
+		}
 
 		ReferenceList refListYears = GreetingsCardArchiveHome.getYearList( getPlugin( ) );
 		ReferenceItem refItem = new ReferenceItem( );
 		refItem.setName( I18nService.getLocalizedString( LABEL_CURRENT_YEAR, request.getLocale( ) ) );
 		refItem.setCode( StringUtils.EMPTY );
 		refListYears.add( 0, refItem );
+
+		UrlItem url;
+		DataTableManager<Domain> tableManager;
+		if ( nIdGCT > 0 )
+		{
+			url = new UrlItem( URL_JSP_STATISTICS );
+			url.addParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID, strIdGCT );
+			tableManager = ( DataTableManager<Domain> ) request.getSession( ).getAttribute( PARAM_STATS_TABLE_MANAGER );
+		}
+		else
+		{
+			url = new UrlItem( URL_JSP_CHOICE_GREETINGS_CARD );
+			url.addParameter( PARAMETER_STATS, StringUtils.EMPTY );
+			tableManager = ( DataTableManager<Domain> ) request.getSession( ).getAttribute( PARAM_GLOBAL_STATS_TABLE_MANAGER );
+		}
+		url.addParameter( PARAM_YEAR, String.valueOf( nYear ) );
+		tableManager.setSortUrl( url.getUrl( ) );
+
+		tableManager.filterSortAndPaginate( request, listDomain );
 
 		HashMap<String, Object> model = new HashMap<String, Object>( );
 		if ( nIdGCT > 0 )
@@ -1232,6 +1311,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		{
 			model.put( MARK_GREETINGS_CARD_STATISTIC_LIST, listGreetingsCardStatistic );
 		}
+		model.put( MARK_STAT_TABLE_MANAGER, tableManager );
 		model.put( MARK_GREETINGS_CARD_LIST_DOMAIN, listDomain );
 		model.put( MARK_DOMAIN_TOTAL_READ, nTotalRead );
 		model.put( MARK_DOMAIN_TOTAL_SENT, nTotalSent );
@@ -1240,7 +1320,15 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		model.put( MARK_YEAR, String.valueOf( nYear ) );
 
 		HtmlTemplate t = AppTemplateService.getTemplate( strTemplate, getLocale( ), model );
-
+		tableManager.clearItems( );
+		if ( nIdGCT > 0 )
+		{
+			request.getSession( ).setAttribute( PARAM_STATS_TABLE_MANAGER, tableManager );
+		}
+		else
+		{
+			request.getSession( ).setAttribute( PARAM_GLOBAL_STATS_TABLE_MANAGER, tableManager );
+		}
 		return t.getHtml( );
 	}
 
