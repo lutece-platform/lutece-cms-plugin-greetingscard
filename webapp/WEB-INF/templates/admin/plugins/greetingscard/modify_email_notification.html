@@ -1,0 +1,25 @@
+<#include "/admin/util/editor/editor.html" />
+<div class="well" >
+	<form class="form-horizontal" method="post" name="modify_notification" action="jsp/admin/plugins/greetingscard/DoModifyNotification.jsp" >
+		<fieldset>
+			<legend>#i18n{greetingscard.modify_notification.pageTitle}</legend>
+			<div class="control-group">
+				<label class="control-label" for="template_content" >#i18n{greetingscard.modify_notification.labelContent} : </label>
+				<div class="controls">
+					<div class="editor" >
+						<textarea name="template_content" id="template_content" title="#i18n{greetingscard.modify_notification.labelContent}" rows="20" cols="30" class="richtext" style="width:60%">
+							${template_content}
+						</textarea>
+					</div>
+				</div>
+				<span class="help-block">#i18n{greetingscard.modify_notification.labelRecipientMail} : ${r"${recipient_email}"}</span>
+			</div>
+			
+			<div class="form-actions">
+				<input class="btn btn-primary" type="submit" value="#i18n{greetingscard.greetings_card_templates.labelSave}" />
+				<input class="btn" type="button" onclick="javascript:history.go(-1)" value="#i18n{greetingscard.create_greetings_card_template.labelIdCancel}" />
+			</div>
+		</fieldset>
+	</form>
+</div>
+<@initEditor />

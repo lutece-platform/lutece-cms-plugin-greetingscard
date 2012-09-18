@@ -52,12 +52,17 @@ public class GreetingsCardStatusUpdaterDaemon extends Daemon
 		// read status of greetings card and notifications
 		String strDatabaseTemplateKey = AppPropertiesService.getProperty( PROPERTY_DATABASE_TEMPLATE_CARD_RED );
 		Collection<GreetingsCard> listGreetingsCardRed = GreetingsCardHome.findCardsToSendNotification( plugin );
-		for ( GreetingsCard greetingsCard : listGreetingsCardRed )
-		{
-			sendNotificationToSender( greetingsCard, strDatabaseTemplateKey );
 
-			greetingsCard.setStatus( GreetingsCard.STATUS_RED_NOTIFIED );
-			GreetingsCardHome.update( greetingsCard, plugin );
+		if ( !StringUtils.isEmpty( strDatabaseTemplateKey ) )
+		{
+			String strTemplateContent = DatabaseTemplateHome.getTemplateFromKey( strDatabaseTemplateKey );
+			for ( GreetingsCard greetingsCard : listGreetingsCardRed )
+			{
+				sendNotificationToSender( greetingsCard, strTemplateContent );
+
+				greetingsCard.setStatus( GreetingsCard.STATUS_RED_NOTIFIED );
+				GreetingsCardHome.update( greetingsCard, plugin );
+			}
 		}
 		if ( listGreetingsCardRed != null && listGreetingsCardRed.size( ) > 0 )
 		{
@@ -123,12 +128,11 @@ public class GreetingsCardStatusUpdaterDaemon extends Daemon
 		this.setLastRunLogs( sbResult.toString( ) );
 	}
 
-	private void sendNotificationToSender( GreetingsCard greetingsCard, String strDatabaseTemplateKey )
+	private void sendNotificationToSender( GreetingsCard greetingsCard, String strTemplateContent )
 	{
 		HashMap<String, Object> model = new HashMap<String, Object>( );
 		model.put( MARK_RECIPIENT_EMAIL, greetingsCard.getRecipientEmail( ) );
 
-		String strTemplateContent = DatabaseTemplateHome.getTemplateFromKey( strDatabaseTemplateKey );
 		HtmlTemplate template = AppTemplateService.getTemplateFromStringFtl( strTemplateContent, Locale.getDefault( ), model );
 		MailService.sendMailHtml( greetingsCard.getSenderEmail( ), greetingsCard.getSenderName( ), MailService.getNoReplyEmail( ), I18nService.getLocalizedString( MESSAGE_EMAIL_CARD_RED_SUBJECT,
 				Locale.getDefault( ) ), template.getHtml( ) );

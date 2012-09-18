@@ -1,24 +1,26 @@
-<br>
-<center>
-	Vous avez reçu une carte du Maire de Paris.<br><br>
-	<img src="${picture_card}" height="${height}" width="${width}">
-<br>
-</center>
-<table cellpadding="10" cellspacing="0" width="500" align="center" border="0" bordercolor="#000000">
-	<tr>
-		<td>
-			${message}<br>
-			<br>
-			<#if message2??>
-				${message2}
-				<br>
-			</#if>
-			De la part de ${sender_name} (<a href="mailto:${sender_email}">${sender_email}</a>)
-		</td>
-	</tr>
-</table>
-		
-		
-
-
-<br><br>
+<div class="row" >
+	<form class="form-horizontal" method="post" name="export_greetings_card" >
+		<fieldset>
+			<legend>Vous avez reÃ§u une carte du Maire de Paris.</legend>
+			<div class="control-group">
+				<img src="${picture_card}" height="${height}" width="${width}" alt="logo">
+				<br />
+				<br />
+			</div>
+			<div class="control-group">
+				${message}
+			</div>
+			<div class="control-group">
+				<#if message2??>
+					${message2}
+					<br />
+				</#if>
+			</div>
+			<div class="control-group">
+				De la part de ${sender_name} (<a href="mailto:${sender_email}">${sender_email}</a>)
+			</div>
+		</fieldset>
+	</form>
+</div>
+<br />
+<br />

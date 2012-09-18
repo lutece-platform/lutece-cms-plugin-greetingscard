@@ -1,10 +1,9 @@
 <div class="well" >
-	<legend>#i18n{greetingscard.export_greetings_card.pageTitle}</legend>
-
 	<form class="form-horizontal" method="post" name="export_greetings_card" action="jsp/admin/plugins/greetingscard/DoExportGreetingsCard.jsp" >
 		<fieldset>
+			<legend>#i18n{greetingscard.export_greetings_card.pageTitle}</legend>
 			<div class="control-group">
-				<label class="control-label" for="description" >#i18n{greetingscard.export_greetings_card.labelXslExport} : </label>
+				<label class="control-label" for="xsl_export_id" >#i18n{greetingscard.export_greetings_card.labelXslExport} : </label>
 				<div class="controls">
 					<@combo name="xsl_export_id"  items=list_xsl_export default_value="" />
 				</div>

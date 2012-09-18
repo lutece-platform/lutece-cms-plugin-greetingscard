@@ -1,99 +1,71 @@
-<br /><br />
-<center>
-Envoi d'une carte du Maire de Paris<br /><br />
-<img src="${picture_card}" height="${height}" width="${width}"/>
 <br />
-<legend>${sended_email}</legend>
-<br />
-</center>
 <div class="well" >
 	<form class="form-horizontal" name="html_send_greetings_card" method="post" action="jsp/site/Portal.jsp">
-		<center>
-			<br />
-			<table class="table table-striped table-condensed" width="480" align="center" cellspacing="0" cellpadding="2">
-				<tr>
-					<td width="180">
-						Email du destinataire :
-					</td>
-					<td width="300">
-						<input type="text" name="recipient_email" size="40" maxlength="254">
-					</td>
-				</tr>
-				<tr>
-					<td width="180">
-						Message :
-					</td>
-					<td width="300">
-						<textarea name="message" rows="8" cols="30">${message}</textarea>
-					</td>
-				</tr>
-				<tr>
-					<td width="180">
-						Message complémentaire :
-					</td>
-					<td width="300">
-						<div class="editor" >
-			     			<textarea name="message2" id="message2" rows="20" cols="90" style="width:100%">${message2}</textarea>
-				 			<br/>
-				 	 	</div>
-					</td>
-				</tr>
-				<tr>
-					<td width="180">
-					Votre nom (expéditeur) :
-					</td>
-					<td width="300">
-					<input type="text" name="sender_name" id="sender_name" size="40" maxlength="80" value="${sender_name}" />
-					</td>
-				</tr>
-				<tr>
-					<td width="180">
-					Votre email (expéditeur) :
-					</td>
-					<td width="300">
-					<input type="text" name="sender_email" size="40"  maxlength="80" value="${sender_email}" />
-					</td>
-				</tr>
-				<tr>
-					<td width="180">
-						&nbsp;
-					</td>
-					<td width="300">
-						Recevoir une copie du mail : <input class="checkbox" type="checkbox" name="mail_copy">
-					</td>
-				</tr>
-				<tr>
-					<td width="180">
-						&nbsp;
-					</td>
-					<td width="300">
-						Etre notifié lorsque la carte est lue : <input class="checkbox" type="checkbox" name="notify_user">
-					</td>
-				</tr>
-				<#if is_active_captcha>
-					<tr>
-						<td width="180"></td>
-						<td width="300" valign="middle">
-							<div >${captcha}</div>
-						</td>
-					</tr>
-				</#if>
-				<tr>
-					<td width="180">
-						<br /><br />
-					</td>
-					<td width="300" valign="middle">
-						<input type="hidden" name="page" value="greetingscard">
-						<input type="hidden" name="action" value="send">
-						<input type="hidden" name="format" value="html">
-						<input type="hidden" name="gct_id" value="${gct_id}">
-						<input class="btn btn-primary" type="submit" value="Envoyer" onClick="submit_greetings_card_sending();return(false);">
-					</td>
-				</tr>
-			</table>
-		</center>
+		<fieldset>
+			<legend>Envoi d'une carte du Maire de Paris</legend>
+			<div class="control-group">
+				<img src="${picture_card}" height="${height}" width="${width}" alt="logo"/>
+				<br />
+				<br />
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="recipient_email" >Email du destinataire :</label>
+				<div class="controls">
+					<input type="text" name="recipient_email" id="recipient_email" size="40" maxlength="254" title="Email du destinataire">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="message" >Message :</label>
+				<div class="controls">
+					<textarea name="message" id="message" rows="8" cols="30" title="Message">${message}</textarea>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="message2" >Message complémentaire :</label>
+				<div class="controls">
+					<textarea name="message2" id="message2" rows="8" cols="30" title="Message complémentaire">${message2}</textarea>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="sender_name" >Votre nom (expéditeur) :</label>
+				<div class="controls">
+					<input type="text" name="sender_name" id="sender_name" size="40" maxlength="80" value="${sender_name}" title="Votre nom (expéditeur)"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="sender_email" >Votre email (expéditeur) :</label>
+				<div class="controls">
+					<input type="text" name="sender_email" id="sender_email" size="40"  maxlength="80" value="${sender_email}" title="Votre email (expéditeur)"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="mail_copy" >Recevoir une copie du mail :</label>
+				<div class="controls">
+					<input class="checkbox" type="checkbox" id="mail_copy" name="mail_copy" title="Recevoir une copie du mail">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="notify_user" >Etre notifié lorsque la carte est lue :</label>
+				<div class="controls">
+					<input class="checkbox" type="checkbox" id="notify_user" name="notify_user" title="Etre notifié lorsque la carte est lue">
+				</div>
+			</div>
+			<#if is_active_captcha>
+				<div class="control-group">
+					${captcha}
+				</div>
+			</#if>
+			<div class="form-actions">
+				<input type="hidden" name="page" value="greetingscard">
+				<input type="hidden" name="action" value="send">
+				<input type="hidden" name="format" value="html">
+				<input type="hidden" name="gct_id" value="${gct_id}">
+				<input class="btn btn-primary" type="submit" value="Envoyer" onClick="submit_greetings_card_sending();return(false);">
+			</div>
+		</fieldset>
 	</form>
 </div>
+
 <br /><br />
 <script language="JavaScript">
 
@@ -125,4 +97,3 @@ function submit_greetings_card_sending()
 	}
 }
 </script>
-<@initEditor />

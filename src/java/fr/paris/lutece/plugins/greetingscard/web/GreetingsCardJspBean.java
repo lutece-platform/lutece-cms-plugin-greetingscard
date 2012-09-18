@@ -59,6 +59,7 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.rbac.RBACService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.DatabaseTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -155,6 +156,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String MARK_DOMAIN_NAME = "domainName";
 	private static final String MARK_MAIL_SENT = "mailSent";
 	private static final String MARK_MAIL_READ = "mailRead";
+	private static final String MARK_NOTIFICATION_TEMPLATE_CONTENT = "template_content";
 
 	// Parameters
 	private static final String PARAMETER_DESCRIPTION = "description";
@@ -181,6 +183,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String PARAMETER_ARCHIVE = "archive";
 	private static final String PARAMETER_NEXT_AUTO_ARCHIVING = "greetingscard.nextAutoArchiving";
 	private static final String PARAMETER_YEAR_NEXT_AUTO_ARCHIVING = "greetingscard.yearNextAutoArchiving";
+	private static final String PARAMETER_NOTIFICATION_TEMPLATE_CONTENT = "template_content";
 
 	// JSP
 	private static final String JSP_URL_GREETINGS_CARD_TEMPLATES_LIST = "GreetingsCardTemplatesList.jsp";
@@ -196,6 +199,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String TEMPLATE_GREETINGS_CARD_MAIL = "admin/plugins/greetingscard/greetings_card_mail.html";
 	private static final String TEMPLATE_EXPORT_GREETINGS_CARD = "admin/plugins/greetingscard/export_greetings_card.html";
 	private static final String TEMPLATE_ARCHIVE_GREETINGS_CARD = "admin/plugins/greetingscard/archive_greetings_card.html";
+	private static final String TEMPLATE_EMAIL_NOTIFICATION = "admin/plugins/greetingscard/modify_email_notification.html";
 
 	// Properties
 	private static final String PROPERTY_PATH_GREETINGS_CARD_TEMPLATE_DIR_NAME = "greetingscard.path.greetingscardtemplatedirname";
@@ -212,6 +216,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String PROPERTY_COPY_OF = "greetingscard.label.copyof";
 	private static final String PROPERTY_IMPORT_CSV_DELIMITER = "greetingscard.import.csv.delimiter";
 	private static final String PROPERTY_DEFAULT_ITEM_PER_PAGE = "greetingscard.itemPerPage";
+	private static final String PROPERTY_DATABASE_TEMPLATE_CARD_RED = "greetingscard.template_card_red";
 
 	// Messages
 	private static final String FIELD_FILE_IMPORT = "greetingscard.import_csv.label_file";
@@ -314,7 +319,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	{
 		setPageTitleProperty( PARAMETER_PLUGIN_NAME );
 
-		HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_GREETINGS_CARD_MENU, getLocale( ) );
+		HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_GREETINGS_CARD_MENU, AdminUserService.getLocale( request ) );
 
 		return getAdminPage( templateList.getHtml( ) );
 	}
@@ -345,7 +350,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		model.put( MARK_YEAR_NEXT_ARCHIVE, strYearNextArchiveAuto );
 		addPermissionsToHashmap( model );
 
-		HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_GREETINGS_CARD_TEMPLATES, getLocale( ), model );
+		HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_GREETINGS_CARD_TEMPLATES, AdminUserService.getLocale( request ), model );
 
 		return getAdminPage( t.getHtml( ) );
 	}
@@ -390,11 +395,11 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		}
 
 		HashMap<String, Object> model = new HashMap<String, Object>( );
-		model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( getUser( ), getLocale( ) ) );
+		model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( getUser( ), AdminUserService.getLocale( request ) ) );
 		model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
 		model.put( MARK_LOCALE, AdminUserService.getLocale( request ).getLanguage( ) );
 
-		HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_CREATE_GREETINGS_CARD_TEMPLATE, getLocale( ), model );
+		HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_CREATE_GREETINGS_CARD_TEMPLATE, AdminUserService.getLocale( request ), model );
 
 		return getAdminPage( t.getHtml( ) );
 	}
@@ -553,7 +558,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		model.put( MARK_GREETINGS_CARD_TEMPLATE_HEIGHT, greetingsCardTemplate.getHeight( ) );
 		model.put( MARK_GREETINGS_CARD_TEMPLATE_WIDTH, greetingsCardTemplate.getWidth( ) );
 		model.put( MARK_GREETINGS_CARD_TEMPLATE_OBJECT_EMAIL, greetingsCardTemplate.getObjectEmail( ) );
-		model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( getUser( ), getLocale( ) ) );
+		model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( getUser( ), AdminUserService.getLocale( request ) ) );
 		model.put( MARK_USER_WORKGROUP_SELECTED, greetingsCardTemplate.getWorkgroupKey( ) );
 
 		if ( greetingsCardTemplate.isEnabled( ) )
@@ -576,7 +581,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 			model.put( MARK_GREETINGS_CARD_TEMPLATE_PASSWORD, greetingsCardTemplate.getPassword( ) );
 		}
 
-		HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_MODIFY_GREETINGS_CARD_TEMPLATE, getLocale( ), model );
+		HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_MODIFY_GREETINGS_CARD_TEMPLATE, AdminUserService.getLocale( request ), model );
 
 		return getAdminPage( t.getHtml( ) );
 	}
@@ -966,7 +971,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
 		ReferenceList refListYears = GreetingsCardArchiveHome.getYearList( getPlugin( ) );
 		ReferenceItem refItem = new ReferenceItem( );
-		refItem.setName( I18nService.getLocalizedString( LABEL_CURRENT_YEAR, request.getLocale( ) ) );
+		refItem.setName( I18nService.getLocalizedString( LABEL_CURRENT_YEAR, AdminUserService.getLocale( request ) ) );
 		refItem.setCode( StringUtils.EMPTY );
 		refListYears.add( 0, refItem );
 
@@ -982,7 +987,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		model.put( MARK_YEAR, strYear );
 		model.put( MARK_GREETINGS_CARD_TEMPLATE_ID, strIdGCT );
 
-		HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_STATISTICS, getLocale( ), model );
+		HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_STATISTICS, AdminUserService.getLocale( request ), model );
 		tableManager.clearItems( );
 		request.getSession( ).setAttribute( PARAM_STATS_TABLE_MANAGER, tableManager );
 		return getAdminPage( t.getHtml( ) );
@@ -1150,7 +1155,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
 		ReferenceList refListYears = GreetingsCardArchiveHome.getYearList( getPlugin( ) );
 		ReferenceItem refItem = new ReferenceItem( );
-		refItem.setName( I18nService.getLocalizedString( LABEL_CURRENT_YEAR, request.getLocale( ) ) );
+		refItem.setName( I18nService.getLocalizedString( LABEL_CURRENT_YEAR, AdminUserService.getLocale( request ) ) );
 		refItem.setCode( StringUtils.EMPTY );
 		refListYears.add( 0, refItem );
 
@@ -1164,7 +1169,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		model.put( MARK_LIST_YEARS, refListYears );
 		model.put( MARK_YEAR, strYear );
 
-		HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_GLOBAL_STATISTICS, getLocale( ), model );
+		HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_GLOBAL_STATISTICS, AdminUserService.getLocale( request ), model );
 		tableManager.clearItems( );
 		request.getSession( ).setAttribute( PARAM_GLOBAL_STATS_TABLE_MANAGER, tableManager );
 		return getAdminPage( t.getHtml( ) );
@@ -1278,7 +1283,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
 		ReferenceList refListYears = GreetingsCardArchiveHome.getYearList( getPlugin( ) );
 		ReferenceItem refItem = new ReferenceItem( );
-		refItem.setName( I18nService.getLocalizedString( LABEL_CURRENT_YEAR, request.getLocale( ) ) );
+		refItem.setName( I18nService.getLocalizedString( LABEL_CURRENT_YEAR, AdminUserService.getLocale( request ) ) );
 		refItem.setCode( StringUtils.EMPTY );
 		refListYears.add( 0, refItem );
 
@@ -1319,7 +1324,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		model.put( MARK_LIST_YEARS, refListYears );
 		model.put( MARK_YEAR, String.valueOf( nYear ) );
 
-		HtmlTemplate t = AppTemplateService.getTemplate( strTemplate, getLocale( ), model );
+		HtmlTemplate t = AppTemplateService.getTemplate( strTemplate, AdminUserService.getLocale( request ), model );
 		tableManager.clearItems( );
 		if ( nIdGCT > 0 )
 		{
@@ -1356,7 +1361,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 				nDays -= 1;
 			}
 
-			String strToday = DateUtil.getCurrentDateString( request.getLocale( ) );
+			String strToday = DateUtil.getCurrentDateString( AdminUserService.getLocale( request ) );
 			java.sql.Date dateDate = DateUtil.getDateSql( strToday );
 
 			long lDate = dateDate.getTime( );
@@ -1417,7 +1422,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		model.put( MARK_LOCALE, AdminUserService.getLocale( request ).getLanguage( ) );
 		model.put( MARK_GREETINGS_CARD_TEMPLATE_ID, nGreetingsCardTemplateId );
 
-		HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_GREETINGS_CARD_MAIL, getLocale( ), model );
+		HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_GREETINGS_CARD_MAIL, AdminUserService.getLocale( request ), model );
 
 		return getAdminPage( templateList.getHtml( ) );
 	}
@@ -1438,7 +1443,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		if ( ( fileItem == null ) || ( fileItem.getName( ) == null ) || EMPTY_STRING.equals( fileItem.getName( ) ) )
 		{
 			Object[] tabRequiredFields =
-			{ I18nService.getLocalizedString( FIELD_FILE_IMPORT, getLocale( ) ) };
+			{ I18nService.getLocalizedString( FIELD_FILE_IMPORT, AdminUserService.getLocale( request ) ) };
 
 			return AdminMessageService.getMessageUrl( request, MESSAGE_MANDATORY_FIELD, tabRequiredFields, AdminMessage.TYPE_STOP );
 		}
@@ -1455,7 +1460,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 			return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_CSV_FILE_IMPORT, AdminMessage.TYPE_ERROR );
 		}
 
-		String strToday = DateUtil.getCurrentDateString( request.getLocale( ) );
+		String strToday = DateUtil.getCurrentDateString( AdminUserService.getLocale( request ) );
 		java.sql.Date dateToday = DateUtil.getDateSql( strToday );
 		String strMessage = request.getParameter( PARAM_MESSAGE );
 		strMessage = StringUtil.substitute( strMessage, HTML_BR, HTML_SUBSTITUTE_BR );
@@ -1473,17 +1478,17 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
 		if ( ( strMessage == null ) || strMessage.equals( EMPTY_STRING ) )
 		{
-			strError = I18nService.getLocalizedString( MANDATORY_MESSAGE, request.getLocale( ) );
+			strError = I18nService.getLocalizedString( MANDATORY_MESSAGE, AdminUserService.getLocale( request ) );
 		}
 
 		if ( ( strSenderName == null ) || strSenderName.equals( EMPTY_STRING ) )
 		{
-			strError = I18nService.getLocalizedString( MANDATORY_SENDER_NAME, request.getLocale( ) );
+			strError = I18nService.getLocalizedString( MANDATORY_SENDER_NAME, AdminUserService.getLocale( request ) );
 		}
 
 		if ( ( strSenderEmail == null ) || strSenderEmail.equals( EMPTY_STRING ) )
 		{
-			strError = I18nService.getLocalizedString( MANDATORY_SENDER_EMAIL, request.getLocale( ) );
+			strError = I18nService.getLocalizedString( MANDATORY_SENDER_EMAIL, AdminUserService.getLocale( request ) );
 		}
 
 		if ( strError != null )
@@ -1575,7 +1580,8 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 			model.put( MARK_GC_ID, greetingsCard.getId( ) );
 
 			String strSubject = greetingsCardTemplate.getObjectEmail( );
-			HtmlTemplate tMail = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_MAIL_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML, request.getLocale( ), model, 0 );
+			HtmlTemplate tMail = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_MAIL_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML,
+					AdminUserService.getLocale( request ), model, 0 );
 			String strMail = tMail.getHtml( );
 
 			MailService.sendMailHtml( null, null, strRecipientEmail, strSenderName, strSenderEmail, strSubject, strMail );
@@ -1590,7 +1596,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 					greetingsCard.setNotifySender( false );
 					GreetingsCardHome.create( greetingsCard, getPlugin( ) );
 
-					String strCopyOf = I18nService.getLocalizedString( PROPERTY_COPY_OF, request.getLocale( ) );
+					String strCopyOf = I18nService.getLocalizedString( PROPERTY_COPY_OF, AdminUserService.getLocale( request ) );
 					MailService.sendMailHtml( strSenderEmail, strSenderName, strSenderEmail, strCopyOf + WHITE_SPACE + strSubject, strMail );
 					bCopySended = true;
 				}
@@ -1630,7 +1636,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
 		model.put( MARK_GREETINGS_CARD_TEMPLATE_ID, strGreetingsCardTemplateId );
 		model.put( MARK_LIST_XSL_EXPORT, refListXslExport );
-		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_EXPORT_GREETINGS_CARD, request.getLocale( ), model );
+		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_EXPORT_GREETINGS_CARD, AdminUserService.getLocale( request ), model );
 
 		return getAdminPage( template.getHtml( ) );
 	}
@@ -1707,13 +1713,13 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		String strIdGreetingsCardTemplate = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
 		HashMap<String, Object> model = new HashMap<String, Object>( );
 		model.put( MARK_GREETINGS_CARD_TEMPLATE_ID, strIdGreetingsCardTemplate );
-		Locale locale = request.getLocale( );
+		Locale locale = AdminUserService.getLocale( request );
 		if ( locale == null )
 		{
 			locale = I18nService.getDefaultLocale( );
 		}
 		model.put( MARK_LOCALE, locale );
-		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ARCHIVE_GREETINGS_CARD, request.getLocale( ), model );
+		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_ARCHIVE_GREETINGS_CARD, AdminUserService.getLocale( request ), model );
 
 		return getAdminPage( template.getHtml( ) );
 	}
@@ -1756,12 +1762,12 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		catch ( NumberFormatException e )
 		{
 			Object[] tabRequiredFields =
-			{ I18nService.getLocalizedString( MANDATORY_YEAR, request.getLocale( ) ) };
+			{ I18nService.getLocalizedString( MANDATORY_YEAR, AdminUserService.getLocale( request ) ) };
 
 			return AdminMessageService.getMessageUrl( request, MESSAGE_MANDATORY_FIELD, tabRequiredFields, AdminMessage.TYPE_STOP );
 		}
 
-		DateFormat dateFormat = DateFormat.getDateInstance( DateFormat.SHORT, request.getLocale( ) );
+		DateFormat dateFormat = DateFormat.getDateInstance( DateFormat.SHORT, AdminUserService.getLocale( request ) );
 		dateFormat.setLenient( false );
 		Date dateMin = null;
 		Date dateMax = null;
@@ -1812,7 +1818,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		catch ( NumberFormatException e )
 		{
 			Object[] messageArgs =
-			{ I18nService.getLocalizedString( LABEL_YEAR, request.getLocale( ) ) };
+			{ I18nService.getLocalizedString( LABEL_YEAR, AdminUserService.getLocale( request ) ) };
 			return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_PARSE_NUMBER, messageArgs, AdminMessage.TYPE_STOP );
 		}
 		if ( StringUtils.isNotBlank( strDateNextAutoArchiving ) )
@@ -1839,6 +1845,59 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		DatastoreService.setDataValue( PARAMETER_YEAR_NEXT_AUTO_ARCHIVING, strYearNextAutoArchiving );
 
 		return AdminMessageService.getMessageUrl( request, MESSAGE_DATE_AUTO_ARCHIVE_UPDATED, URL_JSP_LIST_TEMPLATES, AdminMessage.TYPE_INFO );
+	}
+
+	/**
+	 * Get the page to modify the template of the notification email
+	 * @param request The request
+	 * @return The HTML code of the page
+	 * @throws AccessDeniedException If the user is not authorized to access this feature
+	 */
+	public String getModifyNotification( HttpServletRequest request ) throws AccessDeniedException
+	{
+		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_ARCHIVE, getUser( ) ) )
+		{
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
+		}
+
+		String strDatabaseTemplateKey = AppPropertiesService.getProperty( PROPERTY_DATABASE_TEMPLATE_CARD_RED );
+		String strTemplateContent;
+		if ( !StringUtils.isEmpty( strDatabaseTemplateKey ) )
+		{
+			strTemplateContent = DatabaseTemplateService.getTemplateFromKey( strDatabaseTemplateKey );
+		}
+		else
+		{
+			strTemplateContent = StringUtils.EMPTY;
+		}
+
+		HashMap<String, Object> model = new HashMap<String, Object>( );
+		model.put( MARK_NOTIFICATION_TEMPLATE_CONTENT, strTemplateContent );
+
+		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_EMAIL_NOTIFICATION, AdminUserService.getLocale( request ), model );
+
+		return getAdminPage( template.getHtml( ) );
+	}
+
+	/**
+	 * Update the email notification template
+	 * @param request The request
+	 * @return The url of the page to display
+	 * @throws AccessDeniedException If the user is not authorized to access this feature
+	 */
+	public String doModifyNotification( HttpServletRequest request ) throws AccessDeniedException
+	{
+		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_ARCHIVE, getUser( ) ) )
+		{
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
+		}
+		String strTemplateContent = request.getParameter( PARAMETER_NOTIFICATION_TEMPLATE_CONTENT );
+		String strDatabaseTemplateKey = AppPropertiesService.getProperty( PROPERTY_DATABASE_TEMPLATE_CARD_RED );
+		if ( !StringUtils.isEmpty( strDatabaseTemplateKey ) )
+		{
+			DatabaseTemplateService.updateTemplate( strDatabaseTemplateKey, strTemplateContent );
+		}
+		return JSP_URL_GREETINGS_CARD_TEMPLATES_LIST;
 	}
 
 	/**
