@@ -7,7 +7,7 @@ INSERT INTO core_file VALUES (124,'export_greetingscard_xml.xsl',124,1606,'appli
 INSERT INTO core_xsl_export VALUES (123,'Greetingscard - Export CSV','Greetingscard - Export CSV','csv',123);
 INSERT INTO core_xsl_export VALUES (124,'Greetingscard - Export XML','Greetingscard - Export XML','xml',124);
 
-INSERT INTO core_template VALUES ('greetingscard_card_red_mail',Bonjour,<br />La carte que vous avez envoyé à ${recipient_email} vient d''être lue.);
+INSERT INTO core_template VALUES ('greetingscard_card_red_mail','Bonjour,<br />La carte que vous avez envoyé à ${recipient_email} vient d''être lue.');
 
 INSERT INTO core_datastore VALUES ('greetingscard.nextAutoArchiving', '');
 INSERT INTO core_datastore VALUES ('greetingscard.yearNextAutoArchiving', '2012');
