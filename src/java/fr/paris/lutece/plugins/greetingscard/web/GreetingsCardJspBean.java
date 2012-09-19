@@ -1873,6 +1873,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
 		HashMap<String, Object> model = new HashMap<String, Object>( );
 		model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
+		model.put( MARK_LOCALE, AdminUserService.getLocale( request ) );
 		model.put( MARK_NOTIFICATION_TEMPLATE_CONTENT, strTemplateContent );
 
 		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_EMAIL_NOTIFICATION, AdminUserService.getLocale( request ), model );
