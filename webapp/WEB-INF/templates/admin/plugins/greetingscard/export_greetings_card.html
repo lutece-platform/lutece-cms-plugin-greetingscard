@@ -8,6 +8,12 @@
 					<@combo name="xsl_export_id"  items=list_xsl_export default_value="" />
 				</div>
 			</div>
+			<div class="control-group">
+				<label class="control-label" for="year" >#i18n{greetingscard.export_greetings_card.labelYear} : </label>
+				<div class="controls">
+					<@combo name="year" items=list_years default_value="" />
+				</div>
+			</div>
 			
 			<div class="form-actions">
 				<input type="hidden" name="gct_id" id="gct_id" value="${gct_id}" />

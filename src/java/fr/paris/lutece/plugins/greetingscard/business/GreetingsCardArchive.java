@@ -1,7 +1,17 @@
 package fr.paris.lutece.plugins.greetingscard.business;
 
+import fr.paris.lutece.util.xml.XmlUtil;
+
+
 public class GreetingsCardArchive
 {
+	private static final String TAG_GREETINGS_CARD_ARCHIVE = "greetingscard-archive";
+	private static final String TAG_DOMAIN_NAME = "domain-name";
+	private static final String TAG_GREETTINGSCARD_TEMPLATE_ID = "greetingscard-template-id";
+	private static final String TAG_NB_CARDS_SENT = "number-cards-sent";
+	private static final String TAG_NB_CARDS_RED = "number-cards-red";
+	private static final String TAG_YEAR = "year";
+
 	private int _nIdArchive;
 	private String _strDomainName;
 	private int _nIdGCT;
@@ -115,6 +125,20 @@ public class GreetingsCardArchive
 	public void setYearArchive( int nYearArchive )
 	{
 		_nYearArchive = nYearArchive;
+	}
+
+	public StringBuffer getXmlWithoutHeader( )
+	{
+		StringBuffer strXml = new StringBuffer( );
+		XmlUtil.beginElement( strXml, TAG_GREETINGS_CARD_ARCHIVE );
+		XmlUtil.addElement( strXml, TAG_DOMAIN_NAME, getDomainName( ) );
+		XmlUtil.addElement( strXml, TAG_GREETTINGSCARD_TEMPLATE_ID, getIdGCT( ) );
+		XmlUtil.addElement( strXml, TAG_NB_CARDS_SENT, getNbCard( ) );
+		XmlUtil.addElement( strXml, TAG_NB_CARDS_RED, getNbCardRed( ) );
+		XmlUtil.addElement( strXml, TAG_YEAR, getYearArchive( ) );
+		XmlUtil.endElement( strXml, TAG_GREETINGS_CARD_ARCHIVE );
+
+		return strXml;
 	}
 
 }

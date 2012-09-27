@@ -299,6 +299,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String CONSTANT_MIME_TYPE_XML = "application/xml";
 	private static final String CONSTANT_MIME_TYPE_OCTETSTREAM = "application/octet-stream";
 	private static final int CONSTANT_DEFAULT_ITEM_PER_PAGE = 50;
+	private static final String CONSTANT_POINT = ".";
 	private static String _strWorkGroup = AdminWorkgroupService.ALL_GROUPS;
 
 	private GreetingsCardService _greetingsCardService = SpringContextService.getBean( GreetingsCardService.beanName );
@@ -1634,7 +1635,14 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		HashMap<String, Object> model = new HashMap<String, Object>( );
 		ReferenceList refListXslExport = XslExportHome.getRefList( );
 
+		ReferenceList refListYears = GreetingsCardArchiveHome.getYearList( getPlugin( ) );
+		ReferenceItem refItem = new ReferenceItem( );
+		refItem.setName( I18nService.getLocalizedString( LABEL_CURRENT_YEAR, AdminUserService.getLocale( request ) ) );
+		refItem.setCode( StringUtils.EMPTY );
+		refListYears.add( 0, refItem );
+
 		model.put( MARK_GREETINGS_CARD_TEMPLATE_ID, strGreetingsCardTemplateId );
+		model.put( MARK_LIST_YEARS, refListYears );
 		model.put( MARK_LIST_XSL_EXPORT, refListXslExport );
 		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_EXPORT_GREETINGS_CARD, AdminUserService.getLocale( request ), model );
 
@@ -1657,27 +1665,50 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		String strGreetingsCardTemplateId = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
 		String strXslExportId = request.getParameter( PARAM_XSL_EXPORT_ID );
 		String strExportedGreetingsCard = StringUtils.EMPTY;
+		String strYear = request.getParameter( PARAM_YEAR );
 
 		int nGreetingsCardTemplateId = Integer.parseInt( strGreetingsCardTemplateId );
 		int nXslExportId = Integer.parseInt( strXslExportId );
 
 		XslExport xslExport = XslExportHome.findByPrimaryKey( nXslExportId );
 		GreetingsCardTemplate gct = GreetingsCardTemplateHome.findByPrimaryKey( nGreetingsCardTemplateId, getPlugin( ) );
-		Collection<GreetingsCard> listGreetingsCards = GreetingsCardHome.findByGreetingsCardTemplateId( nGreetingsCardTemplateId, getPlugin( ) );
 
-		if ( listGreetingsCards != null && listGreetingsCards.size( ) > 0 )
+		if ( StringUtils.isEmpty( strYear ) )
 		{
-			StringBuilder sb = new StringBuilder( XmlUtil.getXmlHeader( ) );
-			sb.append( "<GreetingsCards>\n" );
-			for ( GreetingsCard greetingsCard : listGreetingsCards )
-			{
-				sb.append( greetingsCard.getXmlWithoutHeaderForStats( ) );
-			}
-			sb.append( "</GreetingsCards>\n" );
-			String strXml = StringUtil.replaceAccent( sb.toString( ) );
-			strExportedGreetingsCard = XslExportService.exportXMLWithXSL( nXslExportId, strXml );
+			Collection<GreetingsCard> listGreetingsCards = GreetingsCardHome.findByGreetingsCardTemplateId( nGreetingsCardTemplateId, getPlugin( ) );
 
+			if ( listGreetingsCards != null && listGreetingsCards.size( ) > 0 )
+			{
+				StringBuilder sb = new StringBuilder( XmlUtil.getXmlHeader( ) );
+				sb.append( "<GreetingsCards>\n" );
+				for ( GreetingsCard greetingsCard : listGreetingsCards )
+				{
+					sb.append( greetingsCard.getXmlWithoutHeaderForStats( ) );
+				}
+				sb.append( "</GreetingsCards>\n" );
+				String strXml = StringUtil.replaceAccent( sb.toString( ) );
+				strExportedGreetingsCard = XslExportService.exportXMLWithXSL( nXslExportId, strXml );
+
+			}
 		}
+		else
+		{
+			int nYear = Integer.parseInt( strYear );
+			Collection<GreetingsCardArchive> listGreetingsCardsArchive = GreetingsCardArchiveHome.findByTemplateIdAndYear( nGreetingsCardTemplateId, nYear, getPlugin( ) );
+			if ( listGreetingsCardsArchive != null && listGreetingsCardsArchive.size( ) > 0 )
+			{
+				StringBuilder sb = new StringBuilder( XmlUtil.getXmlHeader( ) );
+				sb.append( "<GreetingsCardsArchive>\n" );
+				for ( GreetingsCardArchive archive : listGreetingsCardsArchive )
+				{
+					sb.append( archive.getXmlWithoutHeader( ) );
+				}
+				sb.append( "</GreetingsCardsArchive>\n" );
+				String strXml = StringUtil.replaceAccent( sb.toString( ) );
+				strExportedGreetingsCard = XslExportService.exportXMLWithXSL( nXslExportId, strXml );
+			}
+		}
+
 		if ( CONSTANT_MIME_TYPE_CSV.contains( xslExport.getExtension( ) ) )
 		{
 			response.setContentType( CONSTANT_MIME_TYPE_CSV );
@@ -1690,7 +1721,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		{
 			response.setContentType( CONSTANT_MIME_TYPE_OCTETSTREAM );
 		}
-		String strFileName = StringUtil.replaceAccent( gct.getDescription( ) ).trim( ).replace( ' ', '_' ) + "." + xslExport.getExtension( );
+		String strFileName = StringUtil.replaceAccent( gct.getDescription( ) ).trim( ).replace( ' ', '_' ) + CONSTANT_POINT + xslExport.getExtension( );
 		response.setHeader( "Content-Disposition", "attachement; filename=\"" + strFileName + "\"" );
 		PrintWriter out = response.getWriter( );
 		out.write( strExportedGreetingsCard );
