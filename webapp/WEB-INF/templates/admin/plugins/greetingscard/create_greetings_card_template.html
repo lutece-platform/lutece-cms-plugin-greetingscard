@@ -1,96 +1,98 @@
-<div class="well" >
-	<form class="form-horizontal" method="post" name="create_greetings_card_template"  ENCTYPE="multipart/form-data" action="jsp/admin/plugins/greetingscard/DoCreateGreetingsCardTemplate.jsp" >
-		<fieldset>
-			<legend>#i18n{greetingscard.create_greetings_card_template.pageTitle}</legend>
-			<div class="control-group">
-				<label class="control-label" for="description" >#i18n{greetingscard.create_greetings_card_template.labelIdDescription} * :</label>
-				<div class="controls">
-					<input type="text" title="#i18n{greetingscard.create_greetings_card_template.labelIdDescription}" name="description" id="description" size="30"/>
+<div class="row" >
+	<div class="container">
+		<form class="form-horizontal" method="post" name="create_greetings_card_template"  ENCTYPE="multipart/form-data" action="jsp/admin/plugins/greetingscard/DoCreateGreetingsCardTemplate.jsp" >
+			<fieldset>
+				<legend>#i18n{greetingscard.create_greetings_card_template.pageTitle}</legend>
+				<div class="control-group">
+					<label class="control-label" for="description" >#i18n{greetingscard.create_greetings_card_template.labelIdDescription} * :</label>
+					<div class="controls">
+						<input type="text" title="#i18n{greetingscard.create_greetings_card_template.labelIdDescription}" name="description" id="description" size="30"/>
+					</div>
 				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="create_card" >#i18n{greetingscard.create_greetings_card_template.labelIdEditAnim} * :</label>
-				<div class="controls">
-					<input type="file" title="#i18n{greetingscard.create_greetings_card_template.labelIdEditAnim}" name="create_card" id="create_card" size="30"/>
+				<div class="control-group">
+					<label class="control-label" for="create_card" >#i18n{greetingscard.create_greetings_card_template.labelIdEditAnim} * :</label>
+					<div class="controls">
+						<input type="file" title="#i18n{greetingscard.create_greetings_card_template.labelIdEditAnim}" name="create_card" id="create_card" size="30"/>
+					</div>
+				</div>		
+				<div class="control-group">
+					<label class="control-label" for="view_card" >#i18n{greetingscard.create_greetings_card_template.labelIdVisuAnim} * :</label>
+					<div class="controls">
+						<input type="file" title="#i18n{greetingscard.create_greetings_card_template.labelIdVisuAnim}" name="view_card" id="view_card" size="30"/>
+					</div>
 				</div>
-			</div>		
-			<div class="control-group">
-				<label class="control-label" for="view_card" >#i18n{greetingscard.create_greetings_card_template.labelIdVisuAnim} * :</label>
-				<div class="controls">
-					<input type="file" title="#i18n{greetingscard.create_greetings_card_template.labelIdVisuAnim}" name="view_card" id="view_card" size="30"/>
+				 <div class="control-group">
+					<label class="control-label" for="picture_card" >#i18n{greetingscard.create_greetings_card_template.labelIdImage} * :</label>
+					<div class="controls">
+						<input type="file" title="#i18n{greetingscard.create_greetings_card_template.labelIdImage}" name="picture_card" id="picture_card" size="30"/>
+					</div>
 				</div>
-			</div>
-			 <div class="control-group">
-				<label class="control-label" for="picture_card" >#i18n{greetingscard.create_greetings_card_template.labelIdImage} * :</label>
-				<div class="controls">
-					<input type="file" title="#i18n{greetingscard.create_greetings_card_template.labelIdImage}" name="picture_card" id="picture_card" size="30"/>
+		 		<div class="control-group">
+					<label class="control-label" for="width">#i18n{greetingscard.create_greetings_card_template.labelIdWidth} * :</label>
+					<div class="controls">
+						<input type="text" title="#i18n{greetingscard.create_greetings_card_template.labelIdWidth}" name="width" id="width" size="4"/>
+					</div>
 				</div>
-			</div>
-	 		<div class="control-group">
-				<label class="control-label" for="width">#i18n{greetingscard.create_greetings_card_template.labelIdWidth} * :</label>
-				<div class="controls">
-					<input type="text" title="#i18n{greetingscard.create_greetings_card_template.labelIdWidth}" name="width" id="width" size="4"/>
+				<div class="control-group">
+					<label class="control-label" for="height">#i18n{greetingscard.create_greetings_card_template.labelIdHeight} * :</label>
+					<div class="controls">
+						<input type="text" title="#i18n{greetingscard.create_greetings_card_template.labelIdHeight}" name="height" id="height" size="4"/>
+					</div>
 				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="height">#i18n{greetingscard.create_greetings_card_template.labelIdHeight} * :</label>
-				<div class="controls">
-					<input type="text" title="#i18n{greetingscard.create_greetings_card_template.labelIdHeight}" name="height" id="height" size="4"/>
+				<div class="control-group">
+					<label class="control-label" for="create_html_card" >#i18n{greetingscard.create_greetings_card_template.labelIdSendHTML} * :</label>
+					<div class="controls">
+						<input type="file" title="#i18n{greetingscard.create_greetings_card_template.labelIdSendHTML}" name="create_html_card" id="create_html_card" size="30"/>
+					</div>
 				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="create_html_card" >#i18n{greetingscard.create_greetings_card_template.labelIdSendHTML} * :</label>
-				<div class="controls">
-					<input type="file" title="#i18n{greetingscard.create_greetings_card_template.labelIdSendHTML}" name="create_html_card" id="create_html_card" size="30"/>
+				<div class="control-group">
+					<label class="control-label" for="view_html_card" >#i18n{greetingscard.create_greetings_card_template.labelIdVisuHTML} * :</label>
+					<div class="controls">
+						<input type="file" title="#i18n{greetingscard.create_greetings_card_template.labelIdVisuHTML}" name="view_html_card" id="view_html_card" size="30"/>
+					</div>
+				</div> 
+				<div class="control-group">
+					<label class="control-label" for="mail_card" >#i18n{greetingscard.create_greetings_card_template.labelIdMailHTML} * :</label>
+					<div class="controls">
+						<input type="file" title="#i18n{greetingscard.create_greetings_card_template.labelIdMailHTML}" name="mail_card" id="mail_card" size="30"/>
+					</div>
 				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="view_html_card" >#i18n{greetingscard.create_greetings_card_template.labelIdVisuHTML} * :</label>
-				<div class="controls">
-					<input type="file" title="#i18n{greetingscard.create_greetings_card_template.labelIdVisuHTML}" name="view_html_card" id="view_html_card" size="30"/>
+				<div class="control-group">
+					<label class="control-label" for="object_email" >#i18n{greetingscard.create_greetings_card_template.labelIdMailObject} * :</label>
+					<div class="controls">
+						<input type="text" title="#i18n{greetingscard.create_greetings_card_template.labelIdMailObject}" name="object_email" id="object_email" size="30"/>
+					</div>
 				</div>
-			</div> 
-			<div class="control-group">
-				<label class="control-label" for="mail_card" >#i18n{greetingscard.create_greetings_card_template.labelIdMailHTML} * :</label>
-				<div class="controls">
-					<input type="file" title="#i18n{greetingscard.create_greetings_card_template.labelIdMailHTML}" name="mail_card" id="mail_card" size="30"/>
+				<div class="control-group">
+					<label class="control-label" for="workgroup">#i18n{greetingscard.create_greetings_card_template.label_workgroup} : </label>
+					<div class="controls">
+						<@combo name="workgroup" items=user_workgroup_list default_value="all" />
+					</div>
 				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="object_email" >#i18n{greetingscard.create_greetings_card_template.labelIdMailObject} * :</label>
-				<div class="controls">
-					<input type="text" title="#i18n{greetingscard.create_greetings_card_template.labelIdMailObject}" name="object_email" id="object_email" size="30"/>
+				<div class="control-group">
+					<label class="control-label" for="check_password" >#i18n{greetingscard.create_greetings_card_template.labelIdUsePassword} :</label>
+					<div class="controls">
+						<input type="checkbox" title="#i18n{greetingscard.create_greetings_card_template.labelIdPassword}" name="check_password" id="check_password" value="1" >
+					</div>
 				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="workgroup">#i18n{greetingscard.create_greetings_card_template.label_workgroup} : </label>
-				<div class="controls">
-					<@combo name="workgroup" items=user_workgroup_list default_value="all" />
+				<div class="control-group">
+					<label class="control-label" for="password" >#i18n{greetingscard.create_greetings_card_template.labelIdPassword} :</label>
+					<div class="controls">
+						<input type="password" title="#i18n{greetingscard.create_greetings_card_template.labelIdPassword}" name="password" id="password" size="30"/>
+					</div>
 				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="check_password" >#i18n{greetingscard.create_greetings_card_template.labelIdUsePassword} :</label>
-				<div class="controls">
-					<input type="checkbox" title="#i18n{greetingscard.create_greetings_card_template.labelIdPassword}" name="check_password" id="check_password" value="1" >
+				<div class="control-group">
+					<label class="control-label" for="status" >#i18n{greetingscard.create_greetings_card_template.labelIdEnable} :</label>
+					<div class="controls">
+						<input type="checkbox" name="status" id="status" value="1"/>
+					</div>
 				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="password" >#i18n{greetingscard.create_greetings_card_template.labelIdPassword} :</label>
-				<div class="controls">
-					<input type="password" title="#i18n{greetingscard.create_greetings_card_template.labelIdPassword}" name="password" id="password" size="30"/>
+				
+				<div class="form-actions">
+					<button class="btn btn-primary" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{greetingscard.create_greetings_card_template.labelIdValid}</button>
+					<button class="btn btn-danger" type="button" onclick="javascript:history.go(-1)" ><i class="icon-remove-circle icon-white"></i>&nbsp;#i18n{greetingscard.create_greetings_card_template.labelIdCancel}</button>
 				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="status" >#i18n{greetingscard.create_greetings_card_template.labelIdEnable} :</label>
-				<div class="controls">
-					<input type="checkbox" name="status" id="status" value="1"/>
-				</div>
-			</div>
-			
-			<div class="form-actions">
-				<input class="btn btn-primary" type="submit" value="#i18n{greetingscard.create_greetings_card_template.labelIdValid}" />
-				<input class="btn" type="button" onclick="javascript:history.go(-1)" value="#i18n{greetingscard.create_greetings_card_template.labelIdCancel}" />
-			</div>
-		</fieldset>   
-	</form>
+			</fieldset>   
+		</form>
+	</div>
 </div>

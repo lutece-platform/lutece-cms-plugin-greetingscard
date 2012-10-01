@@ -41,7 +41,7 @@
 						<div class="control-group">
 							<a class="btn btn-primary" href="jsp/admin/plugins/greetingscard/GetModifyNotification.jsp"
 									title="#i18n{greetingscard.greetings_card_templates.buttonLabelModifyNotification}">
-								#i18n{greetingscard.greetings_card_templates.buttonLabelModifyNotification}
+								<i class="icon-edit icon-white"></i>&nbsp;#i18n{greetingscard.greetings_card_templates.buttonLabelModifyNotification}
 							</a>
 						</div>
 						<div class="form-actions">
@@ -51,18 +51,20 @@
 						    <input type="hidden" name="plugin_name" value="${plugin_name}"/>
 							<label class="control-label" for="date_next_archive">#i18n{greetingscard.greetings_card_templates.labelArchiveAuto} :</label>
 							<div class="controls">
-								<input type="text" title="#i18n{greetingscard.greetings_card_templates.labelArchiveAuto}" name="date_next_archive" id="date_next_archive" value="${date_next_archive!}" />
+								<input type="text" class="input-medium" title="#i18n{greetingscard.greetings_card_templates.labelArchiveAuto}" name="date_next_archive" id="date_next_archive" value="${date_next_archive!}" />
 							</div>
 						</div>
 						<div class="control-group">
 						    <input type="hidden" name="plugin_name" value="${plugin_name}"/>
 							<label class="control-label" for="year_next_archive">#i18n{greetingscard.greetings_card_templates.labelYearAuto} :</label>
 							<div class="controls">
-								<input type="text" title="#i18n{greetingscard.greetings_card_templates.labelYearAuto}" name="year_next_archive" id="year_next_archive" value="${year_next_archive!}" />
+								<input type="text" class="input-medium" title="#i18n{greetingscard.greetings_card_templates.labelYearAuto}" name="year_next_archive" id="year_next_archive" value="${year_next_archive!}" />
 							</div>
 						</div>
 						<div class="form-actions">
-							<input class="btn btn-primary" type="submit" value="#i18n{greetingscard.greetings_card_templates.labelSave}" />
+							<button class="btn btn-primary" type="submit" >
+								<i class="icon-ok icon-white"></i>&nbsp;#i18n{greetingscard.greetings_card_templates.labelSave}
+							</button>
 						</div>
 					</fieldset>
 				</form>
@@ -80,7 +82,12 @@
 		        
 			<#list greetings_card_template_list as greetings_card >
 				<tr>
-					<td> ${greetings_card.id} - ${greetings_card.description}</td>
+					<td>
+						${greetings_card.id} - ${greetings_card.description}
+						<br />
+						#i18n{greetingscard.greetings_card_templates.labelViewCreatePage} <a href="jsp/site/Portal.jsp?page=greetingscard&action=create&format=flash&gct_id=${greetings_card.id}">#i18n{greetingscard.greetings_card_templates.flash}</a>
+						#i18n{greetingscard.greetings_card_templates.labelOr} <a href="jsp/site/Portal.jsp?page=greetingscard&action=create&format=html&gct_id=${greetings_card.id}">#i18n{greetingscard.greetings_card_templates.html}</a>
+					</td>
 					<td>
 						<#if greetings_card.enabled>
 							<span class="label label-success"><i class="icon-ok-sign icon-white"></i> #i18n{portal.util.labelEnabled}</span>
@@ -120,7 +127,7 @@
 							</a>
 						</#if>
 						<#if permission_delete>
-						  	<a class="btn btn-danger btn-mini" href="jsp/admin/plugins/greetingscard/DoRemoveGreetingsCardTemplate.jsp?gct_id=${greetings_card.id}"
+						  	<a class="btn btn-danger btn-mini" href="jsp/admin/plugins/greetingscard/ConfirmRemoveGreetingsCardTemplate.jsp?gct_id=${greetings_card.id}"
 						  			title="#i18n{greetingscard.greetings_card_templates.buttonLabelDelete}">
 						  		<i class="icon-trash icon-white">&nbsp;</i>
 							</a>

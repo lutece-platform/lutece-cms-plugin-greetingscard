@@ -229,6 +229,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String MESSAGE_DATE_AUTO_ARCHIVE_UPDATED = "greetingscard.message.dateNextArchiveUpdated";
 	private static final String MESSAGE_ARCHIVED_OK = "greetingscard.message.greetingscards_archived";
 	private static final String MESSAGE_ERROR_PARSE_NUMBER = "greetingscard.message.error.parseNumberFailed";
+	private static final String MESSAGE_CONFIRM_REMOVE_GREETINGSCARD_TEMPLATE = "greetingscard.message.confirmRemoveTemplate";
 	private static final String MANDATORY_MESSAGE = "greetingscard.mandatory_field.message";
 	private static final String MANDATORY_SENDER_NAME = "greetingscard.mandatory_field.sender_name";
 	private static final String MANDATORY_SENDER_EMAIL = "greetingscard.mandatory_field.sender_mail";
@@ -269,6 +270,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 	private static final String URL_JSP_LIST_TEMPLATES = "jsp/admin/plugins/greetingscard/ManageGreetingsCard.jsp";
 	private static final String URL_JSP_CHOICE_GREETINGS_CARD = "jsp/admin/plugins/greetingscard/ChoiceGreetingsCard.jsp";
 	private static final String URL_JSP_STATISTICS = "jsp/admin/plugins/greetingscard/Statistics.jsp";
+	private static final String URL_JSP_REMOVE_GREETINGSCARD_TEMPLATE = "jsp/admin/plugins/greetingscard/DoRemoveGreetingsCardTemplate.jsp";
 
 	private static final String HTML_BR = "<br>";
 	private static final String HTML_SUBSTITUTE_BR = "\r\n";
@@ -736,6 +738,35 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		}
 
 		return urlToGreetingsCardTemplatesList.getUrl( );
+	}
+
+	public String confirmRemoveGreetingsCardTemplate( HttpServletRequest request ) throws AccessDeniedException
+	{
+		if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_DELETE, getUser( ) ) )
+		{
+			throw new AccessDeniedException( MESSAGE_FORBIDEN );
+		}
+		
+		String strGctId = request.getParameter( PARAMETER_GREETINGS_CARD_TEMPLATE_ID );
+		
+		int nGctId = 0;
+		try
+		{
+			nGctId = Integer.parseInt( strGctId );
+		}
+		catch ( NumberFormatException e )
+		{
+			return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_PARSE_NUMBER, AdminMessage.TYPE_STOP );
+		}
+		
+		GreetingsCardTemplate gct = GreetingsCardTemplateHome.findByPrimaryKey( nGctId, getPlugin( ) );
+		UrlItem url = new UrlItem( URL_JSP_REMOVE_GREETINGSCARD_TEMPLATE );
+		url.addParameter( MARK_GREETINGS_CARD_TEMPLATE_ID, strGctId );
+		
+		Object[] param =
+		{ gct.getDescription( ) };
+		
+		return AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_GREETINGSCARD_TEMPLATE, param, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
 	}
 
 	/**

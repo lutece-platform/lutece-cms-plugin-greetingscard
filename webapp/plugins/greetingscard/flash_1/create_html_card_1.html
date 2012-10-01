@@ -3,6 +3,11 @@
 	<form class="form-horizontal" name="html_send_greetings_card" method="post" action="jsp/site/Portal.jsp">
 		<fieldset>
 			<legend>Envoi d'une carte du Maire de Paris</legend>
+			
+			<#if sended_email?has_content>
+				<p class="lead" >${sended_email}</p>
+			</#if>
+			
 			<div class="control-group">
 				<img src="${picture_card}" height="${height}" width="${width}" alt="logo"/>
 				<br />
