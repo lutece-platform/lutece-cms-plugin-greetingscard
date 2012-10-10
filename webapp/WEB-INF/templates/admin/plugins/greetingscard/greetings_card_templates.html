@@ -30,7 +30,7 @@
 		</legend>
 	</fieldset>
 </form>
-<div class="row" >
+<div class="row-fluid" >
 	<#if permission_archive>
 		<div class="row-fluid span11">
 			<div class="span3 well">
@@ -97,37 +97,37 @@
 					</td>
 					<td>
 						<#if permission_modify>
-							<a class="btn btn-primary btn-mini" href="jsp/admin/plugins/greetingscard/ModifyGreetingsCardTemplate.jsp?gct_id=${greetings_card.id}"
+							<a class="btn btn-primary btn-small" href="jsp/admin/plugins/greetingscard/ModifyGreetingsCardTemplate.jsp?gct_id=${greetings_card.id}"
 									title="#i18n{greetingscard.greetings_card_templates.buttonLabelModify}">
 								<i class="icon-edit icon-white">&nbsp;</i>
 							</a>
 						</#if>
 						<#if permission_send>
-							<a class="btn btn-primary btn-mini" href="jsp/admin/plugins/greetingscard/SendGreetingsCardMail.jsp?gct_id=${greetings_card.id}"
+							<a class="btn btn-primary btn-small" href="jsp/admin/plugins/greetingscard/SendGreetingsCardMail.jsp?gct_id=${greetings_card.id}"
 									title="#i18n{greetingscard.greetings_card_templates.buttonLabelSend}">
 								<i class="icon-envelope icon-white">&nbsp;</i>
 							</a>
 						</#if>
 						<#if permission_stats>
-							<a class="btn btn-primary btn-mini" href="jsp/admin/plugins/greetingscard/Statistics.jsp?gct_id=${greetings_card.id}"
+							<a class="btn btn-primary btn-small" href="jsp/admin/plugins/greetingscard/Statistics.jsp?gct_id=${greetings_card.id}"
 									title="#i18n{greetingscard.greetings_card_templates.buttonLabelStatistics}">
 								<i class="icon-tasks icon-white">&nbsp;</i>
 							</a>
 						</#if>
 						<#if permission_export>
-							<a class="btn btn-primary btn-mini" href="jsp/admin/plugins/greetingscard/GetExportGreetingsCard.jsp?gct_id=${greetings_card.id}"
+							<a class="btn btn-primary btn-small" href="jsp/admin/plugins/greetingscard/GetExportGreetingsCard.jsp?gct_id=${greetings_card.id}"
 									title="#i18n{greetingscard.greetings_card_templates.buttonLabelExport}">
 								<i class="icon-download-alt icon-white">&nbsp;</i>
 							</a>
 						</#if>
 						<#if permission_archive>
-							<a class="btn btn-primary btn-mini" href="jsp/admin/plugins/greetingscard/GetArchiveGreetingsCard.jsp?gct_id=${greetings_card.id}"
+							<a class="btn btn-primary btn-small" href="jsp/admin/plugins/greetingscard/GetArchiveGreetingsCard.jsp?gct_id=${greetings_card.id}"
 									title="#i18n{greetingscard.greetings_card_templates.buttonLabelArchive}">
 								<i class="icon-hdd icon-white">&nbsp;</i>
 							</a>
 						</#if>
 						<#if permission_delete>
-						  	<a class="btn btn-danger btn-mini" href="jsp/admin/plugins/greetingscard/ConfirmRemoveGreetingsCardTemplate.jsp?gct_id=${greetings_card.id}"
+						  	<a class="btn btn-danger btn-small" href="jsp/admin/plugins/greetingscard/ConfirmRemoveGreetingsCardTemplate.jsp?gct_id=${greetings_card.id}"
 						  			title="#i18n{greetingscard.greetings_card_templates.buttonLabelDelete}">
 						  		<i class="icon-trash icon-white">&nbsp;</i>
 							</a>
