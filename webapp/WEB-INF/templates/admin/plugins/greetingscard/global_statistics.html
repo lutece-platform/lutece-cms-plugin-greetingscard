@@ -6,7 +6,7 @@
 						<label class="control-label" for="year"><strong>#i18n{greetingscard.global_statistics.labelYear} :</strong></label>
 						<div class="controls">
 							<@combo name="year" items=list_years default_value=year />
-							<input class="btn btn-primary" type="submit" value="#i18n{portal.util.labelOk}" />
+							<input class="btn btn-primary btn-small" type="submit" value="#i18n{portal.util.labelOk}" />
 						</div>
 					</div>
 				</legend>
@@ -129,7 +129,7 @@
 		<@dataTable dataTableManager=statTableManager summary="#i18n{greetingscard.domain_statistics.statisticsTitle}" caption="#i18n{greetingscard.domain_statistics.domainStatistics}" />
 		<br/>
 		<div class="form-actions">
-			<a class="btn btn-primary" href="jsp/admin/plugins/greetingscard/ChoiceGreetingsCard.jsp" title="#i18n{greetingscard.statistics.labelIdCancel}"><i class="icon-remove-circle icon-white"></i>&nbsp;#i18n{greetingscard.statistics.labelIdCancel}</a>
+			<a class="btn btn-primary btn-small" href="jsp/admin/plugins/greetingscard/ChoiceGreetingsCard.jsp" title="#i18n{greetingscard.statistics.labelIdCancel}"><i class="icon-remove-circle icon-white"></i>&nbsp;#i18n{greetingscard.statistics.labelIdCancel}</a>
 		</div>
 	</fieldset>
 </div>
