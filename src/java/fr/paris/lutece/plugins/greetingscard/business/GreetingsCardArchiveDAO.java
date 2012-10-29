@@ -188,7 +188,7 @@ public class GreetingsCardArchiveDAO implements IGreetingsCardArchiveDAO
 	@Override
 	public void update( GreetingsCardArchive greetingsCardArchive, Plugin plugin )
 	{
-		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
 		daoUtil.setInt( 1, greetingsCardArchive.getIdGCT( ) );
 		daoUtil.setString( 2, greetingsCardArchive.getDomainName( ) );
 		daoUtil.setInt( 3, greetingsCardArchive.getNbCard( ) );
@@ -217,7 +217,7 @@ public class GreetingsCardArchiveDAO implements IGreetingsCardArchiveDAO
 	@Override
 	public Collection<Integer> getYearList( Plugin plugin )
 	{
-		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_GET_YEARS );
+        DAOUtil daoUtil = new DAOUtil( SQL_QUERY_GET_YEARS, plugin );
 		daoUtil.executeQuery( );
 
 		List<Integer> listYear = new ArrayList<Integer>( );
