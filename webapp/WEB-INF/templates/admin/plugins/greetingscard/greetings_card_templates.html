@@ -83,8 +83,8 @@
 					<td>
 						${greetings_card.id} - ${greetings_card.description}
 						<br />
-						#i18n{greetingscard.greetings_card_templates.labelViewCreatePage} <a href="jsp/site/Portal.jsp?page=greetingscard&action=create&format=flash&gct_id=${greetings_card.id}">#i18n{greetingscard.greetings_card_templates.flash}</a>
-						#i18n{greetingscard.greetings_card_templates.labelOr} <a href="jsp/site/Portal.jsp?page=greetingscard&action=create&format=html&gct_id=${greetings_card.id}">#i18n{greetingscard.greetings_card_templates.html}</a>
+						#i18n{greetingscard.greetings_card_templates.labelViewCreatePage} <a href="jsp/site/Portal.jsp?page=greetingscard&action=create&format=flash&gct_id=${greetings_card.id}" target="_blank"><i class="icon-globe" title="View ${greetings_card.description} #i18n{greetingscard.greetings_card_templates.flash}"></i>&nbsp;#i18n{greetingscard.greetings_card_templates.flash}</a>
+						#i18n{greetingscard.greetings_card_templates.labelOr} <a href="jsp/site/Portal.jsp?page=greetingscard&action=create&format=html&gct_id=${greetings_card.id}"target="_blank"><i class="icon-globe" title="View ${greetings_card.description} #i18n{greetingscard.greetings_card_templates.html}"></i>&nbsp;#i18n{greetingscard.greetings_card_templates.html}</a>
 					</td>
 					<td>
 						<#if greetings_card.enabled>
