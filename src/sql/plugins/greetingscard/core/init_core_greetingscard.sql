@@ -8,8 +8,8 @@ INSERT INTO core_physical_file VALUES (124,'<?xml version=\"1.0\"?>\r\n<xsl:styl
 INSERT INTO core_file VALUES (123,'export_greetingscard_csv.xsl',123,1176,'application/xml');
 INSERT INTO core_file VALUES (124,'export_greetingscard_xml.xsl',124,1606,'application/xml');
 
-INSERT INTO core_xsl_export VALUES (123,'Greetingscard - Export CSV','Greetingscard - Export CSV','csv',123);
-INSERT INTO core_xsl_export VALUES (124,'Greetingscard - Export XML','Greetingscard - Export XML','xml',124);
+INSERT INTO core_xsl_export VALUES (123,'Greetingscard - Export CSV','Greetingscard - Export CSV','csv',123,'greetingscard');
+INSERT INTO core_xsl_export VALUES (124,'Greetingscard - Export XML','Greetingscard - Export XML','xml',124,'greetingscard');
 
 INSERT INTO core_template VALUES ('greetingscard_card_red_mail','Bonjour,<br />La carte que vous avez envoyé à ${recipient_email} vient d''être lue.');
 

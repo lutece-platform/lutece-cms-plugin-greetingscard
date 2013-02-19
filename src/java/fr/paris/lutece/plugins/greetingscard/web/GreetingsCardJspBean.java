@@ -1663,10 +1663,12 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 		}
 		String strGreetingsCardTemplateId = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
 
-		HashMap<String, Object> model = new HashMap<String, Object>( );
-		ReferenceList refListXslExport = XslExportHome.getRefList( );
+        Plugin plugin = getPlugin( );
 
-		ReferenceList refListYears = GreetingsCardArchiveHome.getYearList( getPlugin( ) );
+		HashMap<String, Object> model = new HashMap<String, Object>( );
+        ReferenceList refListXslExport = XslExportHome.getRefListByPlugin( plugin );
+
+		ReferenceList refListYears = GreetingsCardArchiveHome.getYearList( plugin );
 		ReferenceItem refItem = new ReferenceItem( );
 		refItem.setName( I18nService.getLocalizedString( LABEL_CURRENT_YEAR, AdminUserService.getLocale( request ) ) );
 		refItem.setCode( StringUtils.EMPTY );
