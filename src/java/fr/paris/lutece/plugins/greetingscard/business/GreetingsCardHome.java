@@ -48,7 +48,7 @@ import java.util.Map;
 public final class GreetingsCardHome
 {
 	// Static variable pointed at the DAO instance
-	private static IGreetingsCardDAO _dao = ( IGreetingsCardDAO ) SpringContextService.getPluginBean( "greetingscard", "greetingscardDAO" );
+    private static IGreetingsCardDAO _dao = SpringContextService.getBean( "greetingscardDAO" );
 
 	/**
 	 * Private constructor - this class need not be instantiated.
