@@ -1702,17 +1702,29 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         int nMailSended = 0;
         List<String> distinctRecipient = new ArrayList<String>( );
 
+        boolean bHasError = false;
+        StringBuilder sbErrors = new StringBuilder( );
         for ( int i = 0; i < listMail.size( ); i++ )
         {
             String strRecipientEmail = listMail.get( i );
 
             if ( !StringUtil.checkEmail( strRecipientEmail ) )
             {
-                Object[] tabRequiredFields = { strRecipientEmail };
-
-                return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_CSV_MAIL, tabRequiredFields,
-                        AdminMessage.TYPE_ERROR );
+                sbErrors.append( strRecipientEmail );
+                bHasError = true;
             }
+        }
+        if ( bHasError )
+        {
+            Object[] tabRequiredFields = { sbErrors.toString( ) };
+
+            return AdminMessageService.getMessageUrl( request, MESSAGE_ERROR_CSV_MAIL, tabRequiredFields,
+                    AdminMessage.TYPE_ERROR );
+        }
+
+        for ( int i = 0; i < listMail.size( ); i++ )
+        {
+            String strRecipientEmail = listMail.get( i );
 
             if ( !distinctRecipient.contains( strRecipientEmail ) )
             {
