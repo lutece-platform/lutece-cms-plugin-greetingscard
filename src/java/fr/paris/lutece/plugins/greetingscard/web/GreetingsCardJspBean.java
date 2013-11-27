@@ -1711,6 +1711,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             if ( !StringUtil.checkEmail( strRecipientEmail ) )
             {
                 sbErrors.append( strRecipientEmail );
+                sbErrors.append( "<br>");
                 bHasError = true;
             }
         }
