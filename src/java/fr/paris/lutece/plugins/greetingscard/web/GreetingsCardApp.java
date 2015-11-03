@@ -136,6 +136,7 @@ public class GreetingsCardApp implements XPageApplication
 	private static final String PROPERTY_CHAIN_MAIL_MALFORMED = "greetingscard.siteMessage.error.mail";
 	private static final String PROPERTY_ERROR_MESSAGE = "greetingscard.siteMessage.error.title";
 	private static final String PROPERTY_COPY_OF = "greetingscard.label.copyof";
+	private static final String ADDING_MAILING_LIST_REC_MESSAGE = "greetingscard.mainling_list_recipient.message";
 	private static final String CHECKBOX_ON = "on";
 	private static final String POINT_HTML = ".html";
 	private static final String HTML = "html";
@@ -659,6 +660,25 @@ public class GreetingsCardApp implements XPageApplication
 				if ( !bCopySended )
 				{
 					greetingsCard.setCopy( true );
+					
+					// the addition of a list of email addresses of the recipients in the content of the email copy.
+					String strMailContent = greetingsCard.getMessage();
+					strMailContent += I18nService.getLocalizedString( ADDING_MAILING_LIST_REC_MESSAGE, request.getLocale( ) );
+					int i=1;
+					for ( String strMailRec : listMail )
+					{
+						strMailContent += strMailRec;
+						if(i == listMail.length)
+						{
+							strMailContent += ".";
+						}
+						else
+						{
+							strMailContent += ", ";
+						}
+						i++;
+					}
+					greetingsCard.setMessage(strMailContent);
 					GreetingsCardHome.create( greetingsCard, plugin );
 
 					String strCopyOf = I18nService.getLocalizedString( PROPERTY_COPY_OF, request.getLocale( ) );
