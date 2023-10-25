@@ -67,7 +67,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -75,8 +75,6 @@ import org.apache.commons.lang.StringUtils;
  */
 public class GreetingsCardApp implements XPageApplication
 {
-	private static final String TEMPLATE_VIEW_FLASH_GREETINGS_CARD = "greetingscard/view_flash_greetings_card.html";
-	private static final String TEMPLATE_CREATE_FLASH_GREETINGS_CARD = "greetingscard/create_flash_greetings_card.html";
 	private static final String TEMPLATE_PASSWORD_GREETINGS_CARD_TEMPLATE = "greetingscard/password_greetings_card_template.html";
 	private static final String MARK_PLUGIN_NAME = "plugin_name";
 	private static final String MARK_PICTURE_CARD = "picture_card";
@@ -86,12 +84,8 @@ public class GreetingsCardApp implements XPageApplication
 	private static final String MARK_FORMAT = "format";
 	private static final String MARK_HEIGHT = "height";
 	private static final String MARK_WIDTH = "width";
-	private static final String MARK_GREETINGS_CARD_TEMPLATES_PATH = "greetings_card_templates_path";
-	private static final String MARK_GREETINGS_CARD_TEMPLATE_DIR_NAME = "greetings_card_template_dir_name";
 	private static final String MARK_VIEW_HTML_CARD_FROM_INTRANET = "view_html_card_from_intranet";
 	private static final String MARK_VIEW_HTML_CARD_FROM_INTERNET = "view_html_card_from_internet";
-	private static final String MARK_VIEW_FLASH_CARD_FROM_INTRANET = "view_flash_card_from_intranet";
-	private static final String MARK_VIEW_FLASH_CARD_FROM_INTERNET = "view_flash_card_from_internet";
 	private static final String MARK_MESSAGE = "message";
 	private static final String MARK_MESSAGE2 = "message2";
 	private static final String MARK_MAIL_COPY = "mail_copy";
@@ -119,11 +113,9 @@ public class GreetingsCardApp implements XPageApplication
 	private static final String PROPERTY_GREETINGS_CARD_PATH_LABEL = "greetingscard.pagePathLabel";
 	private static final String PROPERTY_PATH_GREETINGS_CARD_TEMPLATES = "greetingscard.path.greetingscardtemplates";
 	private static final String PROPERTY_PATH_GREETINGS_CARD_TEMPLATE_DIR_NAME = "greetingscard.path.greetingscardtemplatedirname";
-	private static final String PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FLASH = "path.lutece.plugins";
 	private static final String PROPERTY_MESSAGE_EMAIL_SENDED = "greetingscard.front.sentEmail";
 	private static final String PROPERTY_LUTECE_PROD_URL = "lutece.prod.url";
 	private static final String PROPERTY_FORMAT_HTML = "html";
-	private static final String PROPERTY_FORMAT_FLASH = "flash";
 	private static final String PROPERTY_ACTION_CREATE = "create";
 	private static final String PROPERTY_ACTION_VIEW = "view";
 	private static final String PROPERTY_NO_PASSWORD_ERROR_MESSAGE = "greetingscard.siteMessage.no_password.message";
@@ -178,7 +170,6 @@ public class GreetingsCardApp implements XPageApplication
 	{
 		XPage page = new XPage( );
 		String strAction = request.getParameter( PARAM_ACTION );
-		String strFormat = request.getParameter( PARAM_FORMAT );
 
 		String strBaseUrl = AppPathService.getBaseUrl( request );
 
@@ -206,11 +197,9 @@ public class GreetingsCardApp implements XPageApplication
 
 					GreetingsCardHome.update( greetingsCard, plugin );
 
-					if ( ( strFormat != null ) && ( strIdGC != null ) )
+					if ( ( strIdGC != null ) )
 					{
-						if ( strFormat.equals( PROPERTY_FORMAT_HTML ) )
-						{
-							try
+						try
 							{
 								page.setContent( getViewHTMLGreetingsCard( request, strIdGC, plugin ) );
 							}
@@ -218,11 +207,6 @@ public class GreetingsCardApp implements XPageApplication
 							{
 								throw new AppException( e.getMessage( ), e );
 							}
-						}
-						else if ( strFormat.equals( PROPERTY_FORMAT_FLASH ) )
-						{
-							page.setContent( getViewFlashGreetingsCard( request, strIdGC, plugin ) );
-						}
 					}
 				}
 			}
@@ -238,8 +222,7 @@ public class GreetingsCardApp implements XPageApplication
 
 					if ( ( greetingsCardTemplate == null ) || !greetingsCardTemplate.isEnabled( ) )
 					{
-						SiteMessageService.setMessage( request, PROPERTY_NO_GREETINGS_CARD_TEMPLATE_ERROR_MESSAGE, null, PROPERTY_NO_GREETINGS_CARD_TEMPLATE_TITLE_MESSAGE, null, null,
-								SiteMessage.TYPE_WARNING );
+						SiteMessageService.setMessage( request, PROPERTY_NO_GREETINGS_CARD_TEMPLATE_ERROR_MESSAGE, null, PROPERTY_NO_GREETINGS_CARD_TEMPLATE_TITLE_MESSAGE, null, null, SiteMessage.TYPE_WARNING );
 					}
 					else
 					{
@@ -264,23 +247,12 @@ public class GreetingsCardApp implements XPageApplication
 						}
 						else
 						{
-							if ( strFormat != null )
+							try{
+								page.setContent( getCreateHTMLGreetingsCard( request, plugin ) );
+							}
+							catch ( DirectoryNotFoundException e )
 							{
-								if ( strFormat.equals( PROPERTY_FORMAT_HTML ) )
-								{
-									try
-									{
-										page.setContent( getCreateHTMLGreetingsCard( request, plugin ) );
-									}
-									catch ( DirectoryNotFoundException e )
-									{
-										throw new AppException( e.getMessage( ), e );
-									}
-								}
-								else if ( strFormat.equals( PROPERTY_FORMAT_FLASH ) )
-								{
-									page.setContent( getCreateFlashGreetingsCard( request, plugin ) );
-								}
+								throw new AppException( e.getMessage( ), e );
 							}
 						}
 					}
@@ -349,65 +321,7 @@ public class GreetingsCardApp implements XPageApplication
 		model.put( MARK_WIDTH, greetingsCardTemplate.getWidth( ) );
 		model.put( MARK_PICTURE_CARD, strPathPictureCard );
 
-		HtmlTemplate t = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_VIEW_HTML_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML, request.getLocale( ), model, 0 );
-
-		return t.getHtml( );
-	}
-
-	/**
-	 * Returns an HTML format greetings card
-	 * @param request The HTTPServletRequest
-	 * @param strIdGC The send card identifier
-	 * @param plugin The plugin
-	 * @return The Html template
-	 */
-	private String getViewFlashGreetingsCard( HttpServletRequest request, String strIdGC, Plugin plugin )
-	{
-		GreetingsCard greetingsCard = GreetingsCardHome.findByPrimaryKey( strIdGC, plugin );
-		GreetingsCardTemplate greetingsCardTemplate = GreetingsCardTemplateHome.findByPrimaryKey( greetingsCard.getIdGCT( ), plugin );
-
-		// Load the parameters of the greetings card plugin
-		String strPathGreetingsCardTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
-		String strPathGreetingsCardTemplateDirName = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATE_DIR_NAME );
-
-		HashMap<String, Object> model = new HashMap<String, Object>( );
-		model.put( MARK_GCT_ID, greetingsCard.getIdGCT( ) );
-		model.put( MARK_GC_ID, greetingsCard.getId( ) );
-		model.put( MARK_WIDTH, greetingsCardTemplate.getWidth( ) );
-		model.put( MARK_HEIGHT, greetingsCardTemplate.getHeight( ) );
-		model.put( MARK_GREETINGS_CARD_TEMPLATES_PATH, strPathGreetingsCardTemplates );
-		model.put( MARK_GREETINGS_CARD_TEMPLATE_DIR_NAME, strPathGreetingsCardTemplateDirName );
-
-		HtmlTemplate t = getLocaleTemplate( TEMPLATE_VIEW_FLASH_GREETINGS_CARD, request.getLocale( ), model, 1 );
-
-		return t.getHtml( );
-	}
-
-	/**
-	 * Returns an HTML format greetings card
-	 * @param request The request
-	 * @param plugin The plugin
-	 * @return The Html template
-	 */
-	private String getCreateFlashGreetingsCard( HttpServletRequest request, Plugin plugin )
-	{
-		String strIdGCT = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
-		int nIdGCT = Integer.parseInt( strIdGCT );
-
-		GreetingsCardTemplate greetingsCardTemplate = GreetingsCardTemplateHome.findByPrimaryKey( nIdGCT, plugin );
-
-		// Load the parameters of the greetings card plugin
-		String strPathGreetingsCardTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
-		String strPathGreetingsCardTemplateDirName = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATE_DIR_NAME );
-
-		HashMap<String, Object> model = new HashMap<String, Object>( );
-		model.put( MARK_GCT_ID, strIdGCT );
-		model.put( MARK_WIDTH, greetingsCardTemplate.getWidth( ) );
-		model.put( MARK_HEIGHT, greetingsCardTemplate.getHeight( ) );
-		model.put( MARK_GREETINGS_CARD_TEMPLATES_PATH, strPathGreetingsCardTemplates );
-		model.put( MARK_GREETINGS_CARD_TEMPLATE_DIR_NAME, strPathGreetingsCardTemplateDirName );
-
-		HtmlTemplate t = getLocaleTemplate( TEMPLATE_CREATE_FLASH_GREETINGS_CARD, request.getLocale( ), model, 1 );
+		HtmlTemplate t = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_VIEW_HTML_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML, request.getLocale( ), model  );
 
 		return t.getHtml( );
 	}
@@ -426,7 +340,7 @@ public class GreetingsCardApp implements XPageApplication
 		model.put( MARK_GCT_ID, strIdGCT );
 		model.put( MARK_FORMAT, strFormat );
 
-		HtmlTemplate t = getLocaleTemplate( TEMPLATE_PASSWORD_GREETINGS_CARD_TEMPLATE, request.getLocale( ), model, 1 );
+		HtmlTemplate t = getLocaleTemplate( TEMPLATE_PASSWORD_GREETINGS_CARD_TEMPLATE, request.getLocale( ), model );
 
 		return t.getHtml( );
 	}
@@ -528,7 +442,7 @@ public class GreetingsCardApp implements XPageApplication
 		model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
 		model.put( MARK_LOCALE, AdminUserService.getLocale( request ).getLanguage( ) );
 
-		HtmlTemplate t = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_CREATE_HTML_CARD + UNDERSCORE + strIdGCT + POINT_HTML, request.getLocale( ), model, 0 );
+		HtmlTemplate t = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_CREATE_HTML_CARD + UNDERSCORE + strIdGCT + POINT_HTML, request.getLocale( ), model );
 
 		return t.getHtml( );
 	}
@@ -545,7 +459,7 @@ public class GreetingsCardApp implements XPageApplication
 	private String doSendGreetingsCard( HttpServletRequest request, Plugin plugin, String strBaseUrl ) throws DirectoryNotFoundException, AccessDeniedException, SiteMessageException
 	{
 		String strToday = DateUtil.getCurrentDateString( request.getLocale( ) );
-		java.sql.Date dateToday = DateUtil.getDateSql( strToday );
+		java.sql.Date dateToday = DateUtil.formatDateSql( strToday, request.getLocale( ) );
 		String strRecipientEmail = request.getParameter( PARAM_RECIPIENT_EMAIL );
 		String strMessage = request.getParameter( PARAM_MESSAGE );
 		strMessage = StringUtil.substitute( strMessage, HTML_BR, HTML_SUBSTITUTE_BR );
@@ -618,40 +532,25 @@ public class GreetingsCardApp implements XPageApplication
 			urlToViewHtmlCardFromIntranet.addParameter( PARAM_ACTION, PROPERTY_ACTION_VIEW );
 			urlToViewHtmlCardFromIntranet.addParameter( PARAM_FORMAT, PROPERTY_FORMAT_HTML );
 			urlToViewHtmlCardFromIntranet.addParameter( PARAM_GREETINGS_CARD_ID, greetingsCard.getId( ) );
-
-			UrlItem urlToViewFlashCardFromIntranet = new UrlItem( strBaseUrl + PATH_SEPARATOR + AppPathService.getPortalUrl( ) );
-			urlToViewFlashCardFromIntranet.addParameter( PARAM_PAGE, plugin.getName( ) );
-			urlToViewFlashCardFromIntranet.addParameter( PARAM_ACTION, PROPERTY_ACTION_VIEW );
-			urlToViewFlashCardFromIntranet.addParameter( PARAM_FORMAT, PROPERTY_FORMAT_FLASH );
-			urlToViewFlashCardFromIntranet.addParameter( PARAM_GREETINGS_CARD_ID, greetingsCard.getId( ) );
-
+			
 			UrlItem urlToViewHtmlCardFromInternet = new UrlItem( strInternetPortalUrl + PATH_SEPARATOR + AppPathService.getPortalUrl( ) );
 			urlToViewHtmlCardFromInternet.addParameter( PARAM_PAGE, plugin.getName( ) );
 			urlToViewHtmlCardFromInternet.addParameter( PARAM_ACTION, PROPERTY_ACTION_VIEW );
 			urlToViewHtmlCardFromInternet.addParameter( PARAM_FORMAT, PROPERTY_FORMAT_HTML );
 			urlToViewHtmlCardFromInternet.addParameter( PARAM_GREETINGS_CARD_ID, greetingsCard.getId( ) );
 
-			UrlItem urlToViewFlashCardFromInternet = new UrlItem( strInternetPortalUrl + PATH_SEPARATOR + AppPathService.getPortalUrl( ) );
-			urlToViewFlashCardFromInternet.addParameter( PARAM_PAGE, plugin.getName( ) );
-			urlToViewFlashCardFromInternet.addParameter( PARAM_ACTION, PROPERTY_ACTION_VIEW );
-			urlToViewFlashCardFromInternet.addParameter( PARAM_FORMAT, PROPERTY_FORMAT_FLASH );
-			urlToViewFlashCardFromInternet.addParameter( PARAM_GREETINGS_CARD_ID, greetingsCard.getId( ) );
-
 			HashMap<String, Object> model = new HashMap<String, Object>( );
 			model.put( MARK_VIEW_HTML_CARD_FROM_INTRANET, urlToViewHtmlCardFromIntranet.getUrl( ) );
-			model.put( MARK_VIEW_FLASH_CARD_FROM_INTRANET, urlToViewFlashCardFromIntranet.getUrl( ) );
 			model.put( MARK_VIEW_HTML_CARD_FROM_INTERNET, urlToViewHtmlCardFromInternet.getUrl( ) );
-			model.put( MARK_VIEW_FLASH_CARD_FROM_INTERNET, urlToViewFlashCardFromInternet.getUrl( ) );
-
+			
 			model.put( MARK_SENDER_NAME, greetingsCard.getSenderName( ) );
 			model.put( MARK_PORTAL_URL, strBaseUrl );
 			model.put( MARK_PLUGIN_NAME, plugin.getName( ) );
 			model.put( MARK_GC_ID, greetingsCard.getId( ) );
 
-			HtmlTemplate tMail = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_MAIL_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML, request.getLocale( ), model, 0 );
+			HtmlTemplate tMail = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_MAIL_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML, request.getLocale( ), model );
 			strMail = tMail.getHtml( );
 
-			// MailService.sendMailMultipartHtml( null, null, strRecipientEmail, strSenderName, strSenderEmail, strSubject, strMail, null, null );
 			MailService.sendMailHtml( null, null, strRecipient, strSenderName, strSenderEmail, strSubject, strMail );
 
 			// Template for copy
@@ -688,20 +587,7 @@ public class GreetingsCardApp implements XPageApplication
 			}
 		}
 
-		// UrlItem urlToSendingForm = new UrlItem( PORTAL_JSP );
-		// urlToSendingForm.addParameter( PARAM_ACTION, PROPERTY_ACTION_CREATE );
-		// urlToSendingForm.addParameter( PARAM_FORMAT, strFormat );
-		// urlToSendingForm.addParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID, nGreetingsCardTemplateId );
-		// urlToSendingForm.addParameter( PARAM_SENDED, 1 );
-
-		if ( request.getParameter( PARAM_FORMAT ).equals( HTML ) )
-		{
-			return getCreateHTMLGreetingsCard( request, plugin );
-		}
-		else
-		{
-			return getCreateFlashGreetingsCard( request, plugin );
-		}
+		return getCreateHTMLGreetingsCard( request, plugin );
 	}
 
 	/**
@@ -709,27 +595,14 @@ public class GreetingsCardApp implements XPageApplication
 	 * @param strTemplate The name of the template
 	 * @param locale The current locale to localize the template
 	 * @param model the model to use for loading
-	 * @param nMode the mode HTML or Flash
 	 * @return The template object.
 	 * @since 1.5
 	 */
-	public static HtmlTemplate getLocaleTemplate( String strTemplate, Locale locale, Object model, int nMode )
+	public static HtmlTemplate getLocaleTemplate( String strTemplate, Locale locale, Object model )
 	{
 		HtmlTemplate template = null;
-		String strPathGreetingsCardTemplates = EMPTY_STRING;
-
-		if ( nMode == 0 )
-		{
-			// We have to load the HTML template
-			strPathGreetingsCardTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
-		}
-		else
-		{
-			// nMode == 1
-			// We have to load the Flash template or the password template
-			strPathGreetingsCardTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FLASH );
-		}
-
+		String strPathGreetingsCardTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
+		
 		// Load the template from the file
 		template = AppTemplateService.getTemplate( strPathGreetingsCardTemplates + PATH_SEPARATOR + strTemplate, EMPTY_STRING, locale, model );
 

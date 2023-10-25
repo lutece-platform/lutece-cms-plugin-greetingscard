@@ -99,9 +99,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import au.com.bytecode.opencsv.CSVReader;
+
 
 
 /**
@@ -147,8 +148,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     private static final String MARK_PERMISSION_ARCHIVE = "permission_archive";
     private static final String MARK_VIEW_HTML_CARD_FROM_INTRANET = "view_html_card_from_intranet";
     private static final String MARK_VIEW_HTML_CARD_FROM_INTERNET = "view_html_card_from_internet";
-    private static final String MARK_VIEW_FLASH_CARD_FROM_INTRANET = "view_flash_card_from_intranet";
-    private static final String MARK_VIEW_FLASH_CARD_FROM_INTERNET = "view_flash_card_from_internet";
     private static final String MARK_SENDER_NAME = "sender_name";
     private static final String MARK_GC_ID = "gc_id";
     private static final String MARK_PORTAL_URL = "portal_url";
@@ -212,10 +211,8 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     private static final String PROPERTY_PAGE_TITLE_GREETINGSCARD_MODIFY = "greetingscard.modify_greetings_card_template.pageTitle";
     private static final String PROPERTY_PAGE_TITLE_GREETINGSCARD_CREATE = "greetingscard.create_greetings_card_template.pageTitle";
     private static final String PROPERTY_FORMAT_HTML = "html";
-    private static final String PROPERTY_FORMAT_FLASH = "flash";
     private static final String PROPERTY_ACTION_VIEW = "view";
     private static final String PROPERTY_LUTECE_PROD_URL = "lutece.prod.url";
-    private static final String PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FLASH = "path.lutece.plugins";
     private static final String PROPERTY_COPY_OF = "greetingscard.label.copyof";
     private static final String PROPERTY_IMPORT_CSV_DELIMITER = "greetingscard.import.csv.delimiter";
     private static final String PROPERTY_DEFAULT_ITEM_PER_PAGE = "greetingscard.itemPerPage";
@@ -240,7 +237,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     /** The message error for the number format in properties files */
     private static final String NUMBER_FORMAT_GREETINGS_CARD = "greetingscard.message_error.numberFormat";
     private static final String NUMBER_FORMAT_DAYS = "greetingscard.message_error.numberFormatDays";
-    private static final String DIFFERENT_FILES_SWF = "greetingscard.message_error.differentFilesSWF";
     private static final String DIFFERENT_FILES_HTML = "greetingscard.message_error.differentFilesHTML";
     private static final String LABEL_CURRENT_YEAR = "greetingscard.global_statistics.labelCurrentYear";
     private static final String LABEL_YEAR = "greetingscard.greetings_card_templates.labelYearAuto";
@@ -280,7 +276,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     private static final String POINT_HTML = ".html";
     private static final String CHECKBOX_ON = "on";
     private static final String WHITE_SPACE = " ";
-    private static final String SWF = ".swf";
     private static final String HTML = ".html";
     private static final String EMPTY_STRING = "";
     private static final String PATH_SEPARATOR = "/";
@@ -289,12 +284,8 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     private static final String CHECKED = "checked=\"checked\"";
     private static final String UNCHECKED = "unchecked";
     private static final String MESSAGE = "message=";
-    private static final String XML = "xml";
-    private static final String SENDER_NAME = "&sender_name=";
-    private static final String SENDER_EMAIL = "&sender_email=";
-    private static final String PASSWORD = "password=";
-
-    // Constant
+    
+// Constant
     private static final String PLUGIN_NAME = "greetingscard";
 
     // Misc
@@ -407,13 +398,11 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         }
 
         HashMap<String, Object> model = new HashMap<String, Object>( );
-        model.put( MARK_USER_WORKGROUP_REF_LIST,
-                AdminWorkgroupService.getUserWorkgroups( getUser( ), AdminUserService.getLocale( request ) ) );
+        model.put( MARK_USER_WORKGROUP_REF_LIST, AdminWorkgroupService.getUserWorkgroups( getUser( ), AdminUserService.getLocale( request ) ) );
         model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
         model.put( MARK_LOCALE, AdminUserService.getLocale( request ).getLanguage( ) );
 
-        HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_CREATE_GREETINGS_CARD_TEMPLATE,
-                AdminUserService.getLocale( request ), model );
+        HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_CREATE_GREETINGS_CARD_TEMPLATE, AdminUserService.getLocale( request ), model );
 
         return getAdminPage( t.getHtml( ) );
     }
@@ -440,8 +429,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         {
             MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 
-            FileItem fCreateFile = multipartRequest.getFile( PARAMETER_CREATE_CARD );
-            FileItem fViewFile = multipartRequest.getFile( PARAMETER_VIEW_CARD );
             FileItem fPictureFile = multipartRequest.getFile( PARAMETER_PICTURE_CARD );
             FileItem fViewHTMLFile = multipartRequest.getFile( PARAMETER_VIEW_HTML_CARD );
             FileItem fCreateHTMLFile = multipartRequest.getFile( PARAMETER_CREATE_HTML_CARD );
@@ -450,22 +437,14 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             // Mandatory field
             if ( ( multipartRequest.getParameter( PARAMETER_DESCRIPTION ).equals( EMPTY_STRING ) )
                     || ( multipartRequest.getParameter( PARAMETER_OBJECT_EMAIL ).equals( EMPTY_STRING ) )
-                    || ( multipartRequest.getParameter( PARAMETER_PASSWORD ).equals( EMPTY_STRING ) && ( multipartRequest
-                            .getParameter( PARAMETER_CHECK_PASSWORD ) != null ) )
+                    || ( multipartRequest.getParameter( PARAMETER_PASSWORD ).equals( EMPTY_STRING ) && ( multipartRequest.getParameter( PARAMETER_CHECK_PASSWORD ) != null ) )
                     || ( multipartRequest.getParameter( PARAMETER_HEIGHT ).equals( EMPTY_STRING ) )
                     || ( multipartRequest.getParameter( PARAMETER_WIDTH ).equals( EMPTY_STRING ) )
-                    || ( fCreateFile == null ) || ( fViewFile == null ) || ( fPictureFile == null )
-                    || ( fViewHTMLFile == null ) || ( fCreateHTMLFile == null ) || ( fMailFile == null )
-                    || ( fCreateFile.getSize( ) == 0 ) || ( fViewFile.getSize( ) == 0 )
+                    || ( fPictureFile == null ) || ( fViewHTMLFile == null ) || ( fCreateHTMLFile == null ) || ( fMailFile == null )
                     || ( fPictureFile.getSize( ) == 0 ) || ( fViewHTMLFile.getSize( ) == 0 )
                     || ( fCreateHTMLFile.getSize( ) == 0 ) || ( fMailFile.getSize( ) == 0 ) )
             {
                 return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
-            }
-
-            if ( fCreateFile.getFieldName( ).equals( fViewFile.getFieldName( ) ) )
-            {
-                return AdminMessageService.getMessageUrl( request, DIFFERENT_FILES_SWF, AdminMessage.TYPE_STOP );
             }
 
             if ( fViewHTMLFile.getFieldName( ).equals( fCreateHTMLFile.getFieldName( ) ) )
@@ -505,26 +484,14 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
             GreetingsCardTemplateHome.create( greetingsCardTemplate, getPlugin( ) );
 
-            String strPathGreetingsCardTemplateDirName = AppPropertiesService
-                    .getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATE_DIR_NAME );
+            String strPathGreetingsCardTemplateDirName = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATE_DIR_NAME );
             String strNewDirectoryName = strPathGreetingsCardTemplateDirName + greetingsCardTemplate.getId( );
             strNewDirectoryName = UploadUtil.cleanFileName( strNewDirectoryName );
 
             GreetingsCardTemplateHome.addDirectory( strNewDirectoryName );
 
             String strRelativePathTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
-            String strPathTemplates = AppPathService.getAbsolutePathFromRelativePath( PATH_SEPARATOR
-                    + strRelativePathTemplates );
-
-            // Renames the downloaded create file with the appropriate name.
-            File fCreateFileDest = new File( strPathTemplates + PATH_SEPARATOR + strNewDirectoryName + PATH_SEPARATOR
-                    + PARAMETER_CREATE_CARD + UNDERSCORE + greetingsCardTemplate.getId( ) + SWF );
-            GreetingsCardTemplateHome.addGreetingsCardTemplate( fCreateFile, fCreateFileDest );
-
-            // Renames the downloaded view file with the appropriate name.
-            File fViewFileDest = new File( strPathTemplates + PATH_SEPARATOR + strNewDirectoryName + PATH_SEPARATOR
-                    + PARAMETER_VIEW_CARD + UNDERSCORE + greetingsCardTemplate.getId( ) + SWF );
-            GreetingsCardTemplateHome.addGreetingsCardTemplate( fViewFile, fViewFileDest );
+            String strPathTemplates = AppPathService.getAbsolutePathFromRelativePath( PATH_SEPARATOR + strRelativePathTemplates );
 
             // Renames the downloaded picture file with the appropriate name.
             String strName = fPictureFile.getName( );
@@ -657,13 +624,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
                 return AdminMessageService.getMessageUrl( request, Messages.MANDATORY_FIELDS, AdminMessage.TYPE_STOP );
             }
 
-            // check if the two files are differents
-            if ( ( fCreateFile != null ) && ( fViewFile != null )
-                    && fCreateFile.getFieldName( ).equals( fViewFile.getFieldName( ) ) )
-            {
-                return AdminMessageService.getMessageUrl( request, DIFFERENT_FILES_SWF, AdminMessage.TYPE_STOP );
-            }
-
             if ( ( fCreateHTMLFile != null ) && ( fViewHTMLFile != null )
                     && fCreateHTMLFile.getFieldName( ).equals( fViewHTMLFile.getFieldName( ) ) )
             {
@@ -714,22 +674,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             String strRelativePathTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
             String strPathTemplates = AppPathService.getAbsolutePathFromRelativePath( PATH_SEPARATOR
                     + strRelativePathTemplates );
-
-            if ( ( fCreateFile != null ) && ( fCreateFile.getSize( ) != 0 ) )
-            {
-                // Renames the downloaded edit file with the appropriate name.
-                File fCreateFileDest = new File( strPathTemplates + PATH_SEPARATOR + strNewDirectoryName
-                        + PATH_SEPARATOR + PARAMETER_CREATE_CARD + UNDERSCORE + greetingsCardTemplate.getId( ) + SWF );
-                GreetingsCardTemplateHome.updateGreetingsCardTemplate( fCreateFile, fCreateFileDest );
-            }
-
-            if ( ( fViewFile != null ) && ( fViewFile.getSize( ) != 0 ) )
-            { // Renames the downloaded view file with the appropriate name.
-
-                File fViewFileDest = new File( strPathTemplates + PATH_SEPARATOR + strNewDirectoryName + PATH_SEPARATOR
-                        + PARAMETER_VIEW_CARD + UNDERSCORE + greetingsCardTemplate.getId( ) + SWF );
-                GreetingsCardTemplateHome.updateGreetingsCardTemplate( fViewFile, fViewFileDest );
-            }
 
             if ( ( fPictureFile != null ) && ( fPictureFile.getSize( ) != 0 ) )
             {
@@ -859,11 +803,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         String strPathTemplates = AppPathService.getAbsolutePathFromRelativePath( PATH_SEPARATOR
                 + strRelativePathTemplates );
 
-        GreetingsCardTemplateHome.removeGreetingsCardTemplate( strPathTemplates + PATH_SEPARATOR + strDirName
-                + PATH_SEPARATOR + PARAMETER_CREATE_CARD + UNDERSCORE + nIdGreetingsCardTemplate + SWF );
-        GreetingsCardTemplateHome.removeGreetingsCardTemplate( strPathTemplates + PATH_SEPARATOR + strDirName
-                + PATH_SEPARATOR + PARAMETER_VIEW_CARD + UNDERSCORE + nIdGreetingsCardTemplate + SWF );
-
         String strPathPicture = GreetingsCardTemplateHome.getPicture( PATH_SEPARATOR + strDirName, getPlugin( )
                 .getName( ) );
         GreetingsCardTemplateHome.removeGreetingsCardTemplate( strPathTemplates + PATH_SEPARATOR + strDirName
@@ -880,59 +819,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
         // If the operation is successfull, redirect towards the list of question/answer couples
         return urlToGreetingsCardTemplatesList.getUrl( );
-    }
-
-    /**
-     * Returns the parameters for the swf app text mode
-     * @param request the request
-     * @return The Html template
-     */
-    public String getGreetingsCardTextForSwfApp( HttpServletRequest request )
-    {
-        String strIdGC = request.getParameter( PARAMETER_GREETINGS_CARD_ID );
-
-        String strParamsForSwfApp = EMPTY_STRING;
-        GreetingsCard greetingsCard = GreetingsCardHome.findByPrimaryKey( strIdGC, getPlugin( ) );
-
-        strParamsForSwfApp = MESSAGE + greetingsCard.getMessage( ) + SENDER_NAME + greetingsCard.getSenderName( )
-                + SENDER_EMAIL + greetingsCard.getSenderEmail( );
-
-        return strParamsForSwfApp;
-    }
-
-    /**
-     * Returns the parameters for the swf app text mode
-     * @param request the request
-     * @return The Html template
-     */
-    public String getGreetingsCardXMLForSwfApp( HttpServletRequest request )
-    {
-        String strIdGC = request.getParameter( PARAMETER_GREETINGS_CARD_ID );
-
-        String strParamsForSwfApp = EMPTY_STRING;
-        GreetingsCard greetingsCard = GreetingsCardHome.findByPrimaryKey( strIdGC, getPlugin( ) );
-
-        strParamsForSwfApp = XML + greetingsCard.getXml( );
-
-        return strParamsForSwfApp;
-    }
-
-    /**
-     * Returns the password of the greetings card template for the swf app
-     * @param request the request
-     * @return The Html template
-     */
-    public String getPasswordForSwfApp( HttpServletRequest request )
-    {
-        String strIdGreetingsCardTemplate = request.getParameter( PARAMETER_GREETINGS_CARD_TEMPLATE_ID );
-        int nIdGreetingsCardTemplate = Integer.parseInt( strIdGreetingsCardTemplate );
-
-        GreetingsCardTemplate greetingsCardTemplate = GreetingsCardTemplateHome.findByPrimaryKey(
-                nIdGreetingsCardTemplate, getPlugin( ) );
-
-        String strPassword = PASSWORD + greetingsCardTemplate.getPassword( );
-
-        return strPassword;
     }
 
     /**
@@ -1039,8 +925,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         }
         UrlItem url = new UrlItem( URL_JSP_STATISTICS );
         url.addParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID, strIdGCT );
-        DataTableManager<Domain> tableManager = (DataTableManager<Domain>) request.getSession( ).getAttribute(
-                PARAM_STATS_TABLE_MANAGER );
+        DataTableManager<Domain> tableManager = (DataTableManager<Domain>) request.getSession( ).getAttribute( PARAM_STATS_TABLE_MANAGER );
         if ( tableManager == null )
         {
             tableManager = new DataTableManager<Domain>( url.getUrl( ), url.getUrl( ),
@@ -1055,8 +940,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             tableManager.setSortUrl( url.getUrl( ) );
         }
 
-        DataTableManager<Domain> tableManager1 = (DataTableManager<Domain>) request.getSession( ).getAttribute(
-                "statsTableManager1" );
+        DataTableManager<Domain> tableManager1 = (DataTableManager<Domain>) request.getSession( ).getAttribute("statsTableManager1" );
         if ( tableManager1 == null )
         {
             tableManager1 = new DataTableManager<Domain>( url.getUrl( ), url.getUrl( ),
@@ -1552,7 +1436,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             }
 
             String strToday = DateUtil.getCurrentDateString( AdminUserService.getLocale( request ) );
-            java.sql.Date dateDate = DateUtil.getDateSql( strToday );
+            java.sql.Date dateDate = DateUtil.formatDateSql(strToday, AdminUserService.getLocale( request ) );
 
             long lDate = dateDate.getTime( );
             lDate = lDate - ( 1000 * 3600 * 24 * nDays );
@@ -1654,7 +1538,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         }
 
         String strToday = DateUtil.getCurrentDateString( AdminUserService.getLocale( request ) );
-        java.sql.Date dateToday = DateUtil.getDateSql( strToday );
+        java.sql.Date dateToday = DateUtil.formatDateSql(strToday, AdminUserService.getLocale( request ) );
         String strMessage = request.getParameter( PARAM_MESSAGE );
         strMessage = StringUtil.substitute( strMessage, HTML_BR, HTML_SUBSTITUTE_BR );
 
@@ -1759,14 +1643,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             urlToViewHtmlCardFromIntranet.addParameter( PARAM_ACTION, PROPERTY_ACTION_VIEW );
             urlToViewHtmlCardFromIntranet.addParameter( PARAM_FORMAT, PROPERTY_FORMAT_HTML );
             urlToViewHtmlCardFromIntranet.addParameter( PARAM_GREETINGS_CARD_ID, greetingsCard.getId( ) );
-
-            UrlItem urlToViewFlashCardFromIntranet = new UrlItem( strBaseUrl + PATH_SEPARATOR
-                    + AppPathService.getPortalUrl( ) );
-            urlToViewFlashCardFromIntranet.addParameter( PARAM_PAGE, getPlugin( ).getName( ) );
-            urlToViewFlashCardFromIntranet.addParameter( PARAM_ACTION, PROPERTY_ACTION_VIEW );
-            urlToViewFlashCardFromIntranet.addParameter( PARAM_FORMAT, PROPERTY_FORMAT_FLASH );
-            urlToViewFlashCardFromIntranet.addParameter( PARAM_GREETINGS_CARD_ID, greetingsCard.getId( ) );
-
+            
             UrlItem urlToViewHtmlCardFromInternet = new UrlItem( strInternetPortalUrl + PATH_SEPARATOR
                     + AppPathService.getPortalUrl( ) );
             urlToViewHtmlCardFromInternet.addParameter( PARAM_PAGE, getPlugin( ).getName( ) );
@@ -1774,18 +1651,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             urlToViewHtmlCardFromInternet.addParameter( PARAM_FORMAT, PROPERTY_FORMAT_HTML );
             urlToViewHtmlCardFromInternet.addParameter( PARAM_GREETINGS_CARD_ID, greetingsCard.getId( ) );
 
-            UrlItem urlToViewFlashCardFromInternet = new UrlItem( strInternetPortalUrl + PATH_SEPARATOR
-                    + AppPathService.getPortalUrl( ) );
-            urlToViewFlashCardFromInternet.addParameter( PARAM_PAGE, getPlugin( ).getName( ) );
-            urlToViewFlashCardFromInternet.addParameter( PARAM_ACTION, PROPERTY_ACTION_VIEW );
-            urlToViewFlashCardFromInternet.addParameter( PARAM_FORMAT, PROPERTY_FORMAT_FLASH );
-            urlToViewFlashCardFromInternet.addParameter( PARAM_GREETINGS_CARD_ID, greetingsCard.getId( ) );
-
             HashMap<String, Object> model = new HashMap<String, Object>( );
             model.put( MARK_VIEW_HTML_CARD_FROM_INTRANET, urlToViewHtmlCardFromIntranet.getUrl( ) );
-            model.put( MARK_VIEW_FLASH_CARD_FROM_INTRANET, urlToViewFlashCardFromIntranet.getUrl( ) );
             model.put( MARK_VIEW_HTML_CARD_FROM_INTERNET, urlToViewHtmlCardFromInternet.getUrl( ) );
-            model.put( MARK_VIEW_FLASH_CARD_FROM_INTERNET, urlToViewFlashCardFromInternet.getUrl( ) );
 
             model.put( MARK_SENDER_NAME, greetingsCard.getSenderName( ) );
             model.put( MARK_PORTAL_URL, strBaseUrl );
@@ -1793,12 +1661,10 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             model.put( MARK_GC_ID, greetingsCard.getId( ) );
 
             String strSubject = greetingsCardTemplate.getObjectEmail( );
-            HtmlTemplate tMail = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_MAIL_CARD + UNDERSCORE
-                    + greetingsCard.getIdGCT( ) + POINT_HTML, AdminUserService.getLocale( request ), model, 0 );
+            HtmlTemplate tMail = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_MAIL_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML, AdminUserService.getLocale( request ), model );
             String strMail = tMail.getHtml( );
 
-            MailService
-                    .sendMailHtml( null, null, strRecipientEmail, strSenderName, strSenderEmail, strSubject, strMail );
+            MailService.sendMailHtml( null, null, strRecipientEmail, strSenderName, strSenderEmail, strSubject, strMail );
 
             nMailSended++;
 
@@ -1810,26 +1676,17 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
                     greetingsCard.setNotifySender( false );
                     GreetingsCardHome.create( greetingsCard, getPlugin( ) );
 
-                    String strCopyOf = I18nService.getLocalizedString( PROPERTY_COPY_OF,
-                            AdminUserService.getLocale( request ) );
-                    MailService.sendMailHtml( strSenderEmail, strSenderName, strSenderEmail, strCopyOf + WHITE_SPACE
-                            + strSubject, strMail );
+                    String strCopyOf = I18nService.getLocalizedString( PROPERTY_COPY_OF, AdminUserService.getLocale( request ) );
+                    MailService.sendMailHtml( strSenderEmail, strSenderName, strSenderEmail, strCopyOf + WHITE_SPACE + strSubject, strMail );
                     bCopySended = true;
                 }
             }
 
-            // UrlItem urlToSendingForm = new UrlItem( PORTAL_JSP );
-            // urlToSendingForm.addParameter( PARAM_ACTION, PROPERTY_ACTION_CREATE );
-            // urlToSendingForm.addParameter( PARAM_FORMAT, strFormat );
-            // urlToSendingForm.addParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID, nGreetingsCardTemplateId );
-            // urlToSendingForm.addParameter( PARAM_SENDED, 1 );
         }
 
         Object[] tabFields = { nMailSended, distinctRecipient.size( ) };
 
         return AdminMessageService.getMessageUrl( request, MESSAGE_MAIL_SEND, tabFields, AdminMessage.TYPE_INFO );
-
-        // return getJspManageGreetingsCard( multipartRequest );
     }
 
     /**
@@ -2229,32 +2086,16 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
      * @param strTemplate The name of the template
      * @param locale The current locale to localize the template
      * @param model the model to use for loading
-     * @param nMode the mode HTML or Flash
      * @return The template object.
      * @since 1.5
      */
-    public static HtmlTemplate getLocaleTemplate( String strTemplate, Locale locale, Object model, int nMode )
+    public static HtmlTemplate getLocaleTemplate( String strTemplate, Locale locale, Object model  )
     {
         HtmlTemplate template = null;
-        String strPathGreetingsCardTemplates = EMPTY_STRING;
-
-        if ( nMode == 0 )
-        {
-            // We have to load the HTML template
-            strPathGreetingsCardTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
-        }
-        else
-        {
-            // nMode == 1
-            // We have to load the Flash template or the password template
-            strPathGreetingsCardTemplates = AppPropertiesService
-                    .getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FLASH );
-        }
-
+        String strPathGreetingsCardTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
+        
         // Load the template from the file
-        template = AppTemplateService.getTemplate( strPathGreetingsCardTemplates + PATH_SEPARATOR + strTemplate,
-                EMPTY_STRING, locale, model );
-
+        template = AppTemplateService.getTemplate( strPathGreetingsCardTemplates + PATH_SEPARATOR + strTemplate, EMPTY_STRING, locale, model );
         return template;
     }
 
