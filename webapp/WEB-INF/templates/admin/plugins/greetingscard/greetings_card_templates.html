@@ -1,145 +1,73 @@
-<noscript></noscript>
-<form action="jsp/admin/plugins/greetingscard/ChoiceGreetingsCard.jsp">
-	<fieldset>
-		<legend>#i18n{greetingscard.greetings_card_templates.pageTitle}
-			<div class="btn-group pull-right">
-				<div class="form-horizontal">
-				    <input type="hidden" name="plugin_name" value="${plugin_name}"/>
-				    <#if permission_create>
-						<button class="btn btn-primary btn-small" type="submit" name="create">
-							<i class="icon-plus-sign icon-white"></i>
-							#i18n{greetingscard.greetings_card_templates.buttonLabelAdd}
-						</button>
-					</#if>
-					<#if permission_stats>
-						<button class="btn btn-primary btn-small" type="submit" name="stats">
-							<i class="icon-tasks icon-white"></i>
-							#i18n{greetingscard.greetings_card_templates.buttonLabelGlobalStat}
-						</button>
-					</#if>
-					<#if permission_archive>
-						<button class="btn btn-primary btn-small" type="submit" name="archive">
-							<i class="icon-hdd icon-white"></i>
-							#i18n{greetingscard.greetings_card_templates.buttonLabelArchive}
-						</button>
-					</#if>
-				</div>
-			</div>
-		</legend>
-	</fieldset>
-</form>
-<div class="row-fluid" >
-	<#if permission_archive>
-		<div class="row-fluid span11">
-			<div class="span3 well">
-				<form action="jsp/admin/plugins/greetingscard/DoUpdateArchiveAutoGreetingsCard.jsp">
-					<fieldset>
-						<legend>#i18n{greetingscard.greetings_card_templates.labelConfiguration}</legend>
-						<p class="lead">#i18n{greetingscard.greetings_card_templates.labelNotifications}</p>
-						<div class="control-group">
-							<a class="btn btn-primary btn-small" href="jsp/admin/plugins/greetingscard/GetModifyNotification.jsp"
-									title="#i18n{greetingscard.greetings_card_templates.buttonLabelModifyNotification}">
-								<i class="icon-edit icon-white"></i>&nbsp;#i18n{greetingscard.greetings_card_templates.buttonLabelModifyNotification}
-							</a>
-						</div>
-						<div class="form-actions">
-						</div>
-						<p class="lead">#i18n{greetingscard.greetings_card_templates.titleArchiveAuto}</p>
-						<div class="control-group">
-						    <input type="hidden" name="plugin_name" value="${plugin_name}"/>
-							<label class="control-label" for="date_next_archive">#i18n{greetingscard.greetings_card_templates.labelArchiveAuto} :</label>
-							<div class="controls">
-								<input type="text" class="input-medium" title="#i18n{greetingscard.greetings_card_templates.labelArchiveAuto}" name="date_next_archive" id="date_next_archive" value="${date_next_archive!}" />
-							</div>
-						</div>
-						<div class="control-group">
-						    <input type="hidden" name="plugin_name" value="${plugin_name}"/>
-							<label class="control-label" for="year_next_archive">#i18n{greetingscard.greetings_card_templates.labelYearAuto} :</label>
-							<div class="controls">
-								<input type="text" class="input-medium" title="#i18n{greetingscard.greetings_card_templates.labelYearAuto}" name="year_next_archive" id="year_next_archive" value="${year_next_archive!}" />
-							</div>
-						</div>
-						<div class="form-actions">
-							<button class="btn btn-primary btn-small" type="submit" >
-								<i class="icon-ok icon-white"></i>&nbsp;#i18n{greetingscard.greetings_card_templates.labelSave}
-							</button>
-						</div>
-					</fieldset>
-				</form>
-			</div>
-			<@getDatePicker idField="date_next_archive" language=locale.language />
-	</#if>
-		<div class="row-fluid span9">
-		<table class="table table-striped table-condensed" summary="#i18n{greetingscard.manage_greetingscard.model.labelTitle}">
-			<caption>&nbsp;</caption>
-			<tr>
-				<th scope="col">#i18n{greetingscard.greetings_card_templates.columnLabelFileTitle}</th>
-				<th scope="col">#i18n{greetingscard.greetings_card_templates.columnLabelStatus}</th>
-				<th scope="col">#i18n{greetingscard.greetings_card_templates.columnLabelAction}</th>
-			</tr>
-		        
+<@pageContainer>
+    <@pageColumn>
+        <@pageHeader title='#i18n{greetingscard.greetings_card_templates.pageTitle}' toolsClass='d-flex'>
+			<#if permission_create>
+				<@tform action='jsp/admin/plugins/greetingscard/ChoiceGreetingsCard.jsp'>
+					<@button type='submit' name='create' buttonIcon='plus' class='me-1' title='#i18n{greetingscard.greetings_card_templates.buttonLabelAdd}' />
+				</@tform>
+			</#if>
+			<#if permission_stats>
+				<@tform action='jsp/admin/plugins/greetingscard/ChoiceGreetingsCard.jsp'>
+				<@button type='submit' name='stats' buttonIcon='chart-bar' class='me-1' title='#i18n{greetingscard.greetings_card_templates.buttonLabelGlobalStat}' />
+				</@tform>
+			</#if>
+			<#if permission_archive>
+				<@aButton class='me-1' href='jsp/admin/plugins/greetingscard/GetModifyNotification.jsp' title='#i18n{greetingscard.greetings_card_templates.buttonLabelModifyNotification}' buttonIcon='pencil' />
+				<#-- 
+				<@tform action='jsp/admin/plugins/greetingscard/ChoiceGreetingsCard.jsp' class='ms-0'>
+					<@button type='submit' name='archive' buttonIcon='database' class='me-1' title='#i18n{greetingscard.greetings_card_templates.buttonLabelArchive}' />
+				</@tform>	 
+				-->
+				<@offcanvas targetUrl="jsp/admin/plugins/greetingscard/ChoiceGreetingsCard.jsp?archive=" targetElement="#archive-template" id="add-archive" position="end" btnTitle="#i18n{greetingscard.greetings_card_templates.buttonLabelArchive}" btnIcon="database me-1" btnClass="btn-primary me-1" title="#i18n{greetingscard.greetings_card_templates.buttonLabelArchive}"  />
+				<@offcanvas id="archive-conf" title="#i18n{greetingscard.greetings_card_templates.labelConfiguration} #i18n{greetingscard.greetings_card_templates.titleArchiveAuto}" btnTitle="#i18n{greetingscard.greetings_card_templates.labelConfiguration}" position="end" btnIcon="database-cog me-1">
+					<@tform action="jsp/admin/plugins/greetingscard/DoUpdateArchiveAutoGreetingsCard.jsp" class='mt-4'>
+						<@formGroup labelKey='#i18n{greetingscard.greetings_card_templates.labelArchiveAuto}' helpKey='#i18n{greetingscard.greetings_card_templates.labelArchiveAuto}' labelFor='date_next_archive'>
+							<@input type='text' name='date_next_archive' id='date_next_archive' value=date_next_archive! />
+						</@formGroup>
+						<@formGroup labelKey='#i18n{greetingscard.greetings_card_templates.labelYearAuto}' labelFor='year_next_archive'>
+							<@input type='text' name='year_next_archive' id='year_next_archive' value=year_next_archive! />
+						</@formGroup>
+						<@formGroup>
+							<@button type="submit" buttonIcon='check'title='#i18n{greetingscard.greetings_card_templates.labelSave}' />
+						</@formGroup>
+					</@tform>
+				</@offcanvas>
+			</#if>
+        </@pageHeader>
+		<@table params='summary="#i18n{greetingscard.manage_greetingscard.model.labelTitle}"'>
+			<@tr>
+				<@th>#i18n{greetingscard.greetings_card_templates.columnLabelFileTitle}</@th>
+				<@th>#i18n{greetingscard.greetings_card_templates.columnLabelStatus}</@th>
+				<@th>#i18n{greetingscard.greetings_card_templates.columnLabelAction}</@th>
+			</@tr>
 			<#list greetings_card_template_list as greetings_card >
-				<tr>
-					<td>
-						${greetings_card.id} - ${greetings_card.description}
-						<br />
-						#i18n{greetingscard.greetings_card_templates.labelViewCreatePage} <a href="jsp/site/Portal.jsp?page=greetingscard&action=create&format=flash&gct_id=${greetings_card.id}" target="_blank"><i class="icon-globe" title="View ${greetings_card.description} #i18n{greetingscard.greetings_card_templates.flash}"></i>&nbsp;#i18n{greetingscard.greetings_card_templates.flash}</a>
-						#i18n{greetingscard.greetings_card_templates.labelOr} <a href="jsp/site/Portal.jsp?page=greetingscard&action=create&format=html&gct_id=${greetings_card.id}"target="_blank"><i class="icon-globe" title="View ${greetings_card.description} #i18n{greetingscard.greetings_card_templates.html}"></i>&nbsp;#i18n{greetingscard.greetings_card_templates.html}</a>
-					</td>
-					<td>
-						<#if greetings_card.enabled>
-							<span class="label label-success"><i class="icon-ok-sign icon-white"></i> #i18n{portal.util.labelEnabled}</span>
-						<#else>
-							<span class="label label-important"><i class="icon-remove-sign icon-white"></i> #i18n{portal.util.labelDisabled}</span>
-						</#if>
-					</td>
-					<td>
-						<#if permission_modify>
-							<a class="btn btn-primary btn-small" href="jsp/admin/plugins/greetingscard/ModifyGreetingsCardTemplate.jsp?gct_id=${greetings_card.id}"
-									title="#i18n{greetingscard.greetings_card_templates.buttonLabelModify}">
-								<i class="icon-edit icon-white">&nbsp;</i>
-							</a>
-						</#if>
-						<#if permission_send>
-							<a class="btn btn-primary btn-small" href="jsp/admin/plugins/greetingscard/SendGreetingsCardMail.jsp?gct_id=${greetings_card.id}"
-									title="#i18n{greetingscard.greetings_card_templates.buttonLabelSend}">
-								<i class="icon-envelope icon-white">&nbsp;</i>
-							</a>
-						</#if>
-						<#if permission_stats>
-							<a class="btn btn-primary btn-small" href="jsp/admin/plugins/greetingscard/Statistics.jsp?gct_id=${greetings_card.id}"
-									title="#i18n{greetingscard.greetings_card_templates.buttonLabelStatistics}">
-								<i class="icon-tasks icon-white">&nbsp;</i>
-							</a>
-						</#if>
-						<#if permission_export>
-							<a class="btn btn-primary btn-small" href="jsp/admin/plugins/greetingscard/GetExportGreetingsCard.jsp?gct_id=${greetings_card.id}"
-									title="#i18n{greetingscard.greetings_card_templates.buttonLabelExport}">
-								<i class="icon-download-alt icon-white">&nbsp;</i>
-							</a>
-						</#if>
-						<#if permission_archive>
-							<a class="btn btn-primary btn-small" href="jsp/admin/plugins/greetingscard/GetArchiveGreetingsCard.jsp?gct_id=${greetings_card.id}"
-									title="#i18n{greetingscard.greetings_card_templates.buttonLabelArchive}">
-								<i class="icon-hdd icon-white">&nbsp;</i>
-							</a>
-						</#if>
-						<#if permission_delete>
-						  	<a class="btn btn-danger btn-small" href="jsp/admin/plugins/greetingscard/ConfirmRemoveGreetingsCardTemplate.jsp?gct_id=${greetings_card.id}"
-						  			title="#i18n{greetingscard.greetings_card_templates.buttonLabelDelete}">
-						  		<i class="icon-trash icon-white">&nbsp;</i>
-							</a>
-						</#if>
-					</td>	                  
-				</tr>
-			</#list>
-		</table>
-		<br/>
-		</div>
-	<#if permission_archive>
-	</div>
-	</#if>
-</div>
-<script src="js/jquery/plugins/ui/jquery-ui-1.9.2.custom.min.js"></script>
-<script src="js/jquery/plugins/ui/ui.datepicker-fr.js"></script>
-<noscript></noscript>
+			<@tr>
+				<@td>${greetings_card.id} <@link href='jsp/site/Portal.jsp?page=greetingscard&action=create&format=html&gct_id=${greetings_card.id}' target='_blank'  title='#i18n{greetingscard.greetings_card_templates.labelViewCreatePage}' >${greetings_card.description}  <@icon style='external-link' title='#i18n{greetingscard.greetings_card_templates.labelViewCreatePage}' /> </@link></@td>
+				<@td><#if greetings_card.enabled><@tag color='success' tagIcon='check' title='#i18n{portal.util.labelEnabled}' /><#else><@tag color='danger' tagIcon='x' title='#i18n{portal.util.labelDisabled}' /></#if></@td>
+				<@td>
+				<#if permission_modify>
+					<@aButton href='jsp/admin/plugins/greetingscard/ModifyGreetingsCardTemplate.jsp?gct_id=${greetings_card.id}' title='#i18n{greetingscard.greetings_card_templates.buttonLabelModify}' buttonIcon='pencil' />
+				</#if>
+				<#if permission_send>
+					<@aButton href='jsp/admin/plugins/greetingscard/SendGreetingsCardMail.jsp?gct_id=${greetings_card.id}' title='#i18n{greetingscard.greetings_card_templates.buttonLabelSend}' buttonIcon='mail-forward' />
+				</#if>
+				<#if permission_stats>
+					<@aButton href='jsp/admin/plugins/greetingscard/Statistics.jsp?gct_id=${greetings_card.id}' title='#i18n{greetingscard.greetings_card_templates.buttonLabelStatistics}' buttonIcon='chart-bar' />
+				</#if>
+				<#if permission_export>
+					<@offcanvas targetUrl="jsp/admin/plugins/greetingscard/GetExportGreetingsCard.jsp?gct_id=${greetings_card.id}" targetElement="#export-template" id="add-export-${greetings_card.id}" position="end" btnTitle="#i18n{greetingscard.greetings_card_templates.buttonLabelExport}" btnIcon="download me-1" btnClass="btn-primary" title="#i18n{greetingscard.greetings_card_templates.buttonLabelExport}" />
+					<#-- <@aButton href='jsp/admin/plugins/greetingscard/GetExportGreetingsCard.jsp?gct_id=${greetings_card.id}' title='#i18n{greetingscard.greetings_card_templates.buttonLabelExport}' buttonIcon='download' /> -->
+				</#if>
+				<#if permission_archive>
+					<@offcanvas targetUrl="jsp/admin/plugins/greetingscard/GetArchiveGreetingsCard.jsp?gct_id=${greetings_card.id}" targetElement="#archive-template" id="add-archive-${greetings_card.id}" position="end" btnTitle="#i18n{greetingscard.greetings_card_templates.buttonLabelArchive}" btnIcon="database me-1" btnClass="btn-primary" title="#i18n{greetingscard.greetings_card_templates.buttonLabelArchive}"  />
+					<#-- <@aButton href='jsp/admin/plugins/greetingscard/GetArchiveGreetingsCard.jsp?gct_id=${greetings_card.id}' title='#i18n{greetingscard.greetings_card_templates.buttonLabelArchive}' buttonIcon='archive' /> -->
+				</#if>
+				<#if permission_delete>
+					<@aButton color='danger' href='jsp/admin/plugins/greetingscard/ConfirmRemoveGreetingsCardTemplate.jsp?gct_id=${greetings_card.id}' title='#i18n{greetingscard.greetings_card_templates.buttonLabelDelete}' buttonIcon='trash' />
+				</#if>
+				</@td>	                  
+			</@tr>
+		</#list>
+		</@table>
+	</@pageColumn>
+</@pageContainer>

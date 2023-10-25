@@ -1,24 +1,122 @@
-<div class="row-fluid" >
-	<div class="container">
-		<form class="form-horizontal" method="post" name="create_greetings_card_template"  ENCTYPE="multipart/form-data" action="jsp/admin/plugins/greetingscard/DoCreateGreetingsCardTemplate.jsp" >
-			<fieldset>
-				<legend>#i18n{greetingscard.create_greetings_card_template.pageTitle}</legend>
+<@pageContainer>
+    <@pageColumn>
+        <@pageHeader title='#i18n{greetingscard.create_greetings_card_template.pageTitle}' />
+		<@tform name='create_greetings_card_template' enctype="multipart/form-data" action='jsp/admin/plugins/greetingscard/DoCreateGreetingsCardTemplate.jsp' boxed=true>
+			<@row>
+				<@columns>
+					<@row>
+						<@columns md=9>
+							<@formGroup labelKey='#i18n{greetingscard.create_greetings_card_template.labelIdDescription}' labelFor='description' mandatory=true rows=2>
+								<@input name='description' id='description' value=description! />
+							</@formGroup>
+						</@columns>
+						<@columns>
+							<@formGroup labelKey='#i18n{greetingscard.create_greetings_card_template.labelIdEnable}' hideLabel=['all'] labelFor='status'  class='mt-4' mandatory=true rows=2>
+								<@checkBox name='status' id='status' value='1' orientation='switch' labelClass=classChecked labelKey='#i18n{greetingscard.create_greetings_card_template.labelIdEnable}' />
+							</@formGroup>
+						</@columns>
+					</@row>
+					<@formGroup labelKey='#i18n{greetingscard.create_greetings_card_template.labelIdMailObject}' labelFor='object_email' mandatory=true>
+						<@input name='object_email' id='object_email' value=object_email! />
+					</@formGroup>
+					<@formGroup labelKey='#i18n{greetingscard.create_greetings_card_template.label_workgroup}' labelFor='object_email' mandatory=true>
+						<@select name='workgroup' items=user_workgroup_list default_value=user_workgroup_selected />
+					</@formGroup>
+					<@formGroup labelKey='#i18n{greetingscard.create_greetings_card_template.labelIdUsePassword}' labelFor='check_password' hideLabel=['all'] mandatory=true>
+						<@checkBox name='check_password' id='check_password' labelKey='#i18n{greetingscard.create_greetings_card_template.labelIdUsePassword}' orientation='switch'  />
+					</@formGroup>
+					<@row id='password-input'>
+						<@columns>
+							<@formGroup labelFor='password' labelKey='#i18n{greetingscard.create_greetings_card_template.labelIdPassword}' mandatory=true rows=2>
+								<@inputGroup class='input-icon input-group-flat'>
+									<@inputGroupItem type='icon'><@icon style='lock ' /></@inputGroupItem>
+									<@input type='password' name='password' id='password' value=password! size='' autoComplete='current-password' />
+									<@inputGroupItem type='text'>
+										<@link href='' class='input-group-link' title='${i18n("portal.admin.admin_login.passwordShow")}' id='lutece-password-toggler' params='role="button"'>
+											<@icon style='eye' />
+										</@link>
+									</@inputGroupItem>
+								</@inputGroup>
+							</@formGroup>
+						</@columns>
+						<@columns>
+							<@formGroup>
+								<@passwordComplexity id='conplexity' inputId='password' params='style="height:2.25rem;margin-top:1.75rem"'/>
+							</@formGroup>
+						</@columns>
+					</@row>
+					<@formGroup>
+						<@button type='submit' buttonIcon='check' title='#i18n{greetingscard.create_greetings_card_template.labelIdValid}' size='' />
+						<@aButton href='jsp/admin/plugins/greetingscard/ManageGreetingsCard.jsp' buttonIcon='x' color='danger' title='#i18n{greetingscard.create_greetings_card_template.labelIdCancel}' size='' />
+					</@formGroup>
+				</@columns>
+				<@columns>
+					<@formGroup labelKey='#i18n{greetingscard.create_greetings_card_template.labelIdImage}' labelFor='picture_card' mandatory=true rows=2>
+						<@input type='file' name='picture_card' id='picture_card' value=picture_card! />
+					</@formGroup>
+					<@row>
+						<@columns>
+							<@formGroup labelKey='#i18n{greetingscard.create_greetings_card_template.labelIdWidth}' labelFor='width' mandatory=true rows=2>
+								<@input name='width' id='width' value=width! />
+							</@formGroup>
+						</@columns>
+						<@columns>
+							<@formGroup labelKey='#i18n{greetingscard.create_greetings_card_template.labelIdHeight}' labelFor='height' mandatory=true rows=2>
+								<@input name='height' id='height' value=height! />
+							</@formGroup>
+						</@columns>
+					</@row>
+				</@columns>
+				<@columns>
+					<@formGroup labelKey='#i18n{greetingscard.create_greetings_card_template.labelIdSendHTML}' labelFor='create_html_card' mandatory=true rows=2>
+						<@input type='file' name='create_html_card' id='create_html_card' value=create_html_card! />
+					</@formGroup>
+					<@formGroup labelKey='#i18n{greetingscard.create_greetings_card_template.labelIdVisuHTML}' labelFor='view_html_card' mandatory=true rows=2>
+						<@input type='file' name='view_html_card' id='view_html_card' value=view_html_card! />
+					</@formGroup>
+					<@formGroup labelKey='#i18n{greetingscard.create_greetings_card_template.labelIdMailHTML}' labelFor='mail_card' mandatory=true rows=2>
+						<@input type='file' name='mail_card' id='mail_card' value=mail_card! />
+					</@formGroup>
+				</@columns>
+			</@row>
+	    </@tform>
+	</@pageColumn>
+</@pageContainer>
+<script type="module">
+import {
+	LutecePassword
+} from './themes/shared/modules/lutecePassword.js';
+const password = new LutecePassword();
+document.addEventListener( "DOMContentLoaded", function(){
+	/* Password Toggler */
+	password.initPassToggler( );
+	const iPassword = document.getElementById('password-input')
+	const checkPassword = document.getElementById('check_password')
+	const checkStatus = document.getElementById('status')
+	const checkStatusLabel = document.querySelector('#status + .form-check-label')
+	
+	iPassword.classList.add( 'visually-hidden' )
+	
+	checkPassword.addEventListener( 'change', ( e )=> {
+		iPassword.classList.toggle( 'visually-hidden' )
+	})
+
+	checkStatus.addEventListener( 'change', ( e )=> {
+		checkStatusLabel.classList.toggle( 'text-danger' )
+		checkStatusLabel.classList.toggle( 'text-success' )
+	})
+});
+</script>
+<#--
+<@pageContainer>
+    <@pageColumn>
+        <@pageHeader title='#i18n{greetingscard.create_greetings_card_template.pageTitle}' />
+			<@div id='add-gc-template'>
+				<form class="form-horizontal" method="post" name="create_greetings_card_template"  ENCTYPE="multipart/form-data" action="jsp/admin/plugins/greetingscard/DoCreateGreetingsCardTemplate.jsp" >
 				<div class="control-group">
 					<label class="control-label" for="description" >#i18n{greetingscard.create_greetings_card_template.labelIdDescription} * :</label>
 					<div class="controls">
 						<input type="text" title="#i18n{greetingscard.create_greetings_card_template.labelIdDescription}" name="description" id="description" size="30"/>
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" for="create_card" >#i18n{greetingscard.create_greetings_card_template.labelIdEditAnim} * :</label>
-					<div class="controls">
-						<input type="file" title="#i18n{greetingscard.create_greetings_card_template.labelIdEditAnim}" name="create_card" id="create_card" size="30"/>
-					</div>
-				</div>		
-				<div class="control-group">
-					<label class="control-label" for="view_card" >#i18n{greetingscard.create_greetings_card_template.labelIdVisuAnim} * :</label>
-					<div class="controls">
-						<input type="file" title="#i18n{greetingscard.create_greetings_card_template.labelIdVisuAnim}" name="view_card" id="view_card" size="30"/>
 					</div>
 				</div>
 				 <div class="control-group">
@@ -92,7 +190,8 @@
 					<button class="btn btn-primary btn-small" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{greetingscard.create_greetings_card_template.labelIdValid}</button>
 					<button class="btn btn-small" type="button" onclick="javascript:history.go(-1)" ><i class="icon-remove-circle icon-white"></i>&nbsp;#i18n{greetingscard.create_greetings_card_template.labelIdCancel}</button>
 				</div>
-			</fieldset>   
-		</form>
-	</div>
-</div>
+		</@tform>
+		</@div>
+	</@pageColumn>
+</@pageContainer>
+-->

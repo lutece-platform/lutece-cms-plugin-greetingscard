@@ -1,35 +1,23 @@
-<script type="text/javascript" src="js/jquery/plugins/ui/datepicker/ui.datepicker.js" ></script>
-<script type="text/javascript" src="js/jquery/plugins/ui/datepicker/ui.datepicker-${locale.language}.js" ></script>
-<div class="well" >
-	<form class="form-horizontal" method="post" name="export_greetings_card" action="jsp/admin/plugins/greetingscard/DoArchiveGreetingsCard.jsp" >
-		<fieldset>
-			<legend>#i18n{greetingscard.archive_greetings_card.pageTitle}</legend>
-			<div class="control-group">
-				<label class="control-label" for="date_min" >#i18n{greetingscard.archive_greetings_card.labelDateSentMin} : </label>
-				<div class="controls">
-					<input type="text" name="date_min" id="date_min" value="${date_min!}" />
-				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="date_max" >#i18n{greetingscard.archive_greetings_card.labelDateSentMax} : </label>
-				<div class="controls">
-					<input type="text" name="date_max" id="date_max" value="${date_max!}" />
-				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="year" >#i18n{greetingscard.archive_greetings_card.labelYear} * : </label>
-				<div class="controls">
-					<input type="text" name="year" id="year" value="${year!}" />
-				</div>
-			</div>
-			
-			<div class="form-actions">
-				<input type="hidden" name="gct_id" id="gct_id" value="${gct_id!}" />
-				<button class="btn btn-primary btn-small" type="submit" ><i class="icon-ok icon-white"></i>&nbsp;#i18n{greetingscard.archive_greetings_card.labelArchive}</button>
-				<button class="btn btn-small" type="button" onclick="javascript:history.go(-1)" ><i class="icon-remove-circle icon-white"></i>&nbsp;#i18n{greetingscard.create_greetings_card_template.labelIdCancel}</button>
-			</div>
-		</fieldset>
-		<@getDatePicker idField="date_min" language=locale.language />
-		<@getDatePicker idField="date_max" language=locale.language />
-	</form>
-</div>
+<@pageContainer>
+    <@pageColumn>
+        <@pageHeader title='#i18n{greetingscard.archive_greetings_card.pageTitle}' />
+		<@div id='archive-template'>
+		<@tform name='export_greetings_card' action='jsp/admin/plugins/greetingscard/DoArchiveGreetingsCard.jsp' >
+		<@input type='hidden' name='gct_id' id='gct_id' value=gct_id! />
+		<@formGroup labelKey='#i18n{greetingscard.archive_greetings_card.labelDateSentMin}' labelFor='date_min'>
+			<@input type='text' name='date_min' id='date_min' value=date_min! />
+		</@formGroup>
+		<@formGroup labelKey='#i18n{greetingscard.archive_greetings_card.labelDateSentMax}' labelFor='date_max'>
+			<@input type='text' name='date_max' id='date_max' value=date_max! />
+		</@formGroup>
+		<@formGroup labelKey='#i18n{greetingscard.archive_greetings_card.labelYear}' labelFor='year'>
+			<@input type='text' name='year' id='year' value=year! />
+		</@formGroup>
+		<@formGroup>
+			<@button type='submit' buttonIcon='check' title='#i18n{greetingscard.archive_greetings_card.labelArchive}' size='' />
+			<@aButton href='jsp/admin/plugins/greetingscard/ManageGreetingsCard.jsp' buttonIcon='x' color='secondary' title='#i18n{greetingscard.create_greetings_card_template.labelIdCancel}' size='' />
+		</@formGroup>
+		</@tform>
+		</@div>
+	</@pageColumn>
+</@pageContainer>
