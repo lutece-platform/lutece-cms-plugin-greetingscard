@@ -55,7 +55,7 @@
 					</@formGroup>
 				</@columns>
 				<@columns>
-					<@formGroup labelKey='#i18n{greetingscard.modify_greetings_card_template.labelIdImage}' labelFor='picture_card' mandatory=true rows=2>
+					<@formGroup labelKey='#i18n{greetingscard.modify_greetings_card_template.labelIdImage}' labelFor='picture_card' mandatory=false rows=2>
 						<@input type='file' name='picture_card' id='picture_card' value=picture_card! />
 					</@formGroup>
 					<@row>
@@ -72,13 +72,13 @@
 					</@row>
 				</@columns>
 				<@columns>
-					<@formGroup labelKey='#i18n{greetingscard.modify_greetings_card_template.labelIdSendHTML}' labelFor='create_html_card' mandatory=true rows=2>
+					<@formGroup labelKey='#i18n{greetingscard.modify_greetings_card_template.labelIdSendHTML}' labelFor='create_html_card' mandatory=false rows=2>
 						<@input type='file' name='create_html_card' id='create_html_card' value=create_html_card! />
 					</@formGroup>
-					<@formGroup labelKey='#i18n{greetingscard.modify_greetings_card_template.labelIdVisuHTML}' labelFor='view_html_card' mandatory=true rows=2>
+					<@formGroup labelKey='#i18n{greetingscard.modify_greetings_card_template.labelIdVisuHTML}' labelFor='view_html_card' mandatory=false rows=2>
 						<@input type='file' name='view_html_card' id='view_html_card' value=view_html_card! />
 					</@formGroup>
-					<@formGroup labelKey='#i18n{greetingscard.modify_greetings_card_template.labelIdMailHTML}' labelFor='mail_card' mandatory=true rows=2>
+					<@formGroup labelKey='#i18n{greetingscard.modify_greetings_card_template.labelIdMailHTML}' labelFor='mail_card' mandatory=false rows=2>
 						<@input type='file' name='mail_card' id='mail_card' value=mail_card! />
 					</@formGroup>
 				</@columns>

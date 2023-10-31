@@ -356,11 +356,11 @@ public class GreetingsCardApp implements XPageApplication
 	{
 		String strIdGCT = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
 		int nIdGCT = Integer.parseInt( strIdGCT );
-		String strMessage = request.getParameter( PARAM_MESSAGE );
-		String strMessage2 = request.getParameter( PARAM_MESSAGE2 );
-		String strMailCopy = request.getParameter( PARAM_MAIL_COPY );
-		String strSenderName = request.getParameter( PARAM_SENDER_NAME );
-		String strSenderEmail = request.getParameter( PARAM_SENDER_EMAIL );
+		String strMessage = request.getParameter( PARAM_MESSAGE ) != null ? request.getParameter( PARAM_MESSAGE ) : EMPTY_STRING;
+		String strMessage2 = request.getParameter( PARAM_MESSAGE2 ) != null ? request.getParameter( PARAM_MESSAGE2 ) : EMPTY_STRING;
+		String strMailCopy = request.getParameter( PARAM_MAIL_COPY ) != null ? request.getParameter( PARAM_MAIL_COPY ) : EMPTY_STRING;
+		String strSenderName = request.getParameter( PARAM_SENDER_NAME ) != null ? request.getParameter( PARAM_SENDER_NAME ) : EMPTY_STRING;
+		String strSenderEmail = request.getParameter( PARAM_SENDER_EMAIL ) != null ? request.getParameter( PARAM_SENDER_EMAIL ) : EMPTY_STRING;
 		String strAction = request.getParameter( PARAM_ACTION );
 
 		String strMessageSend = EMPTY_STRING;
@@ -368,7 +368,7 @@ public class GreetingsCardApp implements XPageApplication
 		// Load the parameters of the greetings card plugin
 		String strPathGreetingsCardTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
 		String strPathGreetingsCardTemplateDirName = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATE_DIR_NAME );
-
+		
 		String strNewDirectoryName = strPathGreetingsCardTemplateDirName + strIdGCT;
 		strNewDirectoryName = UploadUtil.cleanFileName( strNewDirectoryName );
 
@@ -376,31 +376,6 @@ public class GreetingsCardApp implements XPageApplication
 		String strPathPictureCard = strPathGreetingsCardTemplates + PATH_SEPARATOR + strPathGreetingsCardTemplateDirName + strIdGCT + PATH_SEPARATOR + strPicture;
 
 		GreetingsCardTemplate greetingsCardTemplate = GreetingsCardTemplateHome.findByPrimaryKey( nIdGCT, plugin );
-
-		if ( strMessage == null )
-		{
-			strMessage = EMPTY_STRING;
-		}
-
-		if ( strMessage2 == null )
-		{
-			strMessage2 = EMPTY_STRING;
-		}
-
-		if ( strMailCopy == null )
-		{
-			strMailCopy = EMPTY_STRING;
-		}
-
-		if ( strSenderName == null )
-		{
-			strSenderName = EMPTY_STRING;
-		}
-
-		if ( strSenderEmail == null )
-		{
-			strSenderEmail = EMPTY_STRING;
-		}
 
 		if ( strAction.equals( ACTION_NAME_SEND ) )
 		{
@@ -604,7 +579,7 @@ public class GreetingsCardApp implements XPageApplication
 		String strPathGreetingsCardTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
 		
 		// Load the template from the file
-		template = AppTemplateService.getTemplate( strPathGreetingsCardTemplates + PATH_SEPARATOR + strTemplate, EMPTY_STRING, locale, model );
+		template = AppTemplateService.getTemplate( PATH_SEPARATOR + "skin"  + PATH_SEPARATOR + strPathGreetingsCardTemplates + PATH_SEPARATOR + strTemplate, EMPTY_STRING, locale, model );
 
 		return template;
 	}

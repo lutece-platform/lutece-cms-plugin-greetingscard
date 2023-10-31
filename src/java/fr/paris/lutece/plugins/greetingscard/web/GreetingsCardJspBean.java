@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.greetingscard.web;
 
+import fr.paris.lutece.api.user.User;
 import fr.paris.lutece.plugins.greetingscard.business.Domain;
 import fr.paris.lutece.plugins.greetingscard.business.GreetingsCard;
 import fr.paris.lutece.plugins.greetingscard.business.GreetingsCardArchive;
@@ -174,7 +175,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     private static final String PARAMETER_CREATE_HTML_CARD = "create_html_card";
     private static final String PARAMETER_MAIL_CARD = "mail_card";
     private static final String PARAMETER_PLUGIN_NAME = "plugin_name";
-    private static final String PARAMETER_GREETINGS_CARD_ID = "gc_id";
+//    private static final String PARAMETER_GREETINGS_CARD_ID = "gc_id";
     private static final String PARAMETER_HEIGHT = "height";
     private static final String PARAMETER_WIDTH = "width";
     private static final String PARAMETER_DAYS = "days";
@@ -283,7 +284,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     private static final String POINT = ".";
     private static final String CHECKED = "checked=\"checked\"";
     private static final String UNCHECKED = "unchecked";
-    private static final String MESSAGE = "message=";
+    //private static final String MESSAGE = "message=";
     
 // Constant
     private static final String PLUGIN_NAME = "greetingscard";
@@ -333,7 +334,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
         Collection<GreetingsCardTemplate> listGreetingsCardTemplate = GreetingsCardTemplateHome.findAll( getPlugin( ) );
         listGreetingsCardTemplate = AdminWorkgroupService
-                .getAuthorizedCollection( listGreetingsCardTemplate, getUser( ) );
+                .getAuthorizedCollection( listGreetingsCardTemplate, (User) getUser( ) );
 
         // We use a specific locale so that the daemon will have the same.
         Locale locale = Locale.FRANCE;
@@ -392,7 +393,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         setPageTitleProperty( PROPERTY_PAGE_TITLE_GREETINGSCARD_CREATE );
 
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_CREATE, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_CREATE, (User) getUser( ) ) )
         {
             throw new AccessDeniedException( MESSAGE_FORBIDEN );
         }
@@ -420,9 +421,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         UrlItem urlToGreetingsCardTemplatesList = new UrlItem( JSP_URL_GREETINGS_CARD_TEMPLATES_LIST );
 
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_CREATE, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_CREATE, (User) getUser( ) ) )
         {
-            throw new AccessDeniedException( MESSAGE_FORBIDEN );
+        	throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_FORBIDEN, I18nService.getDefaultLocale( ) ) );
         }
 
         try
@@ -536,9 +537,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         setPageTitleProperty( PROPERTY_PAGE_TITLE_GREETINGSCARD_MODIFY );
 
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_MODIFY, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_MODIFY, (User) getUser( ) ) )
         {
-            throw new AccessDeniedException( MESSAGE_FORBIDEN );
+        	throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_FORBIDEN, I18nService.getDefaultLocale( ) ) );
         }
 
         String strGreetingsCardTemplateId = request.getParameter( PARAMETER_GREETINGS_CARD_TEMPLATE_ID );
@@ -597,17 +598,17 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         UrlItem urlToGreetingsCardTemplatesList = new UrlItem( JSP_URL_GREETINGS_CARD_TEMPLATES_LIST );
 
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_MODIFY, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_MODIFY, (User) getUser( ) ) )
         {
-            throw new AccessDeniedException( MESSAGE_FORBIDEN );
+        	throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_FORBIDEN, I18nService.getDefaultLocale( ) ) );
         }
 
         try
         {
             MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 
-            FileItem fCreateFile = multipartRequest.getFile( PARAMETER_CREATE_CARD );
-            FileItem fViewFile = multipartRequest.getFile( PARAMETER_VIEW_CARD );
+            //FileItem fCreateFile = multipartRequest.getFile( PARAMETER_CREATE_CARD );
+            //FileItem fViewFile = multipartRequest.getFile( PARAMETER_VIEW_CARD );
             FileItem fPictureFile = multipartRequest.getFile( PARAMETER_PICTURE_CARD );
             FileItem fViewHTMLFile = multipartRequest.getFile( PARAMETER_VIEW_HTML_CARD );
             FileItem fCreateHTMLFile = multipartRequest.getFile( PARAMETER_CREATE_HTML_CARD );
@@ -730,9 +731,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     public String confirmRemoveGreetingsCardTemplate( HttpServletRequest request ) throws AccessDeniedException
     {
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_DELETE, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_DELETE, (User) getUser( ) ) )
         {
-            throw new AccessDeniedException( MESSAGE_FORBIDEN );
+        	throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_FORBIDEN, I18nService.getDefaultLocale( ) ) );
         }
 
         String strGctId = request.getParameter( PARAMETER_GREETINGS_CARD_TEMPLATE_ID );
@@ -768,9 +769,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             AccessDeniedException
     {
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_DELETE, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_DELETE, (User) getUser( ) ) )
         {
-            throw new AccessDeniedException( MESSAGE_FORBIDEN );
+        	throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_FORBIDEN, I18nService.getDefaultLocale( ) ) );
         }
 
         // Constructs the url to the greetings card templates list
@@ -832,9 +833,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         setPageTitleProperty( PROPERTY_PAGE_TITLE_STATS );
 
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_SEE_STATS, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_SEE_STATS, (User) getUser( ) ) )
         {
-            throw new AccessDeniedException( MESSAGE_FORBIDEN );
+        	throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_FORBIDEN, I18nService.getDefaultLocale( ) ) );
         }
 
         String strYear = request.getParameter( PARAM_YEAR );
@@ -1004,9 +1005,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         setPageTitleProperty( PROPERTY_PAGE_TITLE_STATS );
 
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_SEE_STATS, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_SEE_STATS, (User) getUser( ) ) )
         {
-            throw new AccessDeniedException( MESSAGE_FORBIDEN );
+        	throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_FORBIDEN, I18nService.getDefaultLocale( ) ) );
         }
 
         String strYear = request.getParameter( PARAM_YEAR );
@@ -1033,7 +1034,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
         Collection<GreetingsCardTemplate> listGreetingsCardTemplate = GreetingsCardTemplateHome.findAll( getPlugin( ) );
         listGreetingsCardTemplate = AdminWorkgroupService
-                .getAuthorizedCollection( listGreetingsCardTemplate, getUser( ) );
+                .getAuthorizedCollection( listGreetingsCardTemplate, (User) getUser( ) );
 
         GreetingsCardFilter greetingsCardFilter = new GreetingsCardFilter( );
 
@@ -1485,9 +1486,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         int nGreetingsCardTemplateId = Integer.parseInt( strGreetingsCardTemplateId );
 
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_SEND, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_SEND, (User) getUser( ) ) )
         {
-            throw new AccessDeniedException( MESSAGE_FORBIDEN );
+        	throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_FORBIDEN, I18nService.getDefaultLocale( ) ) );
         }
 
         HashMap<String, Object> model = new HashMap<String, Object>( );
@@ -1698,9 +1699,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     public String getExportGreetingsCard( HttpServletRequest request ) throws AccessDeniedException
     {
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_EXPORT, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_EXPORT, (User) getUser( ) ) )
         {
-            throw new AccessDeniedException( MESSAGE_FORBIDEN );
+        	throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_FORBIDEN, I18nService.getDefaultLocale( ) ) );
         }
         String strGreetingsCardTemplateId = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
 
@@ -1735,9 +1736,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             AccessDeniedException
     {
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_EXPORT, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_EXPORT, (User) getUser( ) ) )
         {
-            throw new AccessDeniedException( MESSAGE_FORBIDEN );
+        	throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_FORBIDEN, I18nService.getDefaultLocale( ) ) );
         }
         String strGreetingsCardTemplateId = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
         String strXslExportId = request.getParameter( PARAM_XSL_EXPORT_ID );
@@ -1818,9 +1819,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     public String getArchiveGreetingsCard( HttpServletRequest request ) throws AccessDeniedException
     {
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_ARCHIVE, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_ARCHIVE, (User) getUser( ) ) )
         {
-            throw new AccessDeniedException( MESSAGE_FORBIDEN );
+        	throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_FORBIDEN, I18nService.getDefaultLocale( ) ) );
         }
         String strIdGreetingsCardTemplate = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
         HashMap<String, Object> model = new HashMap<String, Object>( );
@@ -1846,9 +1847,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     public String doArchiveGreetingsCard( HttpServletRequest request ) throws AccessDeniedException
     {
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_ARCHIVE, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_ARCHIVE, (User) getUser( ) ) )
         {
-            throw new AccessDeniedException( MESSAGE_FORBIDEN );
+        	throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_FORBIDEN, I18nService.getDefaultLocale( ) ) );
         }
         String strIdGreetingsCardTemplate = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
         String strDateMin = request.getParameter( PARAM_DATE_MIN );
@@ -1921,9 +1922,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     public String doUpdateArchiveAutoGreetingsCard( HttpServletRequest request ) throws AccessDeniedException
     {
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_ARCHIVE, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_ARCHIVE, (User) getUser( ) ) )
         {
-            throw new AccessDeniedException( MESSAGE_FORBIDEN );
+        	throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_FORBIDEN, I18nService.getDefaultLocale( ) ) );
         }
 
         String strYearNextAutoArchiving = request.getParameter( PARAM_YEAR_NEXT_AUTO_ARCHIVING );
@@ -1975,9 +1976,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     public String getModifyNotification( HttpServletRequest request ) throws AccessDeniedException
     {
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_ARCHIVE, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_ARCHIVE, (User) getUser( ) ) )
         {
-            throw new AccessDeniedException( MESSAGE_FORBIDEN );
+        	throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_FORBIDEN, I18nService.getDefaultLocale( ) ) );
         }
 
         String strDatabaseTemplateKey = AppPropertiesService.getProperty( PROPERTY_DATABASE_TEMPLATE_CARD_RED );
@@ -2012,9 +2013,9 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     public String doModifyNotification( HttpServletRequest request ) throws AccessDeniedException
     {
         if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_ARCHIVE, getUser( ) ) )
+                GreetingsCardResourceIdService.PERMISSION_ARCHIVE, (User) getUser( ) ) )
         {
-            throw new AccessDeniedException( MESSAGE_FORBIDEN );
+        	throw new AccessDeniedException( I18nService.getLocalizedString( MESSAGE_FORBIDEN, I18nService.getDefaultLocale( ) ) );
         }
         String strTemplateContent = request.getParameter( PARAMETER_NOTIFICATION_TEMPLATE_CONTENT );
         String strDatabaseTemplateKey = AppPropertiesService.getProperty( PROPERTY_DATABASE_TEMPLATE_CARD_RED );
@@ -2070,6 +2071,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
                     listMail.add( nextLine[i] );
                 }
             }
+            csvReader.close();
         }
 
         catch ( IOException e )
@@ -2110,81 +2112,45 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
         /*
          * Permission de créer
          */
-        boolean bPermissionCreate = true;
-
-        if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_CREATE, getUser( ) ) )
-        {
-            bPermissionCreate = false;
-        }
-
-        model.put( MARK_PERMISSION_CREATE, bPermissionCreate );
+        model.put( MARK_PERMISSION_CREATE, RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                GreetingsCardResourceIdService.PERMISSION_CREATE, (User) getUser( ) ) );
 
         /*
          * Permission de modifier
          */
-        boolean bPermissionModify = true;
-
-        if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_MODIFY, getUser( ) ) )
-        {
-            bPermissionModify = false;
-        }
-
-        model.put( MARK_PERMISSION_MODIFY, bPermissionModify );
+        model.put( MARK_PERMISSION_MODIFY, RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                GreetingsCardResourceIdService.PERMISSION_MODIFY, (User) getUser( ) ) );
 
         /*
          * Permission de supprimer
          */
-        boolean bPermissionDelete = true;
 
-        if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_DELETE, getUser( ) ) )
-        {
-            bPermissionDelete = false;
-        }
-
-        model.put( MARK_PERMISSION_DELETE, bPermissionDelete );
+        model.put( MARK_PERMISSION_DELETE, RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                GreetingsCardResourceIdService.PERMISSION_DELETE, (User) getUser( ) ) );
 
         /*
          * Permission d'envoyer
          */
-        boolean bPermissionSend = true;
-
-        if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_SEND, getUser( ) ) )
-        {
-            bPermissionSend = false;
-        }
-
-        model.put( MARK_PERMISSION_SEND, bPermissionSend );
+        model.put( MARK_PERMISSION_SEND, RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                GreetingsCardResourceIdService.PERMISSION_SEND, (User) getUser( ) ) );
 
         /*
          * Permission de voir les stats
          */
-        boolean bPermissionStats = true;
-
-        if ( !RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
-                GreetingsCardResourceIdService.PERMISSION_SEE_STATS, getUser( ) ) )
-        {
-            bPermissionStats = false;
-        }
-
-        model.put( MARK_PERMISSION_STATS, bPermissionStats );
+        model.put( MARK_PERMISSION_STATS, RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE, RBAC.WILDCARD_RESOURCES_ID,
+                GreetingsCardResourceIdService.PERMISSION_SEE_STATS, (User) getUser( ) ) );
 
         /*
          * Permission to export data
          */
-        boolean bPermissionExport = RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE,
-                RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_EXPORT, getUser( ) );
-        model.put( MARK_PERMISSION_EXPORT, bPermissionExport );
+        model.put( MARK_PERMISSION_EXPORT, RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE,
+                RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_EXPORT, (User) getUser( ) ) );
 
         /*
          * Permission to export data
          */
-        boolean bPermissionArchive = RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE,
-                RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_ARCHIVE, getUser( ) );
-        model.put( MARK_PERMISSION_ARCHIVE, bPermissionArchive );
+        model.put( MARK_PERMISSION_ARCHIVE, RBACService.isAuthorized( GreetingsCardResourceIdService.RESOURCE_TYPE,
+                RBAC.WILDCARD_RESOURCES_ID, GreetingsCardResourceIdService.PERMISSION_ARCHIVE, (User) getUser( ) ) );
     }
 
     /**
