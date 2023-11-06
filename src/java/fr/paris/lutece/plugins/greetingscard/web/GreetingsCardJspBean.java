@@ -497,6 +497,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
 
             String strRelativePathTemplatesFolder = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FOLDER );
             String strPathTemplatesFolder = AppPathService.getAbsolutePathFromRelativePath( PATH_SEPARATOR + strRelativePathTemplatesFolder );
+            
             // Renames the downloaded picture file with the appropriate name.
             String strName = fPictureFile.getName( );
             int extensionDot = strName.lastIndexOf( POINT );

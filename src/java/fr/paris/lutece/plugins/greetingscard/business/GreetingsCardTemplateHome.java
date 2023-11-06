@@ -59,6 +59,7 @@ public final class GreetingsCardTemplateHome
 
 	/** key to get the greetings card root directory path. */
 	private static final String PROPERTY_PATH_GREETINGS_CARD_TEMPLATE = "greetingscard.path.greetingscardtemplates";
+    private static final String PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FOLDER = "greetingscard.path.greetingscardtemplatesfolder";
 	private static final String PROPERTY_FILE_NAME_PICTURE = "greetingscard.getPicture.FileName";
 	private static final String PATH_SEPARATOR = "/";
 	private static final String EMPTY_STRING = "";
@@ -187,8 +188,11 @@ public final class GreetingsCardTemplateHome
 	{
 		// Load the parameters of the greetings card plugin
 		String strPathGreetingsCardTemplate = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATE );
+		String strPathGreetingsCardTemplateFolder = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FOLDER );
+		
 		String strRootDirectory = AppPathService.getAbsolutePathFromRelativePath( PATH_SEPARATOR + strPathGreetingsCardTemplate );
-
+		String strRootDirectoryTemplateFolder = AppPathService.getAbsolutePathFromRelativePath( PATH_SEPARATOR + strPathGreetingsCardTemplateFolder );
+		
 		// Create the parent Directory if it doesn't exist.
 		File fParentDirectory = new File( strRootDirectory );
 
@@ -199,6 +203,21 @@ public final class GreetingsCardTemplateHome
 
 		// Create the Directory if it doesn't exist.
 		File fDirectory = new File( strRootDirectory + PATH_SEPARATOR + strDirName );
+
+		if ( !fDirectory.exists( ) )
+		{
+			fDirectory.mkdir( );
+		}
+		
+		fParentDirectory = new File( strRootDirectoryTemplateFolder );
+
+		if ( !fParentDirectory.exists( ) )
+		{
+			fParentDirectory.mkdir( );
+		}
+
+		// Create the Directory if it doesn't exist.
+		fDirectory = new File( strRootDirectoryTemplateFolder + PATH_SEPARATOR + strDirName );
 
 		if ( !fDirectory.exists( ) )
 		{
