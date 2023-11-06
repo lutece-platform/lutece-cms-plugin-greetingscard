@@ -495,6 +495,8 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             String strRelativePathTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
             String strPathTemplates = AppPathService.getAbsolutePathFromRelativePath( PATH_SEPARATOR + strRelativePathTemplates );
 
+            String strRelativePathTemplatesFolder = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FOLDER );
+            String strPathTemplatesFolder = AppPathService.getAbsolutePathFromRelativePath( PATH_SEPARATOR + strRelativePathTemplatesFolder );
             // Renames the downloaded picture file with the appropriate name.
             String strName = fPictureFile.getName( );
             int extensionDot = strName.lastIndexOf( POINT );
@@ -505,19 +507,19 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             GreetingsCardTemplateHome.addGreetingsCardTemplate( fPictureFile, fPictureFileDest );
 
             // Renames the downloaded view file with the appropriate name.
-            File fViewHTMLFileDest = new File( strPathTemplates + PATH_SEPARATOR + PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FOLDER + 
+            File fViewHTMLFileDest = new File( strPathTemplatesFolder + 
             		PATH_SEPARATOR + strNewDirectoryName + PATH_SEPARATOR
                     + PARAMETER_VIEW_HTML_CARD + UNDERSCORE + greetingsCardTemplate.getId( ) + HTML );
             GreetingsCardTemplateHome.addGreetingsCardTemplate( fViewHTMLFile, fViewHTMLFileDest );
 
             // Renames the downloaded create file with the appropriate name.
-            File fCreateHTMLFileDest = new File( strPathTemplates + PATH_SEPARATOR + PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FOLDER + 
+            File fCreateHTMLFileDest = new File( strPathTemplatesFolder + 
             		PATH_SEPARATOR + strNewDirectoryName
                     + PATH_SEPARATOR + PARAMETER_CREATE_HTML_CARD + UNDERSCORE + greetingsCardTemplate.getId( ) + HTML );
             GreetingsCardTemplateHome.addGreetingsCardTemplate( fCreateHTMLFile, fCreateHTMLFileDest );
 
             // Renames the downloaded mail file with the appropriate name.
-            File fMailFileDest = new File( strPathTemplates + PATH_SEPARATOR + PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FOLDER + 
+            File fMailFileDest = new File( strPathTemplatesFolder + 
             		PATH_SEPARATOR + strNewDirectoryName + PATH_SEPARATOR
                     + PARAMETER_MAIL_CARD + UNDERSCORE + greetingsCardTemplate.getId( ) + HTML );
             GreetingsCardTemplateHome.addGreetingsCardTemplate( fMailFile, fMailFileDest );
@@ -679,7 +681,10 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             String strRelativePathTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
             String strPathTemplates = AppPathService.getAbsolutePathFromRelativePath( PATH_SEPARATOR
                     + strRelativePathTemplates );
-
+            
+            String strRelativePathTemplatesFolder = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FOLDER );
+            String strPathTemplatesFolder = AppPathService.getAbsolutePathFromRelativePath( PATH_SEPARATOR + strRelativePathTemplatesFolder );
+            
             if ( ( fPictureFile != null ) && ( fPictureFile.getSize( ) != 0 ) )
             {
                 // Renames the downloaded Picture file with the appropriate name.
@@ -701,7 +706,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             if ( ( fCreateHTMLFile != null ) && ( fCreateHTMLFile.getSize( ) != 0 ) )
             { // Renames the downloaded create HTML file with the appropriate name.
 
-                File fCreateHTMLFileDest = new File( strPathTemplates + PATH_SEPARATOR + PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FOLDER + 
+                File fCreateHTMLFileDest = new File( strPathTemplatesFolder + 
                 		PATH_SEPARATOR + strNewDirectoryName
                         + PATH_SEPARATOR + PARAMETER_CREATE_HTML_CARD + UNDERSCORE + greetingsCardTemplate.getId( )
                         + HTML );
@@ -711,7 +716,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             if ( ( fViewHTMLFile != null ) && ( fViewHTMLFile.getSize( ) != 0 ) )
             { // Renames the downloaded view HTML file with the appropriate name.
 
-                File fViewHTMLFileDest = new File( strPathTemplates + PATH_SEPARATOR + PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FOLDER + 
+                File fViewHTMLFileDest = new File( strPathTemplatesFolder + 
                 		PATH_SEPARATOR + strNewDirectoryName
                         + PATH_SEPARATOR + PARAMETER_VIEW_HTML_CARD + UNDERSCORE + greetingsCardTemplate.getId( )
                         + HTML );
@@ -721,7 +726,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             if ( ( fMailFile != null ) && ( fMailFile.getSize( ) != 0 ) )
             { // Renames the downloaded mail file with the appropriate name.
 
-                File fMailFileDest = new File( strPathTemplates + PATH_SEPARATOR + PROPERTY_PATH_GREETINGS_CARD_TEMPLATES_FOLDER + 
+                File fMailFileDest = new File( strPathTemplatesFolder + 
                 		PATH_SEPARATOR + strNewDirectoryName + PATH_SEPARATOR
                         + PARAMETER_MAIL_CARD + UNDERSCORE + greetingsCardTemplate.getId( ) + HTML );
                 GreetingsCardTemplateHome.updateGreetingsCardTemplate( fMailFile, fMailFileDest );
