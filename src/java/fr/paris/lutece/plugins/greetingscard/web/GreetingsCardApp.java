@@ -53,6 +53,8 @@ import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
+import fr.paris.lutece.portal.web.l10n.LocaleService;
 import fr.paris.lutece.portal.web.xpages.XPage;
 import fr.paris.lutece.portal.web.xpages.XPageApplication;
 import fr.paris.lutece.util.date.DateUtil;
@@ -73,7 +75,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * This class implements the HelpDesk XPage.
  */
-public class GreetingsCardApp implements XPageApplication
+public class GreetingsCardApp extends MVCApplication
 {
 	private static final String TEMPLATE_PASSWORD_GREETINGS_CARD_TEMPLATE = "greetingscard/password_greetings_card_template.html";
 	private static final String MARK_PLUGIN_NAME = "plugin_name";
@@ -201,7 +203,8 @@ public class GreetingsCardApp implements XPageApplication
 					{
 						try
 							{
-								page.setContent( getViewHTMLGreetingsCard( request, strIdGC, plugin ) );
+								//page.setContent( getViewHTMLGreetingsCard( request, strIdGC, plugin ) );
+							page = getViewHTMLGreetingsCard( request, strIdGC, plugin );
 							}
 							catch ( DirectoryNotFoundException e )
 							{
@@ -243,12 +246,14 @@ public class GreetingsCardApp implements XPageApplication
 								SiteMessageService.setMessage( request, PROPERTY_BAD_PASSWORD_ERROR_MESSAGE, null, PROPERTY_NO_PASSWORD_TITLE_MESSAGE, null, null, SiteMessage.TYPE_STOP );
 							}
 
-							page.setContent( getGreetingsCardTemplatePasswordForm( request ) );
+							//page.setContent( getGreetingsCardTemplatePasswordForm( request ) );
+							page = getGreetingsCardTemplatePasswordForm( request );
 						}
 						else
 						{
 							try{
-								page.setContent( getCreateHTMLGreetingsCard( request, plugin ) );
+								//page.setContent( getCreateHTMLGreetingsCard( request, plugin ) );
+								page = getCreateHTMLGreetingsCard( request, plugin );
 							}
 							catch ( DirectoryNotFoundException e )
 							{
@@ -262,7 +267,8 @@ public class GreetingsCardApp implements XPageApplication
 			{
 				try
 				{
-					page.setContent( doSendGreetingsCard( request, plugin, strBaseUrl ) );
+					//page.setContent( doSendGreetingsCard( request, plugin, strBaseUrl ) );
+					page = doSendGreetingsCard( request, plugin, strBaseUrl ) ;
 				}
 				catch ( DirectoryNotFoundException e )
 				{
@@ -291,7 +297,7 @@ public class GreetingsCardApp implements XPageApplication
 	 * @return The Html template
 	 * @throws DirectoryNotFoundException exception for DirectoryNotFoundException
 	 */
-	private String getViewHTMLGreetingsCard( HttpServletRequest request, String strIdGC, Plugin plugin ) throws DirectoryNotFoundException
+	private XPage getViewHTMLGreetingsCard( HttpServletRequest request, String strIdGC, Plugin plugin ) throws DirectoryNotFoundException
 	{
 		GreetingsCard greetingsCard = GreetingsCardHome.findByPrimaryKey( strIdGC, plugin );
 
@@ -321,9 +327,21 @@ public class GreetingsCardApp implements XPageApplication
 		model.put( MARK_WIDTH, greetingsCardTemplate.getWidth( ) );
 		model.put( MARK_PICTURE_CARD, strPathPictureCard );
 
-		HtmlTemplate t = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_VIEW_HTML_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML, request.getLocale( ), model  );
+		//HtmlTemplate t = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_VIEW_HTML_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML, request.getLocale( ), model  );
 
-		return t.getHtml( );
+		String strHtmlCardPath = PATH_SEPARATOR + "skin"  + PATH_SEPARATOR + strNewDirectoryName + PATH_SEPARATOR + PARAM_VIEW_HTML_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML;
+		
+		XPage page = new XPage( );
+
+        //page.setTitle( getDefaultPageTitle( LocaleService.getDefault( ) ) );
+        //page.setPathLabel( getDefaultPagePath( LocaleService.getDefault( ) ) );
+
+        HtmlTemplate t = AppTemplateService.getTemplate( strHtmlCardPath, getLocale( request ), model );
+        page.setContent( t.getHtml( ) );
+        page.setTitle( "" );
+        //page.setPathLabel( getDefaultPagePath( getLocale( request ) ) );
+		
+		return page;
 	}
 
 	/**
@@ -331,7 +349,7 @@ public class GreetingsCardApp implements XPageApplication
 	 * @param request The request
 	 * @return The Html template
 	 */
-	private String getGreetingsCardTemplatePasswordForm( HttpServletRequest request )
+	private XPage getGreetingsCardTemplatePasswordForm( HttpServletRequest request )
 	{
 		String strIdGCT = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
 		String strFormat = request.getParameter( PARAM_FORMAT );
@@ -340,9 +358,21 @@ public class GreetingsCardApp implements XPageApplication
 		model.put( MARK_GCT_ID, strIdGCT );
 		model.put( MARK_FORMAT, strFormat );
 
-		HtmlTemplate t = getLocaleTemplate( TEMPLATE_PASSWORD_GREETINGS_CARD_TEMPLATE, request.getLocale( ), model );
+		//HtmlTemplate t = getLocaleTemplate( TEMPLATE_PASSWORD_GREETINGS_CARD_TEMPLATE, request.getLocale( ), model );
 
-		return t.getHtml( );
+		String strHtmlCardPath = PATH_SEPARATOR + "skin"  + PATH_SEPARATOR + TEMPLATE_PASSWORD_GREETINGS_CARD_TEMPLATE;
+		
+		XPage page = new XPage( );
+
+        //page.setTitle( getDefaultPageTitle( LocaleService.getDefault( ) ) );
+        //page.setPathLabel( getDefaultPagePath( LocaleService.getDefault( ) ) );
+
+        HtmlTemplate t = AppTemplateService.getTemplate( strHtmlCardPath, getLocale( request ), model );
+        page.setContent( t.getHtml( ) );
+        page.setTitle( "" );
+        //page.setPathLabel( getDefaultPagePath( getLocale( request ) ) );
+		
+		return page;
 	}
 
 	/**
@@ -352,7 +382,7 @@ public class GreetingsCardApp implements XPageApplication
 	 * @return The Html template
 	 * @throws DirectoryNotFoundException exception for DirectoryNotFoundException
 	 */
-	private String getCreateHTMLGreetingsCard( HttpServletRequest request, Plugin plugin ) throws DirectoryNotFoundException
+	private XPage getCreateHTMLGreetingsCard( HttpServletRequest request, Plugin plugin ) throws DirectoryNotFoundException
 	{
 		String strIdGCT = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
 		int nIdGCT = Integer.parseInt( strIdGCT );
@@ -414,12 +444,21 @@ public class GreetingsCardApp implements XPageApplication
 		model.put( MARK_SENDER_NAME, strSenderName );
 		model.put( MARK_SENDER_EMAIL, strSenderEmail );
 		model.put( MARK_EMAIL_SENDED, strMessageSend );
-		model.put( MARK_WEBAPP_URL, AppPathService.getBaseUrl( request ) );
-		model.put( MARK_LOCALE, AdminUserService.getLocale( request ).getLanguage( ) );
 
-		HtmlTemplate t = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_CREATE_HTML_CARD + UNDERSCORE + strIdGCT + POINT_HTML, request.getLocale( ), model );
+		//HtmlTemplate t = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_CREATE_HTML_CARD + UNDERSCORE + strIdGCT + POINT_HTML, request.getLocale( ), model );
+		String strHtmlCardPath = PATH_SEPARATOR + "skin"  + PATH_SEPARATOR + strPathGreetingsCardTemplates + PATH_SEPARATOR + strNewDirectoryName + PATH_SEPARATOR + PARAM_CREATE_HTML_CARD + UNDERSCORE + strIdGCT + POINT_HTML;
+		
+		XPage page = new XPage( );
 
-		return t.getHtml( );
+        //page.setTitle( getDefaultPageTitle( LocaleService.getDefault( ) ) );
+        //page.setPathLabel( getDefaultPagePath( LocaleService.getDefault( ) ) );
+
+        HtmlTemplate t = AppTemplateService.getTemplate( strHtmlCardPath, getLocale( request ), model );
+        page.setContent( t.getHtml( ) );
+        page.setTitle( "" );
+        //page.setPathLabel( getDefaultPagePath( getLocale( request ) ) );
+		
+		return page;
 	}
 
 	/**
@@ -431,7 +470,7 @@ public class GreetingsCardApp implements XPageApplication
 	 * @throws DirectoryNotFoundException exception for DirectoryNotFoundException
 	 * @throws AccessDeniedException exception for AccessDeniedException
 	 */
-	private String doSendGreetingsCard( HttpServletRequest request, Plugin plugin, String strBaseUrl ) throws DirectoryNotFoundException, AccessDeniedException, SiteMessageException
+	private XPage doSendGreetingsCard( HttpServletRequest request, Plugin plugin, String strBaseUrl ) throws DirectoryNotFoundException, AccessDeniedException, SiteMessageException
 	{
 		String strToday = DateUtil.getCurrentDateString( request.getLocale( ) );
 		java.sql.Date dateToday = DateUtil.formatDateSql( strToday, request.getLocale( ) );
@@ -523,7 +562,9 @@ public class GreetingsCardApp implements XPageApplication
 			model.put( MARK_PLUGIN_NAME, plugin.getName( ) );
 			model.put( MARK_GC_ID, greetingsCard.getId( ) );
 
-			HtmlTemplate tMail = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_MAIL_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML, request.getLocale( ), model );
+			//HtmlTemplate tMail = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_MAIL_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML, request.getLocale( ), model );
+			String strPathGreetingsCardTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
+			HtmlTemplate tMail = AppTemplateService.getTemplate( PATH_SEPARATOR + "skin"  + PATH_SEPARATOR + strPathGreetingsCardTemplates + PATH_SEPARATOR + strNewDirectoryName + PATH_SEPARATOR + PARAM_MAIL_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML, getLocale( request ), model );
 			strMail = tMail.getHtml( );
 
 			MailService.sendMailHtml( null, null, strRecipient, strSenderName, strSenderEmail, strSubject, strMail );
@@ -573,6 +614,7 @@ public class GreetingsCardApp implements XPageApplication
 	 * @return The template object.
 	 * @since 1.5
 	 */
+	/*
 	public static HtmlTemplate getLocaleTemplate( String strTemplate, Locale locale, Object model )
 	{
 		HtmlTemplate template = null;
@@ -583,4 +625,5 @@ public class GreetingsCardApp implements XPageApplication
 
 		return template;
 	}
+	*/
 }
