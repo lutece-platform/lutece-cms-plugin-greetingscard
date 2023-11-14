@@ -43,7 +43,6 @@ public class GreetingsCardTemplate implements AdminWorkgroupResource
 {
 	private int _nIdGCT;
 	private String _strDescription;
-	private String _strPassword;
 	private int _nHeight;
 	private int _nWidth;
 	private boolean _bIsEnabled;
@@ -92,24 +91,6 @@ public class GreetingsCardTemplate implements AdminWorkgroupResource
 	public void setDescription( String strDescription )
 	{
 		_strDescription = strDescription;
-	}
-
-	/**
-	 * Returns the password string
-	 * @return The password string
-	 */
-	public String getPassword( )
-	{
-		return _strPassword;
-	}
-
-	/**
-	 * Sets the password string to the specified value
-	 * @param strPassword The new value
-	 */
-	public void setPassword( String strPassword )
-	{
-		_strPassword = strPassword;
 	}
 
 	/**

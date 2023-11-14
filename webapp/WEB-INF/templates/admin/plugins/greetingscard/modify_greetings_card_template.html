@@ -12,10 +12,11 @@
 							</@formGroup>
 						</@columns>
 						<@columns>
-							<@formGroup labelKey='#i18n{greetingscard.modify_greetings_card_template.labelIdEnable}' hideLabel=['all'] labelFor='status'  class='mt-4' mandatory=true rows=2>
-								<#assign isChecked><#if status='checked'>true<#else>false</#if></#assign>
-								<#assign classChecked>text-<#if status='checked'>success<#else>danger</#if></#assign>
-								<@checkBox name='status' id='status' value='1' orientation='switch' labelClass=classChecked labelKey='#i18n{greetingscard.modify_greetings_card_template.labelIdEnable}' checked=isChecked?boolean />
+							<@formGroup labelKey='#i18n{greetingscard.modify_greetings_card_template.labelIdEnable}' hideLabel=['all'] labelFor='status' class='mt-4' mandatory=true rows=2 >
+								<#assign isChecked><#if status = 'unchecked'>false<#else>true</#if></#assign>
+								<#assign classChecked>fw-bolder text-<#if status = 'unchecked'>danger<#else>success</#if></#assign>
+								<#assign labelChecked><#if status = 'unchecked'>#i18n{greetingscard.modify_greetings_card_template.labelDisabled}<#else>#i18n{greetingscard.modify_greetings_card_template.labelEnabled}</#if></#assign>
+								<@checkBox name='status' id='status' value='1' orientation='switch' labelClass=classChecked labelKey=labelChecked checked=isChecked?boolean />
 							</@formGroup>
 						</@columns>
 					</@row>
@@ -25,30 +26,6 @@
 					<@formGroup labelKey='#i18n{greetingscard.modify_greetings_card_template.label_workgroup}' labelFor='object_email' mandatory=true>
 						<@select name='workgroup' items=user_workgroup_list default_value=user_workgroup_selected />
 					</@formGroup>
-					<@formGroup labelKey='#i18n{greetingscard.create_greetings_card_template.labelIdUsePassword}' labelFor='check_password' hideLabel=['all'] mandatory=true>
-						<#assign isChecked><#if check_password='checked'>true<#else>false</#if></#assign>
-						<@checkBox name='check_password' id='check_password' labelKey='#i18n{greetingscard.create_greetings_card_template.labelIdUsePassword}' orientation='switch' checked=isChecked?boolean />
-					</@formGroup>
-					<@row id='password-input'>
-						<@columns>
-							<@formGroup labelFor='password' labelKey='#i18n{greetingscard.modify_greetings_card_template.labelIdPassword}' rows=2>
-								<@inputGroup class='input-icon input-group-flat'>
-									<@inputGroupItem type='icon'><@icon style='lock ' /></@inputGroupItem>
-									<@input type='password' name='password' id='password' value=password! size='' autoComplete='current-password' />
-									<@inputGroupItem type='text'>
-										<@link href='' class='input-group-link' title='${i18n("portal.admin.admin_login.passwordShow")}' id='lutece-password-toggler' params='role="button"'>
-											<@icon style='eye' />
-										</@link>
-									</@inputGroupItem>
-								</@inputGroup>
-							</@formGroup>
-						</@columns>
-						<@columns>
-							<@formGroup>
-								<@passwordComplexity id='conplexity' inputId='password' params='style="height:2.25rem;margin-top:1.75rem"'/>
-							</@formGroup>
-						</@columns>
-					</@row>
 					<@formGroup>
 						<@button type='submit' buttonIcon='check' title='#i18n{greetingscard.modify_greetings_card_template.labelIdModify}' size='' />
 						<@aButton href='jsp/admin/plugins/greetingscard/ManageGreetingsCard.jsp' buttonIcon='x' color='danger' title='#i18n{greetingscard.modify_greetings_card_template.labelIdCancel}' size='' />
@@ -86,29 +63,21 @@
 	    </@tform>
 	</@pageColumn>
 </@pageContainer>
-<script type="module">
-import {
-	LutecePassword
-} from './themes/shared/modules/lutecePassword.js';
-const password = new LutecePassword();
+<script>
 document.addEventListener( "DOMContentLoaded", function(){
-	/* Password Toggler */
-	password.initPassToggler( );
-	const iPassword = document.getElementById('password-input')
-	const checkPassword = document.getElementById('check_password')
 	const checkStatus = document.getElementById('status')
 	const checkStatusLabel = document.querySelector('#status + .form-check-label')
-	if( '${check_password}' != 'checked' ){
-		iPassword.classList.toggle( 'visually-hidden' )
-	}
-
-	checkPassword.addEventListener( 'change', ( e )=> {
-		iPassword.classList.toggle( 'visually-hidden' )
-	})
-
+	const statusLabelOn='#i18n{greetingscard.modify_greetings_card_template.labelEnabled}'
+	const statusLabelOff='#i18n{greetingscard.modify_greetings_card_template.labelDisabled}'
+	
 	checkStatus.addEventListener( 'change', ( e )=> {
 		checkStatusLabel.classList.toggle( 'text-danger' )
 		checkStatusLabel.classList.toggle( 'text-success' )
+		if( checkStatusLabel.textContent ==  statusLabelOn ){
+			checkStatusLabel.textContent =  statusLabelOff
+		} else if ( checkStatusLabel.textContent ==  statusLabelOff ){
+			checkStatusLabel.textContent =  statusLabelOn
+		}
 	})
 });
 </script>

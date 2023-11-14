@@ -161,7 +161,6 @@ public final class GreetingsCardTemplateHome
 	{
 		String strFile = fFileDest.getAbsolutePath( );
 		removeGreetingsCardTemplate( strFile );
-
 		addGreetingsCardTemplate( fFileItem, fFileDest );
 	}
 

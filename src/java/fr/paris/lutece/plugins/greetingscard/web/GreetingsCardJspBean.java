@@ -121,9 +121,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     private static final String MARK_GREETINGS_CARD_TEMPLATE_ID = "gct_id";
     private static final String MARK_GREETINGS_CARD_TEMPLATE_DESCRIPTION = "description";
     private static final String MARK_GREETINGS_CARD_TEMPLATE_OBJECT_EMAIL = "object_email";
-    private static final String MARK_GREETINGS_CARD_TEMPLATE_CHECK_PASSWORD = "check_password";
     private static final String MARK_GREETINGS_CARD_TEMPLATE_STATUS = "status";
-    private static final String MARK_GREETINGS_CARD_TEMPLATE_PASSWORD = "password";
     private static final String MARK_GREETINGS_CARD_STATISTIC = "greetings_card_statistic";
     private static final String MARK_GREETINGS_CARD_STATISTIC_LIST = "greetings_card_statistic_list";
     private static final String MARK_PLUGIN_NAME = "plugin_name";
@@ -164,18 +162,13 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
     // Parameters
     private static final String PARAMETER_DESCRIPTION = "description";
     private static final String PARAMETER_OBJECT_EMAIL = "object_email";
-    private static final String PARAMETER_CHECK_PASSWORD = "check_password";
     private static final String PARAMETER_STATUS = "status";
-    private static final String PARAMETER_PASSWORD = "password";
     private static final String PARAMETER_GREETINGS_CARD_TEMPLATE_ID = "gct_id";
-    private static final String PARAMETER_CREATE_CARD = "create_card";
-    private static final String PARAMETER_VIEW_CARD = "view_card";
     private static final String PARAMETER_PICTURE_CARD = "picture_card";
     private static final String PARAMETER_VIEW_HTML_CARD = "view_html_card";
     private static final String PARAMETER_CREATE_HTML_CARD = "create_html_card";
     private static final String PARAMETER_MAIL_CARD = "mail_card";
     private static final String PARAMETER_PLUGIN_NAME = "plugin_name";
-//    private static final String PARAMETER_GREETINGS_CARD_ID = "gc_id";
     private static final String PARAMETER_HEIGHT = "height";
     private static final String PARAMETER_WIDTH = "width";
     private static final String PARAMETER_DAYS = "days";
@@ -439,7 +432,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             // Mandatory field
             if ( ( multipartRequest.getParameter( PARAMETER_DESCRIPTION ).equals( EMPTY_STRING ) )
                     || ( multipartRequest.getParameter( PARAMETER_OBJECT_EMAIL ).equals( EMPTY_STRING ) )
-                    || ( multipartRequest.getParameter( PARAMETER_PASSWORD ).equals( EMPTY_STRING ) && ( multipartRequest.getParameter( PARAMETER_CHECK_PASSWORD ) != null ) )
                     || ( multipartRequest.getParameter( PARAMETER_HEIGHT ).equals( EMPTY_STRING ) )
                     || ( multipartRequest.getParameter( PARAMETER_WIDTH ).equals( EMPTY_STRING ) )
                     || ( fPictureFile == null ) || ( fViewHTMLFile == null ) || ( fCreateHTMLFile == null ) || ( fMailFile == null )
@@ -477,12 +469,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             greetingsCardTemplate.setWidth( nWidth );
             greetingsCardTemplate.setStatus( nStatus );
             greetingsCardTemplate.setWorkgroupKey( _strWorkGroup );
-
-            if ( multipartRequest.getParameter( PARAMETER_CHECK_PASSWORD ) != null )
-            {
-                String strPassword = multipartRequest.getParameter( PARAMETER_PASSWORD );
-                greetingsCardTemplate.setPassword( strPassword );
-            }
 
             GreetingsCardTemplateHome.create( greetingsCardTemplate, getPlugin( ) );
 
@@ -574,17 +560,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             model.put( MARK_GREETINGS_CARD_TEMPLATE_STATUS, UNCHECKED );
         }
 
-        if ( greetingsCardTemplate.getPassword( ) == null )
-        {
-            model.put( MARK_GREETINGS_CARD_TEMPLATE_CHECK_PASSWORD, UNCHECKED );
-            model.put( MARK_GREETINGS_CARD_TEMPLATE_PASSWORD, EMPTY_STRING );
-        }
-        else
-        {
-            model.put( MARK_GREETINGS_CARD_TEMPLATE_CHECK_PASSWORD, CHECKED );
-            model.put( MARK_GREETINGS_CARD_TEMPLATE_PASSWORD, greetingsCardTemplate.getPassword( ) );
-        }
-
         HtmlTemplate t = AppTemplateService.getTemplate( TEMPLATE_MODIFY_GREETINGS_CARD_TEMPLATE,
                 AdminUserService.getLocale( request ), model );
 
@@ -624,8 +599,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             // Mandatory field
             if ( ( request.getParameter( PARAMETER_DESCRIPTION ).equals( EMPTY_STRING ) )
                     || ( request.getParameter( PARAMETER_OBJECT_EMAIL ).equals( EMPTY_STRING ) )
-                    || ( ( request.getParameter( PARAMETER_CHECK_PASSWORD ) != null ) && request.getParameter(
-                            PARAMETER_PASSWORD ).equals( EMPTY_STRING ) )
                     || ( request.getParameter( PARAMETER_HEIGHT ).equals( EMPTY_STRING ) )
                     || ( request.getParameter( PARAMETER_WIDTH ).equals( EMPTY_STRING ) ) )
             {
@@ -664,12 +637,6 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
             greetingsCardTemplate.setWidth( nWidth );
             greetingsCardTemplate.setStatus( nStatus );
             greetingsCardTemplate.setWorkgroupKey( strWorkGroup );
-
-            if ( request.getParameter( PARAMETER_CHECK_PASSWORD ) != null )
-            {
-                String strPassword = request.getParameter( PARAMETER_PASSWORD );
-                greetingsCardTemplate.setPassword( strPassword );
-            }
 
             GreetingsCardTemplateHome.update( greetingsCardTemplate, getPlugin( ) );
 
@@ -1780,7 +1747,7 @@ public class GreetingsCardJspBean extends AdminFeaturesPageJspBean
                 sb.append( "</GreetingsCards>\n" );
                 String strXml = StringUtil.replaceAccent( sb.toString( ) );
                 strExportedGreetingsCard = XslExportService.exportXMLWithXSL( nXslExportId, strXml );
-
+                
             }
         }
         else

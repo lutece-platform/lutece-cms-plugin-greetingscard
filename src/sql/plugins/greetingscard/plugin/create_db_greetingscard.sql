@@ -6,7 +6,6 @@ CREATE TABLE greetings_card_template
 (
     id_gct TINYINT NOT NULL,
 	description VARCHAR(255),
-	password VARCHAR(10),
 	height int,
 	width int,
 	status TINYINT DEFAULT '0' NOT NULL,

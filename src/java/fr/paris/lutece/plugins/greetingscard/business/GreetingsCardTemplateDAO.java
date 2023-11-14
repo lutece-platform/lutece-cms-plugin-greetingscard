@@ -45,12 +45,12 @@ import java.util.Collection;
  */
 public final class GreetingsCardTemplateDAO implements IGreetingsCardTemplateDAO
 {
-	private static final String SQL_QUERY_SELECT = "SELECT id_gct, description, password, height, width, status, object_email, workgroup_key FROM greetings_card_template WHERE id_gct = ?";
-	private static final String SQL_QUERY_INSERT = "INSERT INTO greetings_card_template ( id_gct, description, password, height, width, status, object_email, workgroup_key ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
+	private static final String SQL_QUERY_SELECT = "SELECT id_gct, description, height, width, status, object_email, workgroup_key FROM greetings_card_template WHERE id_gct = ?";
+	private static final String SQL_QUERY_INSERT = "INSERT INTO greetings_card_template ( id_gct, description, height, width, status, object_email, workgroup_key ) VALUES ( ?, ?, ?, ?, ?, ?, ? )";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM greetings_card_template WHERE id_gct = ?";
-	private static final String SQL_QUERY_UPDATE = "UPDATE greetings_card_template SET id_gct = ?, description = ?, password = ?, height = ?, width = ?, status = ?, object_email = ?, workgroup_key = ? WHERE id_gct = ?";
+	private static final String SQL_QUERY_UPDATE = "UPDATE greetings_card_template SET id_gct = ?, description = ?, height = ?, width = ?, status = ?, object_email = ?, workgroup_key = ? WHERE id_gct = ?";
 	private static final String SQL_QUERY_NEW_PRIMARY_KEY = "SELECT max( id_gct ) FROM greetings_card_template";
-	private static final String SQL_QUERY_FIND_ALL = "SELECT id_gct, description, password, height, width, status, workgroup_key FROM greetings_card_template order by id_gct";
+	private static final String SQL_QUERY_FIND_ALL = "SELECT id_gct, description, height, width, status, workgroup_key FROM greetings_card_template order by id_gct";
 
 	/**
 	 * Creates a new DownloadFileDAO object.
@@ -76,21 +76,20 @@ public final class GreetingsCardTemplateDAO implements IGreetingsCardTemplateDAO
 
 		daoUtil.setInt( 1, greetingsCardTemplate.getId( ) );
 		daoUtil.setString( 2, greetingsCardTemplate.getDescription( ) );
-		daoUtil.setString( 3, greetingsCardTemplate.getPassword( ) );
-		daoUtil.setInt( 4, greetingsCardTemplate.getHeight( ) );
-		daoUtil.setInt( 5, greetingsCardTemplate.getWidth( ) );
+		daoUtil.setInt( 3, greetingsCardTemplate.getHeight( ) );
+		daoUtil.setInt( 4, greetingsCardTemplate.getWidth( ) );
 
 		if ( greetingsCardTemplate.isEnabled( ) )
 		{
-			daoUtil.setInt( 6, 1 );
+			daoUtil.setInt( 5, 1 );
 		}
 		else
 		{
-			daoUtil.setInt( 6, 0 );
+			daoUtil.setInt( 5, 0 );
 		}
 
-		daoUtil.setString( 7, greetingsCardTemplate.getObjectEmail( ) );
-		daoUtil.setString( 8, greetingsCardTemplate.getWorkgroupKey( ) );
+		daoUtil.setString( 6, greetingsCardTemplate.getObjectEmail( ) );
+		daoUtil.setString( 7, greetingsCardTemplate.getWorkgroupKey( ) );
 
 		daoUtil.executeUpdate( );
 		daoUtil.free( );
@@ -138,12 +137,11 @@ public final class GreetingsCardTemplateDAO implements IGreetingsCardTemplateDAO
 		{
 			greetingsCardTemplate.setId( daoUtil.getInt( 1 ) );
 			greetingsCardTemplate.setDescription( daoUtil.getString( 2 ) );
-			greetingsCardTemplate.setPassword( daoUtil.getString( 3 ) );
-			greetingsCardTemplate.setHeight( daoUtil.getInt( 4 ) );
-			greetingsCardTemplate.setWidth( daoUtil.getInt( 5 ) );
-			greetingsCardTemplate.setStatus( daoUtil.getInt( 6 ) );
-			greetingsCardTemplate.setObjectEmail( daoUtil.getString( 7 ) );
-			greetingsCardTemplate.setWorkgroupKey( daoUtil.getString( 8 ) );
+			greetingsCardTemplate.setHeight( daoUtil.getInt( 3 ) );
+			greetingsCardTemplate.setWidth( daoUtil.getInt( 4 ) );
+			greetingsCardTemplate.setStatus( daoUtil.getInt( 5 ) );
+			greetingsCardTemplate.setObjectEmail( daoUtil.getString( 6 ) );
+			greetingsCardTemplate.setWorkgroupKey( daoUtil.getString( 7 ) );
 
 			// Load greetings cards
 			// greetingsCardTemplate.setGreetingsCards( GreetingsCardHome.findByGreetingsCardTemplateId( greetingsCardTemplate.getId( ), plugin ) );
@@ -166,22 +164,21 @@ public final class GreetingsCardTemplateDAO implements IGreetingsCardTemplateDAO
 
 		daoUtil.setInt( 1, greetingsCardTemplate.getId( ) );
 		daoUtil.setString( 2, greetingsCardTemplate.getDescription( ) );
-		daoUtil.setString( 3, greetingsCardTemplate.getPassword( ) );
-		daoUtil.setInt( 4, greetingsCardTemplate.getHeight( ) );
-		daoUtil.setInt( 5, greetingsCardTemplate.getWidth( ) );
+		daoUtil.setInt( 3, greetingsCardTemplate.getHeight( ) );
+		daoUtil.setInt( 4, greetingsCardTemplate.getWidth( ) );
 
 		if ( greetingsCardTemplate.isEnabled( ) )
 		{
-			daoUtil.setInt( 6, 1 );
+			daoUtil.setInt( 5, 1 );
 		}
 		else
 		{
-			daoUtil.setInt( 6, 0 );
+			daoUtil.setInt( 5, 0 );
 		}
 
-		daoUtil.setString( 7, greetingsCardTemplate.getObjectEmail( ) );
-		daoUtil.setString( 8, greetingsCardTemplate.getWorkgroupKey( ) );
-		daoUtil.setInt( 9, greetingsCardTemplate.getId( ) );
+		daoUtil.setString( 6, greetingsCardTemplate.getObjectEmail( ) );
+		daoUtil.setString( 7, greetingsCardTemplate.getWorkgroupKey( ) );
+		daoUtil.setInt( 8, greetingsCardTemplate.getId( ) );
 
 		daoUtil.executeUpdate( );
 
@@ -232,11 +229,10 @@ public final class GreetingsCardTemplateDAO implements IGreetingsCardTemplateDAO
 			GreetingsCardTemplate greetingsCardTemplate = new GreetingsCardTemplate( );
 			greetingsCardTemplate.setId( daoUtil.getInt( 1 ) );
 			greetingsCardTemplate.setDescription( daoUtil.getString( 2 ) );
-			greetingsCardTemplate.setPassword( daoUtil.getString( 3 ) );
-			greetingsCardTemplate.setHeight( daoUtil.getInt( 4 ) );
-			greetingsCardTemplate.setWidth( daoUtil.getInt( 5 ) );
-			greetingsCardTemplate.setStatus( daoUtil.getInt( 6 ) );
-			greetingsCardTemplate.setWorkgroupKey( daoUtil.getString( 7 ) );
+			greetingsCardTemplate.setHeight( daoUtil.getInt( 3 ) );
+			greetingsCardTemplate.setWidth( daoUtil.getInt( 4 ) );
+			greetingsCardTemplate.setStatus( daoUtil.getInt( 5 ) );
+			greetingsCardTemplate.setWorkgroupKey( daoUtil.getString( 6 ) );
 
 			// Load greetings cards
 			// greetingsCardTemplate.setGreetingsCards( GreetingsCardHome.findByGreetingsCardTemplateId(
