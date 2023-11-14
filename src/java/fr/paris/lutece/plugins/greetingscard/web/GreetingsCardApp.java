@@ -38,7 +38,6 @@ import fr.paris.lutece.plugins.greetingscard.business.GreetingsCardHome;
 import fr.paris.lutece.plugins.greetingscard.business.GreetingsCardTemplate;
 import fr.paris.lutece.plugins.greetingscard.business.GreetingsCardTemplateHome;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
-import fr.paris.lutece.portal.service.admin.AdminUserService;
 import fr.paris.lutece.portal.service.captcha.CaptchaSecurityService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.mail.MailService;
@@ -65,7 +64,6 @@ import fr.paris.lutece.util.string.StringUtil;
 import fr.paris.lutece.util.url.UrlItem;
 
 import java.util.HashMap;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -77,7 +75,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class GreetingsCardApp extends MVCApplication
 {
-	private static final String TEMPLATE_PASSWORD_GREETINGS_CARD_TEMPLATE = "greetingscard/password_greetings_card_template.html";
 	private static final String MARK_PLUGIN_NAME = "plugin_name";
 	private static final String MARK_PICTURE_CARD = "picture_card";
 	private static final String MARK_PORTAL_URL = "portal_url";
@@ -94,8 +91,6 @@ public class GreetingsCardApp extends MVCApplication
 	private static final String MARK_SENDER_NAME = "sender_name";
 	private static final String MARK_SENDER_EMAIL = "sender_email";
 	private static final String MARK_EMAIL_SENDED = "sended_email";
-	private static final String MARK_WEBAPP_URL = "webapp_url";
-	private static final String MARK_LOCALE = "locale";
 	private static final String PARAM_ACTION = "action";
 	private static final String PARAM_FORMAT = "format";
 	private static final String PARAM_GREETINGS_CARD_ID = "gc_id";
@@ -106,7 +101,6 @@ public class GreetingsCardApp extends MVCApplication
 	private static final String PARAM_SENDER_EMAIL = "sender_email";
 	private static final String PARAM_RECIPIENT_EMAIL = "recipient_email";
 	private static final String PARAM_SENDER_NAME = "sender_name";
-	private static final String PARAM_PASSWORD = "password";
 	private static final String PARAM_NOTIFY_USER = "notify_user";
 	private static final String PARAM_VIEW_HTML_CARD = "view_html_card";
 	private static final String PARAM_MAIL_CARD = "mail_card";
@@ -120,9 +114,6 @@ public class GreetingsCardApp extends MVCApplication
 	private static final String PROPERTY_FORMAT_HTML = "html";
 	private static final String PROPERTY_ACTION_CREATE = "create";
 	private static final String PROPERTY_ACTION_VIEW = "view";
-	private static final String PROPERTY_NO_PASSWORD_ERROR_MESSAGE = "greetingscard.siteMessage.no_password.message";
-	private static final String PROPERTY_NO_PASSWORD_TITLE_MESSAGE = "greetingscard.siteMessage.no_password.title";
-	private static final String PROPERTY_BAD_PASSWORD_ERROR_MESSAGE = "greetingscard.siteMessage.bad_password.message";
 	private static final String PROPERTY_NO_GREETINGS_CARD_TEMPLATE_ERROR_MESSAGE = "greetingscard.siteMessage.no_greetingscard_template.message";
 	private static final String PROPERTY_NO_GREETINGS_CARD_TEMPLATE_TITLE_MESSAGE = "greetingscard.siteMessage.no_greetingscard_template.title";
 	private static final String PROPERTY_INVALID_PARAMETERS_ERROR_MESSAGE = "greetingscard.siteMessage.invalid_parameters.message";
@@ -133,7 +124,6 @@ public class GreetingsCardApp extends MVCApplication
 	private static final String ADDING_MAILING_LIST_REC_MESSAGE = "greetingscard.mainling_list_recipient.message";
 	private static final String CHECKBOX_ON = "on";
 	private static final String POINT_HTML = ".html";
-	private static final String HTML = "html";
 	private static final String EMPTY_STRING = "";
 	private static final String WHITE_SPACE = " ";
 	private static final String PATH_SEPARATOR = "/";
@@ -203,7 +193,6 @@ public class GreetingsCardApp extends MVCApplication
 					{
 						try
 							{
-								//page.setContent( getViewHTMLGreetingsCard( request, strIdGC, plugin ) );
 							page = getViewHTMLGreetingsCard( request, strIdGC, plugin );
 							}
 							catch ( DirectoryNotFoundException e )
@@ -231,34 +220,12 @@ public class GreetingsCardApp extends MVCApplication
 					{
 						greetingsCardTemplate = GreetingsCardTemplateHome.findByPrimaryKey( nIdGCT, plugin );
 
-						String strPassword = request.getParameter( PARAM_PASSWORD );
-
-						if ( ( greetingsCardTemplate.getPassword( ) != null ) && !greetingsCardTemplate.getPassword( ).equals( strPassword ) )
-						{
-							// If the password is empty
-							if ( ( strPassword != null ) && strPassword.equals( EMPTY_STRING ) )
-							{
-								SiteMessageService.setMessage( request, PROPERTY_NO_PASSWORD_ERROR_MESSAGE, null, PROPERTY_NO_PASSWORD_TITLE_MESSAGE, null, null, SiteMessage.TYPE_STOP );
-							}
-
-							if ( ( strPassword != null ) && !greetingsCardTemplate.getPassword( ).equals( strPassword ) )
-							{
-								SiteMessageService.setMessage( request, PROPERTY_BAD_PASSWORD_ERROR_MESSAGE, null, PROPERTY_NO_PASSWORD_TITLE_MESSAGE, null, null, SiteMessage.TYPE_STOP );
-							}
-
-							//page.setContent( getGreetingsCardTemplatePasswordForm( request ) );
-							page = getGreetingsCardTemplatePasswordForm( request );
+						try{
+							page = getCreateHTMLGreetingsCard( request, plugin );
 						}
-						else
+						catch ( DirectoryNotFoundException e )
 						{
-							try{
-								//page.setContent( getCreateHTMLGreetingsCard( request, plugin ) );
-								page = getCreateHTMLGreetingsCard( request, plugin );
-							}
-							catch ( DirectoryNotFoundException e )
-							{
-								throw new AppException( e.getMessage( ), e );
-							}
+							throw new AppException( e.getMessage( ), e );
 						}
 					}
 				}
@@ -267,7 +234,6 @@ public class GreetingsCardApp extends MVCApplication
 			{
 				try
 				{
-					//page.setContent( doSendGreetingsCard( request, plugin, strBaseUrl ) );
 					page = doSendGreetingsCard( request, plugin, strBaseUrl ) ;
 				}
 				catch ( DirectoryNotFoundException e )
@@ -327,50 +293,14 @@ public class GreetingsCardApp extends MVCApplication
 		model.put( MARK_WIDTH, greetingsCardTemplate.getWidth( ) );
 		model.put( MARK_PICTURE_CARD, strPathPictureCard );
 
-		//HtmlTemplate t = getLocaleTemplate( strNewDirectoryName + PATH_SEPARATOR + PARAM_VIEW_HTML_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML, request.getLocale( ), model  );
-
-		String strHtmlCardPath = PATH_SEPARATOR + "skin"  + PATH_SEPARATOR + strNewDirectoryName + PATH_SEPARATOR + PARAM_VIEW_HTML_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML;
+		String strPathGreetingsCardTemplates = AppPropertiesService.getProperty( PROPERTY_PATH_GREETINGS_CARD_TEMPLATES );
+		String strHtmlCardPath = PATH_SEPARATOR + "skin"  + PATH_SEPARATOR + strPathGreetingsCardTemplates + PATH_SEPARATOR + strNewDirectoryName + PATH_SEPARATOR + PARAM_VIEW_HTML_CARD + UNDERSCORE + greetingsCard.getIdGCT( ) + POINT_HTML;
 		
 		XPage page = new XPage( );
-
-        //page.setTitle( getDefaultPageTitle( LocaleService.getDefault( ) ) );
-        //page.setPathLabel( getDefaultPagePath( LocaleService.getDefault( ) ) );
 
         HtmlTemplate t = AppTemplateService.getTemplate( strHtmlCardPath, getLocale( request ), model );
         page.setContent( t.getHtml( ) );
         page.setTitle( "" );
-        //page.setPathLabel( getDefaultPagePath( getLocale( request ) ) );
-		
-		return page;
-	}
-
-	/**
-	 * Returns the greetings card template password form
-	 * @param request The request
-	 * @return The Html template
-	 */
-	private XPage getGreetingsCardTemplatePasswordForm( HttpServletRequest request )
-	{
-		String strIdGCT = request.getParameter( PARAM_GREETINGS_CARD_TEMPLATE_ID );
-		String strFormat = request.getParameter( PARAM_FORMAT );
-
-		HashMap<String, Object> model = new HashMap<String, Object>( );
-		model.put( MARK_GCT_ID, strIdGCT );
-		model.put( MARK_FORMAT, strFormat );
-
-		//HtmlTemplate t = getLocaleTemplate( TEMPLATE_PASSWORD_GREETINGS_CARD_TEMPLATE, request.getLocale( ), model );
-
-		String strHtmlCardPath = PATH_SEPARATOR + "skin"  + PATH_SEPARATOR + TEMPLATE_PASSWORD_GREETINGS_CARD_TEMPLATE;
-		
-		XPage page = new XPage( );
-
-        //page.setTitle( getDefaultPageTitle( LocaleService.getDefault( ) ) );
-        //page.setPathLabel( getDefaultPagePath( LocaleService.getDefault( ) ) );
-
-        HtmlTemplate t = AppTemplateService.getTemplate( strHtmlCardPath, getLocale( request ), model );
-        page.setContent( t.getHtml( ) );
-        page.setTitle( "" );
-        //page.setPathLabel( getDefaultPagePath( getLocale( request ) ) );
 		
 		return page;
 	}
